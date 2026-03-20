@@ -1,0 +1,5319 @@
+[
+  {
+    "url": "https://www.sofascore.com/football/tournament/argentina/liga-profesional-de-futbol/155#tab:standings",
+    "data": {
+      "uniqueTournament": {
+        "name": "Liga Profesional de F\u00fatbol",
+        "slug": "liga-profesional-de-futbol",
+        "primaryColorHex": "#0cbad8",
+        "secondaryColorHex": "#daa813",
+        "logo": {
+          "md5": "37a714a9170b4710a535a67684bbaaff",
+          "id": 2702253
+        },
+        "category": {
+          "name": "Argentina",
+          "slug": "argentina",
+          "sport": {
+            "name": "Football",
+            "slug": "football",
+            "id": 1
+          },
+          "country": {
+            "alpha2": "AR",
+            "name": "Argentina"
+          },
+          "id": 48,
+          "flag": "argentina",
+          "alpha2": "AR",
+          "fieldTranslations": {
+            "nameTranslation": {
+              "ar": "\u0627\u0644\u0623\u0631\u062c\u0646\u062a\u064a\u0646",
+              "ru": "\u0410\u0440\u0433\u0435\u043d\u0442\u0438\u043d\u0430"
+            },
+            "shortNameTranslation": {}
+          }
+        },
+        "userCount": 56536,
+        "tier": 1,
+        "titleHolder": {
+          "name": "Estudiantes de La Plata",
+          "slug": "estudiantes-de-la-plata",
+          "shortName": "Estudiantes",
+          "gender": "M",
+          "sport": {
+            "name": "Football",
+            "slug": "football",
+            "id": 1
+          },
+          "userCount": 40628,
+          "nameCode": "ELP",
+          "disabled": false,
+          "national": false,
+          "type": 0,
+          "country": {
+            "alpha2": "AR",
+            "name": "Argentina"
+          },
+          "id": 3206,
+          "teamColors": {
+            "primary": "#ff0000",
+            "secondary": "#ffffff",
+            "text": "#ffffff"
+          },
+          "fieldTranslations": {
+            "nameTranslation": {
+              "ar": "\u0625\u0633\u062a\u0648\u064a\u0627\u0646\u062a\u0648\u0633 \u062f\u064a \u0644\u0627\u0628\u0644\u0627\u062f\u0627",
+              "hi": "\u090f\u0938\u094d\u0924\u0941\u0921\u093f\u092f\u0928\u0924\u0947\u0938 \u0921\u0947 \u0932\u093e \u092a\u094d\u0932\u093e\u091f\u093e",
+              "ru": "\u041a\u043b\u0443\u0431 \u042d\u0441\u0442\u0443\u0434\u0438\u0430\u043d\u0442\u0435\u0441 \u0434\u0435 \u041b\u0430-\u041f\u043b\u0430\u0442\u0430"
+            },
+            "shortNameTranslation": {}
+          }
+        },
+        "titleHolderTitles": 7,
+        "mostTitles": 38,
+        "linkedUniqueTournaments": [],
+        "hasRounds": true,
+        "hasGroups": false,
+        "hasPlayoffSeries": false,
+        "upperDivisions": [],
+        "lowerDivisions": [
+          {
+            "name": "Primera Nacional",
+            "slug": "primera-nacional",
+            "primaryColorHex": "#145286",
+            "secondaryColorHex": "#27A4DE",
+            "logo": {
+              "md5": "c9fbb367960ca9bc5b632293d7460755",
+              "id": 1039218
+            },
+            "category": {
+              "name": "Argentina",
+              "slug": "argentina",
+              "sport": {
+                "name": "Football",
+                "slug": "football",
+                "id": 1
+              },
+              "country": {
+                "alpha2": "AR",
+                "name": "Argentina"
+              },
+              "id": 48,
+              "flag": "argentina",
+              "alpha2": "AR",
+              "fieldTranslations": {
+                "nameTranslation": {
+                  "ar": "\u0627\u0644\u0623\u0631\u062c\u0646\u062a\u064a\u0646",
+                  "ru": "\u0410\u0440\u0433\u0435\u043d\u0442\u0438\u043d\u0430"
+                },
+                "shortNameTranslation": {}
+              }
+            },
+            "tier": 2,
+            "hasRounds": true,
+            "hasGroups": true,
+            "hasPlayoffSeries": false,
+            "hasPerformanceGraphFeature": false,
+            "periodLength": {},
+            "gender": "M",
+            "country": {},
+            "id": 703,
+            "startDateTimestamp": 1770422400,
+            "endDateTimestamp": 1796688000,
+            "mostTitlesTeams": [],
+            "disabledHomeAwayStandings": false,
+            "displayInverseHomeAwayTeams": false,
+            "fieldTranslations": {
+              "nameTranslation": {
+                "ar": "\u0627\u0644\u062f\u0648\u0631\u064a \u0627\u0644\u0648\u0637\u0646\u064a \u0627\u0644\u0623\u0648\u0644",
+                "bn": "\u09aa\u09cd\u09b0\u09bf\u09ae\u09c7\u09b0\u09be \u09a8\u09cd\u09af\u09be\u09b8\u09bf\u0993\u09a8\u09be\u09b2",
+                "hi": "\u092a\u094d\u0930\u093e\u0907\u092e\u0947\u0930\u093e \u0928\u0948\u0936\u0928\u0932"
+              },
+              "shortNameTranslation": {}
+            }
+          }
+        ],
+        "hasPerformanceGraphFeature": false,
+        "periodLength": {},
+        "gender": "M",
+        "country": {},
+        "id": 155,
+        "startDateTimestamp": 1769040000,
+        "endDateTimestamp": 1798675200,
+        "mostTitlesTeams": [
+          {
+            "name": "River Plate",
+            "slug": "river-plate",
+            "shortName": "River Plate",
+            "gender": "M",
+            "sport": {
+              "name": "Football",
+              "slug": "football",
+              "id": 1
+            },
+            "userCount": 249948,
+            "nameCode": "RIV",
+            "disabled": false,
+            "national": false,
+            "type": 0,
+            "country": {
+              "alpha2": "AR",
+              "name": "Argentina"
+            },
+            "id": 3211,
+            "teamColors": {
+              "primary": "#ffffff",
+              "secondary": "#ff0000",
+              "text": "#ff0000"
+            },
+            "fieldTranslations": {
+              "nameTranslation": {
+                "ar": "\u0631\u064a\u0641\u0631 \u0628\u0644\u0627\u064a\u062a",
+                "bn": "\u09b0\u09bf\u09ad\u09be\u09b0 \u09aa\u09cd\u09b2\u09c7\u099f",
+                "ru": "\u0420\u0438\u0432\u0435\u0440 \u041f\u043b\u0435\u0439\u0442"
+              },
+              "shortNameTranslation": {
+                "ar": "\u0631\u064a\u0641\u0631 \u0628\u0644\u0627\u064a\u062a",
+                "hi": "\u0930\u093f\u0935\u0930"
+              }
+            }
+          }
+        ],
+        "disabledHomeAwayStandings": false,
+        "displayInverseHomeAwayTeams": false,
+        "fieldTranslations": {
+          "nameTranslation": {
+            "ar": "\u062f\u0648\u0631\u064a \u0643\u0631\u0629 \u0627\u0644\u0642\u062f\u0645 \u0644\u0644\u0645\u062d\u062a\u0631\u0641\u064a\u0646",
+            "bn": "\u09b2\u09c0\u0997\u09be \u09aa\u09cd\u09b0\u09cb\u09ab\u09c7\u09b6\u09a8\u09be\u09b2 \u09a1\u09c7 \u09ab\u09c1\u099f\u09ac\u09b2",
+            "hi": "\u0932\u0940\u0917\u093e \u092a\u094d\u0930\u094b\u092b\u0947\u0936\u0928\u0932 \u0921\u0940 \u092b\u0941\u091f\u092c\u0949\u0932"
+          },
+          "shortNameTranslation": {}
+        }
+      },
+      "seasons": [
+        {
+          "name": "Primera LPF 2026",
+          "year": "2026",
+          "editor": false,
+          "seasonCoverageInfo": {},
+          "id": 87913
+        },
+        {
+          "name": "Torneo Clausura",
+          "year": "2025",
+          "editor": false,
+          "id": 77826
+        },
+        {
+          "name": "Torneo Apertura",
+          "year": "2025",
+          "editor": false,
+          "id": 70268
+        },
+        {
+          "name": "Liga Profesional 2024",
+          "year": "2024",
+          "editor": false,
+          "id": 57478
+        },
+        {
+          "name": "Liga Profesional 2023",
+          "year": "2023",
+          "editor": false,
+          "seasonCoverageInfo": {},
+          "id": 47647
+        },
+        {
+          "name": "Liga Profesional 2022",
+          "year": "2022",
+          "editor": false,
+          "id": 41884
+        },
+        {
+          "name": "Superliga 2021",
+          "year": "2021",
+          "editor": false,
+          "id": 37231
+        },
+        {
+          "name": "Superliga 19/20",
+          "year": "19/20",
+          "editor": false,
+          "id": 24239
+        },
+        {
+          "name": "Superliga 18/19",
+          "year": "18/19",
+          "editor": false,
+          "id": 18113
+        },
+        {
+          "name": "Superliga 17/18",
+          "year": "17/18",
+          "editor": false,
+          "id": 13950
+        },
+        {
+          "name": "Primera Division 16/17",
+          "year": "16/17",
+          "editor": false,
+          "id": 12117
+        },
+        {
+          "name": "Primera Division 2016",
+          "year": "2016",
+          "editor": false,
+          "id": 11237
+        },
+        {
+          "name": "Primera Division 2015",
+          "year": "2015",
+          "editor": false,
+          "id": 9651
+        },
+        {
+          "name": "Primera Division 2014",
+          "year": "2014",
+          "editor": false,
+          "id": 8338
+        },
+        {
+          "name": "Primera Division 13/14",
+          "year": "13/14",
+          "editor": false,
+          "id": 6455
+        },
+        {
+          "name": "Primera Division 12/13",
+          "year": "12/13",
+          "editor": false,
+          "id": 5103
+        },
+        {
+          "name": "Primera Division 11/12",
+          "year": "11/12",
+          "editor": false,
+          "id": 3613
+        },
+        {
+          "name": "Primera Division 10/11",
+          "year": "10/11",
+          "editor": false,
+          "id": 2887
+        },
+        {
+          "name": "Primera Division 09/10",
+          "year": "09/10",
+          "editor": false,
+          "id": 2323
+        },
+        {
+          "name": "Primera Division 08/09",
+          "year": "08/09",
+          "editor": false,
+          "id": 1636
+        }
+      ],
+      "seo": {
+        "otherNames": [
+          "Argentine Primera Divisi\u00f3n"
+        ],
+        "grade": "professional",
+        "firstSeasonWinnerName": "Old Caledonians",
+        "largestStadium": {
+          "teamName": "River Plate",
+          "capacity": 85018
+        },
+        "lastSeasonAttendance": {},
+        "tvPartners": [
+          {
+            "name": "Fox Sports",
+            "url": "https://www.foxsports.com/"
+          },
+          {
+            "name": "TNT Sports",
+            "url": "https://tntsports.com.ar/"
+          }
+        ],
+        "officialOrganisation": {
+          "name": "Argentine Football Association",
+          "url": "https://www.afa.com.ar/es/"
+        },
+        "lastSeasonTopScorers": [
+          {
+            "name": "Mateo Retegui\n",
+            "goals": 19
+          }
+        ],
+        "teamsCount": 26,
+        "tablesCount": 2,
+        "relegatingTeamsCount": 2,
+        "promotions": [
+          {
+            "competitionName": "Copa Libertadores",
+            "promotionCount": 1
+          }
+        ],
+        "gamesCount": 325,
+        "frequency": 2002,
+        "mostPopularTeams": [
+          "Boca Juniors",
+          "River Plate",
+          "Racing Club"
+        ],
+        "preliminaryRound": {},
+        "numberOfPlayoffTeams": 16,
+        "mainCompetition": {},
+        "roundsCount": 23,
+        "promotedTeams": [
+          "Arsenal de Sarand\u00ed",
+          " Central C\u00f3rdoba"
+        ],
+        "uniqueTournament": {
+          "name": "Liga Profesional de F\u00fatbol",
+          "slug": "liga-profesional-de-futbol",
+          "primaryColorHex": "#0cbad8",
+          "secondaryColorHex": "#daa813",
+          "category": {
+            "name": "Argentina",
+            "slug": "argentina",
+            "sport": {
+              "name": "Football",
+              "slug": "football",
+              "id": 1
+            },
+            "id": 48,
+            "flag": "argentina",
+            "alpha2": "AR",
+            "fieldTranslations": {
+              "nameTranslation": {
+                "ar": "\u0627\u0644\u0623\u0631\u062c\u0646\u062a\u064a\u0646",
+                "ru": "\u0410\u0440\u0433\u0435\u043d\u0442\u0438\u043d\u0430"
+              },
+              "shortNameTranslation": {}
+            }
+          },
+          "userCount": 56536,
+          "id": 155,
+          "displayInverseHomeAwayTeams": false,
+          "fieldTranslations": {
+            "nameTranslation": {
+              "ar": "\u062f\u0648\u0631\u064a \u0643\u0631\u0629 \u0627\u0644\u0642\u062f\u0645 \u0644\u0644\u0645\u062d\u062a\u0631\u0641\u064a\u0646",
+              "bn": "\u09b2\u09c0\u0997\u09be \u09aa\u09cd\u09b0\u09cb\u09ab\u09c7\u09b6\u09a8\u09be\u09b2 \u09a1\u09c7 \u09ab\u09c1\u099f\u09ac\u09b2",
+              "hi": "\u0932\u0940\u0917\u093e \u092a\u094d\u0930\u094b\u092b\u0947\u0936\u0928\u0932 \u0921\u0940 \u092b\u0941\u091f\u092c\u0949\u0932"
+            },
+            "shortNameTranslation": {}
+          }
+        },
+        "competitionType": "league",
+        "gender": "M",
+        "firstSeasonYear": "1891",
+        "hasPlayoff": false,
+        "mostTitlesNames": [
+          "River Plate"
+        ]
+      },
+      "info": {
+        "season": {
+          "name": "Primera LPF 2026",
+          "year": "2026",
+          "editor": false,
+          "seasonCoverageInfo": {},
+          "id": 87913
+        },
+        "goals": 189,
+        "homeTeamWins": 47,
+        "awayTeamWins": 21,
+        "draws": 32,
+        "yellowCards": 510,
+        "redCards": 20,
+        "newcomersUpperDivision": [],
+        "newcomersLowerDivision": [],
+        "newcomersOther": [],
+        "numberOfCompetitors": 30,
+        "id": 55185,
+        "hostCountries": [
+          "Argentina"
+        ]
+      },
+      "params": {
+        "sport": "football",
+        "category": "argentina",
+        "tournament": "liga-profesional-de-futbol",
+        "id": "155"
+      },
+      "seoContent": {
+        "about": "<p>Liga Profesional de F\u00fatbol, also known as Argentine Primera Divisi\u00f3n, is a professional football league in Argentina for men.</p><p>There are overall 30 teams that compete for the title every year.</p><p>The current holder of the title is Estudiantes de La Plata and the team that holds the most titles is River Plate.</p><p>Sofascore tracks live football scores and Liga Profesional de F\u00fatbol table, results, statistics and top scorers.</p><h2>Competition format of Liga Profesional de F\u00fatbol</h2><p>The teams are placed in 2 tables, with a promotion and relegation system for the best and worst-performing teams. 2 teams are relegated to the <a href=\"https://www.sofascore.com/football/tournament/argentina/primera-nacional/703\">Primera Nacional</a>.</p><p>The top 1 team qualifies for the Copa Libertadores main tournament or preliminary qualifications.</p><h2>Liga Profesional de F\u00fatbol top scorers</h2><p>The top scorers in the last season of Liga Profesional de F\u00fatbol Torneo Clausura season were Mateo Retegui\n.Last season top scorer is Mateo Retegui\n with 19 goals.</p><h2>Team stadiums and attendance</h2><p>The team with the largest stadium is River Plate with the capacity of 85018.</p><h2>TV partners</h2><p>The largest TV partners for Liga Profesional de F\u00fatbol are Fox Sports, TNT Sports.</p><h3>Which team in Liga Profesional de F\u00fatbol has the most titles?</h3><p>The team with the most titles in Liga Profesional de F\u00fatbol is River Plate.</p><h3>Which team is the current titleholder in Liga Profesional de F\u00fatbol?</h3><p>The current titleholder in Liga Profesional de F\u00fatbol is Estudiantes de La Plata.</p><h3>What rank of competition is Liga Profesional de F\u00fatbol in Argentina?</h3><p>Liga Profesional de F\u00fatbol is professional division in Argentina.</p><h3>How many goals are scored on average in Liga Profesional de F\u00fatbol in Primera LPF 2026?</h3><p>The average number of goals in Liga Profesional de F\u00fatbol is 1.91.</p><h3>When does the Liga Profesional de F\u00fatbol start and when does it finish?</h3><p>The Liga Profesional de F\u00fatbol usually starts in January and ends in December.</p><h3>How many groups are there in Liga Profesional de F\u00fatbol competition?</h3><p>The teams in Liga Profesional de F\u00fatbol are placed in 2 groups.</p>",
+        "description": "Check here Liga Profesional de F\u00fatbol results, fixtures, table and all relevant stats, from this season and all previous seasons.",
+        "heading": "Liga Profesional de F\u00fatbol standings, fixtures, results and stats",
+        "title": "Liga Profesional de F\u00fatbol table, schedule &amp; stats | Sofascore"
+      },
+      "locale": "en",
+      "standings": [
+        {
+          "type": "total",
+          "descriptions": [],
+          "tieBreakingRule": {
+            "text": "In the event that two (or more) teams finish with an equal number of points, the following rules break the tie:\n1. Goal difference\n2. Goals scored\n3. Head-to-head",
+            "id": 3039
+          },
+          "rows": [
+            {
+              "team": {
+                "name": "Estudiantes de La Plata",
+                "slug": "estudiantes-de-la-plata",
+                "shortName": "Estudiantes",
+                "gender": "M",
+                "sport": {
+                  "name": "Football",
+                  "slug": "football",
+                  "id": 1
+                },
+                "userCount": 40628,
+                "nameCode": "ELP",
+                "disabled": false,
+                "national": false,
+                "type": 0,
+                "country": {
+                  "alpha2": "AR",
+                  "alpha3": "ARG",
+                  "name": "Argentina",
+                  "slug": "argentina"
+                },
+                "id": 3206,
+                "teamColors": {
+                  "primary": "#ff0000",
+                  "secondary": "#ffffff",
+                  "text": "#ffffff"
+                },
+                "fieldTranslations": {
+                  "nameTranslation": {
+                    "ar": "\u0625\u0633\u062a\u0648\u064a\u0627\u0646\u062a\u0648\u0633 \u062f\u064a \u0644\u0627\u0628\u0644\u0627\u062f\u0627",
+                    "hi": "\u090f\u0938\u094d\u0924\u0941\u0921\u093f\u092f\u0928\u0924\u0947\u0938 \u0921\u0947 \u0932\u093e \u092a\u094d\u0932\u093e\u091f\u093e",
+                    "ru": "\u041a\u043b\u0443\u0431 \u042d\u0441\u0442\u0443\u0434\u0438\u0430\u043d\u0442\u0435\u0441 \u0434\u0435 \u041b\u0430-\u041f\u043b\u0430\u0442\u0430"
+                  },
+                  "shortNameTranslation": {}
+                }
+              },
+              "descriptions": [],
+              "promotion": {
+                "text": "Playoffs",
+                "id": 6
+              },
+              "position": 1,
+              "matches": 7,
+              "wins": 4,
+              "scoresFor": 7,
+              "scoresAgainst": 2,
+              "id": 2062229,
+              "losses": 0,
+              "draws": 3,
+              "points": 15,
+              "scoreDiffFormatted": "+5"
+            },
+            {
+              "team": {
+                "name": "V\u00e9lez Sarsfield",
+                "slug": "velez-sarsfield",
+                "shortName": "V\u00e9lez Sarsfield",
+                "gender": "M",
+                "sport": {
+                  "name": "Football",
+                  "slug": "football",
+                  "id": 1
+                },
+                "userCount": 35070,
+                "nameCode": "VEL",
+                "disabled": false,
+                "national": false,
+                "type": 0,
+                "country": {
+                  "alpha2": "AR",
+                  "alpha3": "ARG",
+                  "name": "Argentina",
+                  "slug": "argentina"
+                },
+                "id": 3208,
+                "teamColors": {
+                  "primary": "#ffffff",
+                  "secondary": "#003366",
+                  "text": "#003366"
+                },
+                "fieldTranslations": {
+                  "nameTranslation": {
+                    "ar": "\u0641\u064a\u0644\u064a\u0632 \u0633\u0627\u0631\u0633\u0641\u064a\u0644\u062f",
+                    "ru": "\u0412\u0435\u043b\u0435\u0441 \u0421\u0430\u0440\u0441\u0444\u0438\u043b\u0434"
+                  },
+                  "shortNameTranslation": {
+                    "ar": "\u0641\u064a\u0644\u064a\u0632 \u0633\u0627\u0631\u0633\u0641\u064a\u0644\u062f"
+                  }
+                }
+              },
+              "descriptions": [],
+              "promotion": {
+                "text": "Playoffs",
+                "id": 6
+              },
+              "position": 2,
+              "matches": 7,
+              "wins": 4,
+              "scoresFor": 8,
+              "scoresAgainst": 4,
+              "id": 2062234,
+              "losses": 0,
+              "draws": 3,
+              "points": 15,
+              "scoreDiffFormatted": "+4"
+            },
+            {
+              "team": {
+                "name": "Platense",
+                "slug": "platense",
+                "shortName": "Platense",
+                "gender": "M",
+                "sport": {
+                  "name": "Football",
+                  "slug": "football",
+                  "id": 1
+                },
+                "userCount": 18135,
+                "nameCode": "PLA",
+                "national": false,
+                "type": 0,
+                "country": {
+                  "alpha2": "AR",
+                  "alpha3": "ARG",
+                  "name": "Argentina",
+                  "slug": "argentina"
+                },
+                "id": 36837,
+                "teamColors": {
+                  "primary": "#442b0b",
+                  "secondary": "#f2f2f2",
+                  "text": "#f2f2f2"
+                },
+                "fieldTranslations": {
+                  "nameTranslation": {
+                    "ar": "\u0628\u0644\u0627\u062a\u064a\u0646\u0633\u064a",
+                    "ru": "\u041a\u0410 \u041f\u043b\u0430\u0442\u0435\u043d\u0441\u0435"
+                  },
+                  "shortNameTranslation": {
+                    "ar": "\u0628\u0644\u0627\u062a\u064a\u0646\u0633\u064a"
+                  }
+                }
+              },
+              "descriptions": [],
+              "promotion": {
+                "text": "Playoffs",
+                "id": 6
+              },
+              "position": 3,
+              "matches": 7,
+              "wins": 3,
+              "scoresFor": 5,
+              "scoresAgainst": 3,
+              "id": 2062224,
+              "losses": 1,
+              "draws": 3,
+              "points": 12,
+              "scoreDiffFormatted": "+2"
+            },
+            {
+              "team": {
+                "name": "Club Atl\u00e9tico Uni\u00f3n de Santa Fe",
+                "slug": "club-atletico-union",
+                "shortName": "Uni\u00f3n de Santa Fe",
+                "gender": "M",
+                "sport": {
+                  "name": "Football",
+                  "slug": "football",
+                  "id": 1
+                },
+                "userCount": 15731,
+                "nameCode": "UNI",
+                "disabled": false,
+                "national": false,
+                "type": 0,
+                "country": {
+                  "alpha2": "AR",
+                  "alpha3": "ARG",
+                  "name": "Argentina",
+                  "slug": "argentina"
+                },
+                "id": 3204,
+                "teamColors": {
+                  "primary": "#ffffff",
+                  "secondary": "#cc0000",
+                  "text": "#cc0000"
+                },
+                "fieldTranslations": {
+                  "nameTranslation": {
+                    "ar": "\u0646\u0627\u062f\u064a \u0623\u062a\u0644\u062a\u064a\u0643\u0648 \u064a\u0648\u0646\u064a\u0646 \u062f\u064a \u0633\u0627\u0646\u062a\u0627 \u0641\u064a",
+                    "ru": "\u042e\u043d\u0438\u043e\u043d \u0414\u0435 \u0421\u0430\u043d\u0442\u0430 \u0424\u0435"
+                  },
+                  "shortNameTranslation": {
+                    "ar": "\u064a\u0648\u0646\u064a\u0646 \u062f\u064a \u0633\u0627\u0646\u062a\u0627 \u0641\u064a"
+                  }
+                }
+              },
+              "descriptions": [],
+              "promotion": {
+                "text": "Playoffs",
+                "id": 6
+              },
+              "position": 4,
+              "matches": 7,
+              "wins": 3,
+              "scoresFor": 9,
+              "scoresAgainst": 4,
+              "id": 2062233,
+              "losses": 2,
+              "draws": 2,
+              "points": 11,
+              "scoreDiffFormatted": "+5"
+            },
+            {
+              "team": {
+                "name": "San Lorenzo",
+                "slug": "san-lorenzo",
+                "shortName": "San Lorenzo",
+                "gender": "M",
+                "sport": {
+                  "name": "Football",
+                  "slug": "football",
+                  "id": 1
+                },
+                "userCount": 30125,
+                "nameCode": "SLO",
+                "disabled": false,
+                "national": false,
+                "type": 0,
+                "country": {
+                  "alpha2": "AR",
+                  "alpha3": "ARG",
+                  "name": "Argentina",
+                  "slug": "argentina"
+                },
+                "id": 3201,
+                "teamColors": {
+                  "primary": "#ff0000",
+                  "secondary": "#000033",
+                  "text": "#000033"
+                },
+                "fieldTranslations": {
+                  "nameTranslation": {
+                    "ar": "\u0633\u0627\u0646 \u0644\u0648\u0631\u064a\u0646\u0632\u0648",
+                    "ru": "\u0421\u0430\u043d \u041b\u043e\u0440\u0435\u043d\u0446\u043e \u0434\u0435 \u0410\u043b\u044c\u043c\u0430\u0440\u0433\u043e"
+                  },
+                  "shortNameTranslation": {
+                    "ar": "\u0633\u0627\u0646 \u0644\u0648\u0631\u064a\u0646\u0632\u0648"
+                  }
+                }
+              },
+              "descriptions": [],
+              "promotion": {
+                "text": "Playoffs",
+                "id": 6
+              },
+              "position": 5,
+              "matches": 7,
+              "wins": 3,
+              "scoresFor": 7,
+              "scoresAgainst": 5,
+              "id": 2062225,
+              "losses": 2,
+              "draws": 2,
+              "points": 11,
+              "scoreDiffFormatted": "+2"
+            },
+            {
+              "team": {
+                "name": "Defensa y Justicia",
+                "slug": "defensa-y-justicia",
+                "shortName": "Def y Justicia",
+                "gender": "M",
+                "sport": {
+                  "name": "Football",
+                  "slug": "football",
+                  "id": 1
+                },
+                "userCount": 21467,
+                "nameCode": "DYJ",
+                "disabled": false,
+                "national": false,
+                "type": 0,
+                "country": {
+                  "alpha2": "AR",
+                  "alpha3": "ARG",
+                  "name": "Argentina",
+                  "slug": "argentina"
+                },
+                "id": 36839,
+                "teamColors": {
+                  "primary": "#ffff00",
+                  "secondary": "#339900",
+                  "text": "#339900"
+                },
+                "fieldTranslations": {
+                  "nameTranslation": {
+                    "ar": "\u062f\u064a\u0641\u0646\u0633\u0627 \u062e\u0648\u0633\u062a\u064a\u0643\u0627",
+                    "hi": "\u0921\u093f\u092b\u0947\u0902\u0938\u093e \u092f\u0940 \u091c\u0938\u094d\u091f\u093f\u0938\u093f\u092f\u093e",
+                    "ru": "\u0414\u0435\u0444\u0435\u043d\u0441\u0430 \u0438 \u042e\u0441\u0442\u0438\u0446\u0438\u044f"
+                  },
+                  "shortNameTranslation": {}
+                }
+              },
+              "descriptions": [],
+              "promotion": {
+                "text": "Playoffs",
+                "id": 6
+              },
+              "position": 6,
+              "matches": 7,
+              "wins": 2,
+              "scoresFor": 6,
+              "scoresAgainst": 4,
+              "id": 2062227,
+              "losses": 0,
+              "draws": 5,
+              "points": 11,
+              "scoreDiffFormatted": "+2"
+            },
+            {
+              "team": {
+                "name": "CA Independiente",
+                "slug": "independiente",
+                "shortName": "Independiente",
+                "gender": "M",
+                "sport": {
+                  "name": "Football",
+                  "slug": "football",
+                  "id": 1
+                },
+                "userCount": 38691,
+                "nameCode": "CAI",
+                "disabled": false,
+                "national": false,
+                "type": 0,
+                "country": {
+                  "alpha2": "AR",
+                  "alpha3": "ARG",
+                  "name": "Argentina",
+                  "slug": "argentina"
+                },
+                "id": 3209,
+                "teamColors": {
+                  "primary": "#cc0000",
+                  "secondary": "#cc0000",
+                  "text": "#cc0000"
+                },
+                "fieldTranslations": {
+                  "nameTranslation": {
+                    "ar": "\u0633\u064a \u0625\u064a\u0647 \u0625\u0646\u062f\u064a\u0628\u0646\u062f\u064a\u0646\u062a\u064a",
+                    "ru": "\u041a\u0410 \u0418\u043d\u0434\u0435\u043f\u0435\u043d\u0434\u044c\u0435\u043d\u0442\u0435"
+                  },
+                  "shortNameTranslation": {
+                    "ar": "\u0625\u0646\u062f\u064a\u0628\u0646\u062f\u064a\u0646\u062a\u064a"
+                  }
+                }
+              },
+              "descriptions": [],
+              "promotion": {
+                "text": "Playoffs",
+                "id": 6
+              },
+              "position": 7,
+              "matches": 7,
+              "wins": 2,
+              "scoresFor": 9,
+              "scoresAgainst": 7,
+              "id": 2062222,
+              "losses": 1,
+              "draws": 4,
+              "points": 10,
+              "scoreDiffFormatted": "+2"
+            },
+            {
+              "team": {
+                "name": "CA Talleres",
+                "slug": "talleres",
+                "shortName": "Talleres",
+                "gender": "M",
+                "sport": {
+                  "name": "Football",
+                  "slug": "football",
+                  "id": 1
+                },
+                "userCount": 27602,
+                "nameCode": "CAT",
+                "disabled": false,
+                "national": false,
+                "type": 0,
+                "country": {
+                  "alpha2": "AR",
+                  "alpha3": "ARG",
+                  "name": "Argentina",
+                  "slug": "argentina"
+                },
+                "id": 3210,
+                "teamColors": {
+                  "primary": "#050040",
+                  "secondary": "#ffffff",
+                  "text": "#ffffff"
+                },
+                "fieldTranslations": {
+                  "nameTranslation": {
+                    "ar": "\u062a\u0627\u0644\u064a\u0631\u064a\u0633",
+                    "ru": "\u0422\u0430\u043b\u043b\u0435\u0440\u0435\u0441 \u0434\u0435 \u041a\u043e\u0440\u0434\u043e\u0431\u0430"
+                  },
+                  "shortNameTranslation": {
+                    "ar": "\u062a\u0627\u0644\u064a\u0631\u064a\u0633"
+                  }
+                }
+              },
+              "descriptions": [],
+              "promotion": {
+                "text": "Playoffs",
+                "id": 6
+              },
+              "position": 8,
+              "matches": 7,
+              "wins": 3,
+              "scoresFor": 8,
+              "scoresAgainst": 9,
+              "id": 2062226,
+              "losses": 3,
+              "draws": 1,
+              "points": 10,
+              "scoreDiffFormatted": "-1"
+            },
+            {
+              "team": {
+                "name": "Boca Juniors",
+                "slug": "boca-juniors",
+                "shortName": "Boca Juniors",
+                "gender": "M",
+                "sport": {
+                  "name": "Football",
+                  "slug": "football",
+                  "id": 1
+                },
+                "userCount": 267417,
+                "nameCode": "BOC",
+                "disabled": false,
+                "national": false,
+                "type": 0,
+                "country": {
+                  "alpha2": "AR",
+                  "alpha3": "ARG",
+                  "name": "Argentina",
+                  "slug": "argentina"
+                },
+                "id": 3202,
+                "teamColors": {
+                  "primary": "#003399",
+                  "secondary": "#ffcc66",
+                  "text": "#ffcc66"
+                },
+                "fieldTranslations": {
+                  "nameTranslation": {
+                    "ar": "\u0628\u0648\u0643\u0627 \u062c\u0648\u0646\u064a\u0648\u0631\u0632",
+                    "hi": "\u092c\u094b\u0915\u093e \u091c\u0942\u0928\u093f\u092f\u0930\u094d\u0938",
+                    "ru": "\u0411\u043e\u043a\u0430 \u0425\u0443\u043d\u0438\u043e\u0440\u0441"
+                  },
+                  "shortNameTranslation": {}
+                }
+              },
+              "descriptions": [],
+              "position": 9,
+              "matches": 6,
+              "wins": 2,
+              "scoresFor": 5,
+              "scoresAgainst": 4,
+              "id": 2062220,
+              "losses": 2,
+              "draws": 2,
+              "points": 8,
+              "scoreDiffFormatted": "+1"
+            },
+            {
+              "team": {
+                "name": "CA Lan\u00fas",
+                "slug": "lanus",
+                "shortName": "Lan\u00fas",
+                "gender": "M",
+                "sport": {
+                  "name": "Football",
+                  "slug": "football",
+                  "id": 1
+                },
+                "userCount": 35581,
+                "nameCode": "LAN",
+                "disabled": false,
+                "national": false,
+                "type": 0,
+                "country": {
+                  "alpha2": "AR",
+                  "alpha3": "ARG",
+                  "name": "Argentina",
+                  "slug": "argentina"
+                },
+                "id": 3218,
+                "teamColors": {
+                  "primary": "#660033",
+                  "secondary": "#ffffff",
+                  "text": "#ffffff"
+                },
+                "fieldTranslations": {
+                  "nameTranslation": {
+                    "ar": "\u0644\u0627\u0646\u0648\u0633",
+                    "ru": "\u0410\u0442\u043b\u0435\u0442\u0438\u043a\u043e \u041b\u0430\u043d\u0443\u0441"
+                  },
+                  "shortNameTranslation": {
+                    "ar": "\u0644\u0627\u0646\u0648\u0633"
+                  }
+                }
+              },
+              "descriptions": [],
+              "position": 10,
+              "matches": 5,
+              "wins": 2,
+              "scoresFor": 8,
+              "scoresAgainst": 8,
+              "id": 2062223,
+              "losses": 1,
+              "draws": 2,
+              "points": 8,
+              "scoreDiffFormatted": "0"
+            },
+            {
+              "team": {
+                "name": "Instituto De C\u00f3rdoba",
+                "slug": "instituto-cordoba",
+                "shortName": "Instituto",
+                "gender": "M",
+                "sport": {
+                  "name": "Football",
+                  "slug": "football",
+                  "id": 1
+                },
+                "userCount": 11435,
+                "nameCode": "IAC",
+                "national": false,
+                "type": 0,
+                "country": {
+                  "alpha2": "AR",
+                  "alpha3": "ARG",
+                  "name": "Argentina",
+                  "slug": "argentina"
+                },
+                "id": 4937,
+                "teamColors": {
+                  "primary": "#e72328",
+                  "secondary": "#222226",
+                  "text": "#222226"
+                },
+                "fieldTranslations": {
+                  "nameTranslation": {
+                    "ar": "\u0645\u0639\u0647\u062f \u062f\u064a \u0642\u0631\u0637\u0628\u0629",
+                    "ru": "\u0418\u043d\u0441\u0442\u0438\u0442\u0443\u0442\u043e \u0410\u0442\u043b\u0435\u0442\u0438\u043a\u043e"
+                  },
+                  "shortNameTranslation": {
+                    "ar": "\u0645\u0639\u0647\u062f"
+                  }
+                }
+              },
+              "descriptions": [],
+              "position": 11,
+              "matches": 7,
+              "wins": 2,
+              "scoresFor": 8,
+              "scoresAgainst": 8,
+              "id": 2062231,
+              "losses": 3,
+              "draws": 2,
+              "points": 8,
+              "scoreDiffFormatted": "0"
+            },
+            {
+              "team": {
+                "name": "Central C\u00f3rdoba",
+                "slug": "central-cordoba",
+                "shortName": "Central C\u00f3rdoba",
+                "gender": "M",
+                "sport": {
+                  "name": "Football",
+                  "slug": "football",
+                  "id": 1
+                },
+                "userCount": 18626,
+                "nameCode": "CC",
+                "disabled": false,
+                "national": false,
+                "type": 0,
+                "country": {
+                  "alpha2": "AR",
+                  "alpha3": "ARG",
+                  "name": "Argentina",
+                  "slug": "argentina"
+                },
+                "id": 65676,
+                "teamColors": {
+                  "primary": "#ffffff",
+                  "secondary": "#000000",
+                  "text": "#000000"
+                },
+                "fieldTranslations": {
+                  "nameTranslation": {
+                    "ar": "\u0633\u0646\u062a\u0631\u0627\u0644 \u0642\u0631\u0637\u0628\u0629",
+                    "ru": "\u0426\u0435\u043d\u0440\u0430\u043b \u041a\u043e\u0440\u0434\u043e\u0431\u0430"
+                  },
+                  "shortNameTranslation": {
+                    "ar": "\u0633\u0646\u062a\u0631\u0627\u0644 \u0642\u0631\u0637\u0628\u0629"
+                  }
+                }
+              },
+              "descriptions": [],
+              "position": 12,
+              "matches": 7,
+              "wins": 2,
+              "scoresFor": 3,
+              "scoresAgainst": 4,
+              "id": 2062221,
+              "losses": 3,
+              "draws": 2,
+              "points": 8,
+              "scoreDiffFormatted": "-1"
+            },
+            {
+              "team": {
+                "name": "Gimnasia y Esgrima Mendoza",
+                "slug": "gimnasia-y-esgrima-mendoza",
+                "shortName": "Gimnasia Mendoza",
+                "gender": "M",
+                "sport": {
+                  "name": "Football",
+                  "slug": "football",
+                  "id": 1
+                },
+                "userCount": 4590,
+                "nameCode": "GEM",
+                "national": false,
+                "type": 0,
+                "country": {
+                  "alpha2": "AR",
+                  "alpha3": "ARG",
+                  "name": "Argentina",
+                  "slug": "argentina"
+                },
+                "id": 188441,
+                "teamColors": {
+                  "primary": "#000000",
+                  "secondary": "#ffffff",
+                  "text": "#ffffff"
+                },
+                "fieldTranslations": {
+                  "nameTranslation": {
+                    "ar": "\u062c\u064a\u0645\u0646\u0627\u0633\u064a\u0627 \u0625\u064a\u0633\u062c\u0631\u064a\u0645\u0627 \u0645\u064a\u0646\u062f\u0648\u0632\u0627",
+                    "hi": "\u091c\u093f\u092e\u094d\u0928\u093e\u0938\u093f\u092f\u093e \u0935\u093e\u0908 \u090f\u0938\u0917\u094d\u0930\u093f\u092e\u093e \u092e\u0947\u0902\u0921\u094b\u091c\u093c\u093e",
+                    "ru": "\u0425\u0438\u043c\u043d\u0430\u0441\u0438\u044f \u0438 \u042d\u0441\u0433\u0440\u0438\u043c\u0430 \u041c\u0435\u043d\u0434\u043e\u0441\u0430"
+                  },
+                  "shortNameTranslation": {}
+                }
+              },
+              "descriptions": [],
+              "position": 13,
+              "matches": 7,
+              "wins": 2,
+              "scoresFor": 4,
+              "scoresAgainst": 9,
+              "id": 2062230,
+              "losses": 4,
+              "draws": 1,
+              "points": 7,
+              "scoreDiffFormatted": "-5"
+            },
+            {
+              "team": {
+                "name": "Deportivo Riestra",
+                "slug": "deportivo-riestra",
+                "shortName": "Dep. Riestra",
+                "gender": "M",
+                "sport": {
+                  "name": "Football",
+                  "slug": "football",
+                  "id": 1
+                },
+                "userCount": 13218,
+                "nameCode": "RIE",
+                "disabled": false,
+                "national": false,
+                "type": 0,
+                "country": {
+                  "alpha2": "AR",
+                  "alpha3": "ARG",
+                  "name": "Argentina",
+                  "slug": "argentina"
+                },
+                "id": 189723,
+                "teamColors": {
+                  "primary": "#ffffff",
+                  "secondary": "#000000",
+                  "text": "#000000"
+                },
+                "fieldTranslations": {
+                  "nameTranslation": {
+                    "ar": "\u062f\u064a\u0628\u0648\u0631\u062a\u064a\u0641\u0648 \u0631\u064a\u064a\u0633\u062a\u0631\u0627",
+                    "ru": "\u0414\u0435\u043f\u043e\u0440\u0442\u0438\u0432\u043e \u0420\u0438\u0435\u0441\u0442\u0440\u0430"
+                  },
+                  "shortNameTranslation": {}
+                }
+              },
+              "descriptions": [],
+              "position": 14,
+              "matches": 7,
+              "wins": 0,
+              "scoresFor": 2,
+              "scoresAgainst": 5,
+              "id": 2062228,
+              "losses": 3,
+              "draws": 4,
+              "points": 4,
+              "scoreDiffFormatted": "-3"
+            },
+            {
+              "team": {
+                "name": "Newell's Old Boys",
+                "slug": "newells-old-boys",
+                "shortName": "Newell's",
+                "gender": "M",
+                "sport": {
+                  "name": "Football",
+                  "slug": "football",
+                  "id": 1
+                },
+                "userCount": 20471,
+                "nameCode": "NOB",
+                "disabled": false,
+                "national": false,
+                "type": 0,
+                "country": {
+                  "alpha2": "AR",
+                  "alpha3": "ARG",
+                  "name": "Argentina",
+                  "slug": "argentina"
+                },
+                "id": 3212,
+                "teamColors": {
+                  "primary": "#ff0000",
+                  "secondary": "#000000",
+                  "text": "#000000"
+                },
+                "fieldTranslations": {
+                  "nameTranslation": {
+                    "ar": "\u0646\u064a\u0648\u0644\u0632 \u0623\u0648\u0644\u062f \u0628\u0648\u064a\u0632",
+                    "hi": "\u0928\u0947\u0935\u0947\u0932\u094d\u0932\u094d\u0938 \u0913\u0932\u094d\u0921 \u092c\u0949\u092f\u091c",
+                    "ru": "\u041d\u044c\u044e\u044d\u043b\u043b\u0441 \u041e\u043b\u0434 \u0411\u043e\u0439\u0437"
+                  },
+                  "shortNameTranslation": {}
+                }
+              },
+              "descriptions": [],
+              "position": 15,
+              "matches": 7,
+              "wins": 0,
+              "scoresFor": 5,
+              "scoresAgainst": 14,
+              "id": 2062232,
+              "losses": 5,
+              "draws": 2,
+              "points": 2,
+              "scoreDiffFormatted": "-9"
+            }
+          ],
+          "id": 240431,
+          "tournament": {
+            "name": "Liga Profesional de F\u00fatbol, Apertura",
+            "slug": "primera-lfp-apertura",
+            "category": {
+              "name": "Argentina",
+              "slug": "argentina",
+              "sport": {
+                "name": "Football",
+                "slug": "football",
+                "id": 1
+              },
+              "country": {
+                "alpha2": "AR",
+                "alpha3": "ARG",
+                "name": "Argentina",
+                "slug": "argentina"
+              },
+              "id": 48,
+              "flag": "argentina",
+              "alpha2": "AR",
+              "fieldTranslations": {
+                "nameTranslation": {
+                  "ar": "\u0627\u0644\u0623\u0631\u062c\u0646\u062a\u064a\u0646",
+                  "ru": "\u0410\u0440\u0433\u0435\u043d\u0442\u0438\u043d\u0430"
+                },
+                "shortNameTranslation": {}
+              }
+            },
+            "uniqueTournament": {
+              "name": "Liga Profesional de F\u00fatbol",
+              "slug": "liga-profesional-de-futbol",
+              "primaryColorHex": "#0cbad8",
+              "secondaryColorHex": "#daa813",
+              "category": {
+                "name": "Argentina",
+                "slug": "argentina",
+                "sport": {
+                  "name": "Football",
+                  "slug": "football",
+                  "id": 1
+                },
+                "country": {
+                  "alpha2": "AR",
+                  "alpha3": "ARG",
+                  "name": "Argentina",
+                  "slug": "argentina"
+                },
+                "id": 48,
+                "flag": "argentina",
+                "alpha2": "AR",
+                "fieldTranslations": {
+                  "nameTranslation": {
+                    "ar": "\u0627\u0644\u0623\u0631\u062c\u0646\u062a\u064a\u0646",
+                    "ru": "\u0410\u0440\u0433\u0435\u043d\u0442\u0438\u043d\u0430"
+                  },
+                  "shortNameTranslation": {}
+                }
+              },
+              "userCount": 56536,
+              "hasPerformanceGraphFeature": false,
+              "country": {},
+              "id": 155,
+              "displayInverseHomeAwayTeams": false,
+              "fieldTranslations": {
+                "nameTranslation": {
+                  "ar": "\u062f\u0648\u0631\u064a \u0643\u0631\u0629 \u0627\u0644\u0642\u062f\u0645 \u0644\u0644\u0645\u062d\u062a\u0631\u0641\u064a\u0646",
+                  "bn": "\u09b2\u09c0\u0997\u09be \u09aa\u09cd\u09b0\u09cb\u09ab\u09c7\u09b6\u09a8\u09be\u09b2 \u09a1\u09c7 \u09ab\u09c1\u099f\u09ac\u09b2",
+                  "hi": "\u0932\u0940\u0917\u093e \u092a\u094d\u0930\u094b\u092b\u0947\u0936\u0928\u0932 \u0921\u0940 \u092b\u0941\u091f\u092c\u0949\u0932"
+                },
+                "shortNameTranslation": {}
+              }
+            },
+            "priority": 0,
+            "isGroup": false,
+            "id": 143625,
+            "fieldTranslations": {
+              "nameTranslation": {
+                "ar": "\u0627\u0644\u062f\u0648\u0631\u064a \u0627\u0644\u0627\u062d\u062a\u0631\u0627\u0641\u064a \u0644\u0643\u0631\u0629 \u0627\u0644\u0642\u062f\u0645\u060c \u0630\u0647\u0627\u0628",
+                "bn": "\u09aa\u09cd\u09b0\u09bf\u09ae\u09c7\u09b0\u09be \u098f\u09b2\u09aa\u09bf\u098f\u09ab, \u0985\u09cd\u09af\u09be\u09aa\u09be\u09b0\u09cd\u09a4\u09c1\u09b0\u09be",
+                "hi": "\u092a\u094d\u0930\u093e\u0907\u092e\u0947\u0930\u093e \u090f\u0932\u092a\u0940\u090f\u092b, \u090f\u092a\u0930\u094d\u091f\u0941\u0930\u093e"
+              },
+              "shortNameTranslation": {}
+            }
+          },
+          "name": "Apertura, Group A",
+          "updatedAtTimestamp": 1772143917
+        },
+        {
+          "type": "total",
+          "descriptions": [],
+          "tieBreakingRule": {
+            "text": "In the event that two (or more) teams finish with an equal number of points, the following rules break the tie:\n1. Goal difference\n2. Goals scored\n3. Head-to-head",
+            "id": 3039
+          },
+          "rows": [
+            {
+              "team": {
+                "name": "Independiente Rivadavia",
+                "slug": "independiente-rivadavia",
+                "shortName": "Ind. Rivadavia",
+                "gender": "M",
+                "sport": {
+                  "name": "Football",
+                  "slug": "football",
+                  "id": 1
+                },
+                "userCount": 13031,
+                "nameCode": "IRM",
+                "national": false,
+                "type": 0,
+                "country": {
+                  "alpha2": "AR",
+                  "alpha3": "ARG",
+                  "name": "Argentina",
+                  "slug": "argentina"
+                },
+                "id": 36842,
+                "teamColors": {
+                  "primary": "#ffffff",
+                  "secondary": "#000040",
+                  "text": "#000040"
+                },
+                "fieldTranslations": {
+                  "nameTranslation": {
+                    "ar": "\u0625\u0646\u062f\u064a\u0628\u0646\u062f\u0627\u0646\u062a \u0631\u064a\u0641\u0627\u062f\u0627\u0641\u064a\u0627 \u062f\u064a \u0645\u0646\u062f\u0648\u0632\u0627",
+                    "hi": "\u0907\u0902\u0921\u093f\u092a\u0947\u0902\u0921\u093f\u090f\u0902\u091f \u0930\u093f\u0935\u093e\u0921\u0935\u093f\u092f\u093e \u0921\u0940 \u092e\u0947\u0902\u0921\u094b\u091c\u093c\u093e",
+                    "ru": "\u0418\u043d\u0434\u0435\u043f\u0435\u043d\u0434\u044c\u0435\u043d\u0442\u0435 \u0420\u0438\u0432\u0430\u0434\u0430\u0432\u0438\u0430 \u0414\u0435 \u041c\u0435\u043d\u0434\u043e\u0441\u0430"
+                  },
+                  "shortNameTranslation": {}
+                }
+              },
+              "descriptions": [],
+              "promotion": {
+                "text": "Playoffs",
+                "id": 6
+              },
+              "position": 1,
+              "matches": 7,
+              "wins": 5,
+              "scoresFor": 11,
+              "scoresAgainst": 7,
+              "id": 2062278,
+              "losses": 1,
+              "draws": 1,
+              "points": 16,
+              "scoreDiffFormatted": "+4"
+            },
+            {
+              "team": {
+                "name": "Club Atl\u00e9tico Belgrano",
+                "slug": "belgrano",
+                "shortName": "Belgrano",
+                "gender": "M",
+                "sport": {
+                  "name": "Football",
+                  "slug": "football",
+                  "id": 1
+                },
+                "userCount": 20627,
+                "nameCode": "BEL",
+                "national": false,
+                "type": 0,
+                "country": {
+                  "alpha2": "AR",
+                  "alpha3": "ARG",
+                  "name": "Argentina",
+                  "slug": "argentina"
+                },
+                "id": 3203,
+                "teamColors": {
+                  "primary": "#3399ff",
+                  "secondary": "#3399ff",
+                  "text": "#3399ff"
+                },
+                "fieldTranslations": {
+                  "nameTranslation": {
+                    "ar": "\u0628\u064a\u0644\u063a\u0631\u0627\u0646\u0648",
+                    "ru": "\u0411\u0435\u043b\u044c\u0433\u0440\u0430\u043d\u043e \u0434\u0435 \u041a\u043e\u0440\u0434\u043e\u0431\u0430"
+                  },
+                  "shortNameTranslation": {}
+                }
+              },
+              "descriptions": [],
+              "promotion": {
+                "text": "Playoffs",
+                "id": 6
+              },
+              "position": 2,
+              "matches": 7,
+              "wins": 4,
+              "scoresFor": 9,
+              "scoresAgainst": 4,
+              "id": 2062270,
+              "losses": 0,
+              "draws": 3,
+              "points": 15,
+              "scoreDiffFormatted": "+5"
+            },
+            {
+              "team": {
+                "name": "Tigre",
+                "slug": "tigre",
+                "shortName": "Tigre",
+                "gender": "M",
+                "sport": {
+                  "name": "Football",
+                  "slug": "football",
+                  "id": 1
+                },
+                "userCount": 22545,
+                "nameCode": "TIG",
+                "disabled": false,
+                "national": false,
+                "type": 0,
+                "country": {
+                  "alpha2": "AR",
+                  "alpha3": "ARG",
+                  "name": "Argentina",
+                  "slug": "argentina"
+                },
+                "id": 7628,
+                "teamColors": {
+                  "primary": "#000099",
+                  "secondary": "#ff0000",
+                  "text": "#ff0000"
+                },
+                "fieldTranslations": {
+                  "nameTranslation": {
+                    "ar": "\u062a\u064a\u063a\u0631\u064a",
+                    "ru": "\u041a\u0410 \u0422\u0438\u0433\u0440\u0435"
+                  },
+                  "shortNameTranslation": {
+                    "ar": "\u062a\u064a\u063a\u0631\u064a"
+                  }
+                }
+              },
+              "descriptions": [],
+              "promotion": {
+                "text": "Playoffs",
+                "id": 6
+              },
+              "position": 3,
+              "matches": 7,
+              "wins": 4,
+              "scoresFor": 12,
+              "scoresAgainst": 5,
+              "id": 2062275,
+              "losses": 1,
+              "draws": 2,
+              "points": 14,
+              "scoreDiffFormatted": "+7"
+            },
+            {
+              "team": {
+                "name": "Rosario Central",
+                "slug": "rosario-central",
+                "shortName": "Rosario Central",
+                "gender": "M",
+                "sport": {
+                  "name": "Football",
+                  "slug": "football",
+                  "id": 1
+                },
+                "userCount": 34476,
+                "nameCode": "ROS",
+                "disabled": false,
+                "national": false,
+                "type": 0,
+                "country": {
+                  "alpha2": "AR",
+                  "alpha3": "ARG",
+                  "name": "Argentina",
+                  "slug": "argentina"
+                },
+                "id": 3217,
+                "teamColors": {
+                  "primary": "#000066",
+                  "secondary": "#ffcc00",
+                  "text": "#ffcc00"
+                },
+                "fieldTranslations": {
+                  "nameTranslation": {
+                    "ar": "\u0631\u0648\u0632\u0627\u0631\u064a\u0648 \u0633\u0646\u062a\u0631\u0627\u0644",
+                    "ru": "\u0420\u043e\u0441\u0430\u0440\u0438\u043e \u0426\u0435\u043d\u0442\u0440\u0430\u043b"
+                  },
+                  "shortNameTranslation": {
+                    "ar": "\u0631\u0648\u0632\u0627\u0631\u064a\u0648 \u0633\u0646\u062a\u0631\u0627\u0644"
+                  }
+                }
+              },
+              "descriptions": [],
+              "promotion": {
+                "text": "Playoffs",
+                "id": 6
+              },
+              "position": 4,
+              "matches": 7,
+              "wins": 3,
+              "scoresFor": 8,
+              "scoresAgainst": 6,
+              "id": 2062273,
+              "losses": 2,
+              "draws": 2,
+              "points": 11,
+              "scoreDiffFormatted": "+2"
+            },
+            {
+              "team": {
+                "name": "River Plate",
+                "slug": "river-plate",
+                "shortName": "River Plate",
+                "gender": "M",
+                "sport": {
+                  "name": "Football",
+                  "slug": "football",
+                  "id": 1
+                },
+                "userCount": 249948,
+                "nameCode": "RIV",
+                "disabled": false,
+                "national": false,
+                "type": 0,
+                "country": {
+                  "alpha2": "AR",
+                  "alpha3": "ARG",
+                  "name": "Argentina",
+                  "slug": "argentina"
+                },
+                "id": 3211,
+                "teamColors": {
+                  "primary": "#ffffff",
+                  "secondary": "#ff0000",
+                  "text": "#ff0000"
+                },
+                "fieldTranslations": {
+                  "nameTranslation": {
+                    "ar": "\u0631\u064a\u0641\u0631 \u0628\u0644\u0627\u064a\u062a",
+                    "bn": "\u09b0\u09bf\u09ad\u09be\u09b0 \u09aa\u09cd\u09b2\u09c7\u099f",
+                    "ru": "\u0420\u0438\u0432\u0435\u0440 \u041f\u043b\u0435\u0439\u0442"
+                  },
+                  "shortNameTranslation": {
+                    "ar": "\u0631\u064a\u0641\u0631 \u0628\u0644\u0627\u064a\u062a",
+                    "hi": "\u0930\u093f\u0935\u0930"
+                  }
+                }
+              },
+              "descriptions": [],
+              "promotion": {
+                "text": "Playoffs",
+                "id": 6
+              },
+              "position": 5,
+              "matches": 7,
+              "wins": 3,
+              "scoresFor": 7,
+              "scoresAgainst": 7,
+              "id": 2062272,
+              "losses": 3,
+              "draws": 1,
+              "points": 10,
+              "scoreDiffFormatted": "0"
+            },
+            {
+              "team": {
+                "name": "Gimnasia y Esgrima",
+                "slug": "gimnasia-y-esgrima",
+                "shortName": "Gimnasia",
+                "gender": "M",
+                "sport": {
+                  "name": "Football",
+                  "slug": "football",
+                  "id": 1
+                },
+                "userCount": 13584,
+                "nameCode": "GLP",
+                "disabled": false,
+                "national": false,
+                "type": 0,
+                "country": {
+                  "alpha2": "AR",
+                  "alpha3": "ARG",
+                  "name": "Argentina",
+                  "slug": "argentina"
+                },
+                "id": 3205,
+                "teamColors": {
+                  "primary": "#ffffff",
+                  "secondary": "#000033",
+                  "text": "#000033"
+                },
+                "fieldTranslations": {
+                  "nameTranslation": {
+                    "ar": "\u062e\u064a\u0645\u064a\u0646\u0627\u0633\u064a\u0627 \u0648\u0625\u0633\u063a\u0631\u064a\u0645\u0627",
+                    "ru": "\u0425\u0438\u043c\u043d\u0430\u0441\u0438\u044f \u0438 \u042d\u0441\u0433\u0440\u0438\u043c\u0430 \u041b\u0430 \u041f\u043b\u0430\u0442\u0430"
+                  },
+                  "shortNameTranslation": {
+                    "ar": "\u062e\u064a\u0645\u064a\u0646\u0627\u0633\u064a\u0627"
+                  }
+                }
+              },
+              "descriptions": [],
+              "promotion": {
+                "text": "Playoffs",
+                "id": 6
+              },
+              "position": 6,
+              "matches": 7,
+              "wins": 3,
+              "scoresFor": 7,
+              "scoresAgainst": 8,
+              "id": 2062277,
+              "losses": 3,
+              "draws": 1,
+              "points": 10,
+              "scoreDiffFormatted": "-1"
+            },
+            {
+              "team": {
+                "name": "Hurac\u00e1n",
+                "slug": "huracan",
+                "shortName": "Hurac\u00e1n",
+                "gender": "M",
+                "sport": {
+                  "name": "Football",
+                  "slug": "football",
+                  "id": 1
+                },
+                "userCount": 27160,
+                "nameCode": "HUR",
+                "disabled": false,
+                "national": false,
+                "type": 0,
+                "country": {
+                  "alpha2": "AR",
+                  "alpha3": "ARG",
+                  "name": "Argentina",
+                  "slug": "argentina"
+                },
+                "id": 7629,
+                "teamColors": {
+                  "primary": "#ffffff",
+                  "secondary": "#dd0000",
+                  "text": "#dd0000"
+                },
+                "fieldTranslations": {
+                  "nameTranslation": {
+                    "ar": "\u0647\u0648\u0631\u064a\u0643\u0627\u0646",
+                    "ru": "\u041a\u0410 \u0425\u0443\u0440\u0430\u043a\u0430\u043d"
+                  },
+                  "shortNameTranslation": {
+                    "ar": "\u0647\u0648\u0631\u064a\u0643\u0627\u0646"
+                  }
+                }
+              },
+              "descriptions": [],
+              "promotion": {
+                "text": "Playoffs",
+                "id": 6
+              },
+              "position": 7,
+              "matches": 7,
+              "wins": 2,
+              "scoresFor": 5,
+              "scoresAgainst": 6,
+              "id": 2062271,
+              "losses": 2,
+              "draws": 3,
+              "points": 9,
+              "scoreDiffFormatted": "-1"
+            },
+            {
+              "team": {
+                "name": "Argentinos Juniors",
+                "slug": "argentinos-juniors",
+                "shortName": "Argentinos Jrs.",
+                "gender": "M",
+                "sport": {
+                  "name": "Football",
+                  "slug": "football",
+                  "id": 1
+                },
+                "userCount": 27203,
+                "nameCode": "ARG",
+                "disabled": false,
+                "national": false,
+                "type": 0,
+                "country": {
+                  "alpha2": "AR",
+                  "alpha3": "ARG",
+                  "name": "Argentina",
+                  "slug": "argentina"
+                },
+                "id": 3216,
+                "teamColors": {
+                  "primary": "#cc0000",
+                  "secondary": "#ffffff",
+                  "text": "#ffffff"
+                },
+                "fieldTranslations": {
+                  "nameTranslation": {
+                    "ar": "\u0623\u0631\u062c\u0646\u062a\u064a\u0646\u0648\u0633 \u062c\u0648\u0646\u064a\u0648\u0631\u0632",
+                    "hi": "\u0905\u0930\u094d\u091c\u0947\u0902\u091f\u0940\u0928\u094b\u0938 \u091c\u0942\u0928\u093f\u092f\u0930\u094d\u0938",
+                    "ru": "\u0410\u0440\u0433\u0435\u043d\u0442\u0438\u043d\u043e\u0441 \u0425\u0443\u043d\u0438\u043e\u0440\u0441"
+                  },
+                  "shortNameTranslation": {}
+                }
+              },
+              "descriptions": [],
+              "promotion": {
+                "text": "Playoffs",
+                "id": 6
+              },
+              "position": 8,
+              "matches": 5,
+              "wins": 2,
+              "scoresFor": 3,
+              "scoresAgainst": 2,
+              "id": 2062265,
+              "losses": 1,
+              "draws": 2,
+              "points": 8,
+              "scoreDiffFormatted": "+1"
+            },
+            {
+              "team": {
+                "name": "Racing Club",
+                "slug": "racing-club",
+                "shortName": "Racing",
+                "gender": "M",
+                "sport": {
+                  "name": "Football",
+                  "slug": "football",
+                  "id": 1
+                },
+                "userCount": 79780,
+                "nameCode": "RCS",
+                "disabled": false,
+                "national": false,
+                "type": 0,
+                "country": {
+                  "alpha2": "AR",
+                  "alpha3": "ARG",
+                  "name": "Argentina",
+                  "slug": "argentina"
+                },
+                "id": 3215,
+                "teamColors": {
+                  "primary": "#00ccff",
+                  "secondary": "#ffffff",
+                  "text": "#ffffff"
+                },
+                "fieldTranslations": {
+                  "nameTranslation": {
+                    "ar": "\u0631\u0627\u0633\u064a\u0646\u063a \u0643\u0644\u0648\u0628",
+                    "ru": "\u0420\u0430\u0441\u0438\u043d\u0433 \u041a\u043b\u0430\u0431"
+                  },
+                  "shortNameTranslation": {
+                    "ar": "\u0631\u0627\u0633\u064a\u0646\u063a"
+                  }
+                }
+              },
+              "descriptions": [],
+              "position": 9,
+              "matches": 7,
+              "wins": 2,
+              "scoresFor": 8,
+              "scoresAgainst": 9,
+              "id": 2062279,
+              "losses": 3,
+              "draws": 2,
+              "points": 8,
+              "scoreDiffFormatted": "-1"
+            },
+            {
+              "team": {
+                "name": "Barracas Central",
+                "slug": "barracas-central",
+                "shortName": "Barracas",
+                "gender": "M",
+                "sport": {
+                  "name": "Football",
+                  "slug": "football",
+                  "id": 1
+                },
+                "userCount": 12031,
+                "nameCode": "BAR",
+                "national": false,
+                "type": 0,
+                "country": {
+                  "alpha2": "AR",
+                  "alpha3": "ARG",
+                  "name": "Argentina",
+                  "slug": "argentina"
+                },
+                "id": 65668,
+                "teamColors": {
+                  "primary": "#ffffff",
+                  "secondary": "#ff0000",
+                  "text": "#ff0000"
+                },
+                "fieldTranslations": {
+                  "nameTranslation": {
+                    "ar": "\u0628\u0627\u0631\u0643\u0627\u0633 \u0633\u0646\u062a\u0631\u0627\u0644",
+                    "ru": "\u0411\u0430\u0440\u0440\u0430\u043a\u0430\u0441 \u0426\u0435\u043d\u0442\u0440\u0430\u043b"
+                  },
+                  "shortNameTranslation": {}
+                }
+              },
+              "descriptions": [],
+              "position": 10,
+              "matches": 7,
+              "wins": 2,
+              "scoresFor": 5,
+              "scoresAgainst": 6,
+              "id": 2062269,
+              "losses": 3,
+              "draws": 2,
+              "points": 8,
+              "scoreDiffFormatted": "-1"
+            },
+            {
+              "team": {
+                "name": "Banfield",
+                "slug": "banfield",
+                "shortName": "Banfield",
+                "gender": "M",
+                "sport": {
+                  "name": "Football",
+                  "slug": "football",
+                  "id": 1
+                },
+                "userCount": 13870,
+                "nameCode": "BAN",
+                "disabled": false,
+                "national": false,
+                "type": 0,
+                "country": {
+                  "alpha2": "AR",
+                  "alpha3": "ARG",
+                  "name": "Argentina",
+                  "slug": "argentina"
+                },
+                "id": 3219,
+                "teamColors": {
+                  "primary": "#009900",
+                  "secondary": "#ffffff",
+                  "text": "#ffffff"
+                },
+                "fieldTranslations": {
+                  "nameTranslation": {
+                    "ar": "\u0628\u0627\u0646\u0641\u064a\u0644\u062f",
+                    "ru": "\u041a\u0410 \u0411\u0430\u043d\u0444\u0438\u043b\u0434"
+                  },
+                  "shortNameTranslation": {
+                    "ar": "\u0628\u0627\u0646\u0641\u064a\u0644\u062f"
+                  }
+                }
+              },
+              "descriptions": [],
+              "position": 11,
+              "matches": 7,
+              "wins": 2,
+              "scoresFor": 7,
+              "scoresAgainst": 9,
+              "id": 2062268,
+              "losses": 4,
+              "draws": 1,
+              "points": 7,
+              "scoreDiffFormatted": "-2"
+            },
+            {
+              "team": {
+                "name": "Sarmiento",
+                "slug": "sarmiento",
+                "shortName": "Sarmiento",
+                "gender": "M",
+                "sport": {
+                  "name": "Football",
+                  "slug": "football",
+                  "id": 1
+                },
+                "userCount": 8701,
+                "nameCode": "CAS",
+                "disabled": false,
+                "national": false,
+                "type": 0,
+                "country": {
+                  "alpha2": "AR",
+                  "alpha3": "ARG",
+                  "name": "Argentina",
+                  "slug": "argentina"
+                },
+                "id": 42338,
+                "teamColors": {
+                  "primary": "#006600",
+                  "secondary": "#006600",
+                  "text": "#006600"
+                },
+                "fieldTranslations": {
+                  "nameTranslation": {
+                    "ar": "\u0633\u0627\u0631\u0645\u064a\u0646\u062a\u0648",
+                    "ru": "\u041a\u0410 \u0421\u0430\u0440\u043c\u0438\u0435\u043d\u0442\u043e"
+                  },
+                  "shortNameTranslation": {}
+                }
+              },
+              "descriptions": [],
+              "position": 12,
+              "matches": 7,
+              "wins": 2,
+              "scoresFor": 5,
+              "scoresAgainst": 9,
+              "id": 2062274,
+              "losses": 5,
+              "draws": 0,
+              "points": 6,
+              "scoreDiffFormatted": "-4"
+            },
+            {
+              "team": {
+                "name": "Atl\u00e9tico Tucum\u00e1n",
+                "slug": "atletico-tucuman",
+                "shortName": "Atl\u00e9tico Tucum\u00e1n",
+                "gender": "M",
+                "sport": {
+                  "name": "Football",
+                  "slug": "football",
+                  "id": 1
+                },
+                "userCount": 17295,
+                "nameCode": "CAT",
+                "disabled": false,
+                "national": false,
+                "type": 0,
+                "country": {
+                  "alpha2": "AR",
+                  "alpha3": "ARG",
+                  "name": "Argentina",
+                  "slug": "argentina"
+                },
+                "id": 36833,
+                "teamColors": {
+                  "primary": "#ffffff",
+                  "secondary": "#33ccff",
+                  "text": "#33ccff"
+                },
+                "fieldTranslations": {
+                  "nameTranslation": {
+                    "ar": "\u0623\u062a\u0644\u062a\u064a\u0643\u0648 \u062a\u0648\u0643\u0648\u0645\u0627\u0646",
+                    "ru": "\u0410\u0442\u043b\u0435\u0442\u0438\u043a\u043e \u0422\u0443\u043a\u0443\u043c\u0430\u043d"
+                  },
+                  "shortNameTranslation": {
+                    "ar": "\u0623\u062a\u0644\u062a\u064a\u0643\u0648 \u062a\u0648\u0643\u0648\u0645\u0627\u0646"
+                  }
+                }
+              },
+              "descriptions": [],
+              "position": 13,
+              "matches": 7,
+              "wins": 1,
+              "scoresFor": 9,
+              "scoresAgainst": 10,
+              "id": 2062266,
+              "losses": 4,
+              "draws": 2,
+              "points": 5,
+              "scoreDiffFormatted": "-1"
+            },
+            {
+              "team": {
+                "name": "Estudiantes de R\u00edo Cuarto",
+                "slug": "estudiantes-de-rio-cuarto",
+                "shortName": "Estudiantes R.C.",
+                "gender": "M",
+                "sport": {
+                  "name": "Football",
+                  "slug": "football",
+                  "id": 1
+                },
+                "userCount": 4938,
+                "nameCode": "RCU",
+                "disabled": false,
+                "national": false,
+                "type": 0,
+                "country": {
+                  "alpha2": "AR",
+                  "alpha3": "ARG",
+                  "name": "Argentina",
+                  "slug": "argentina"
+                },
+                "id": 266694,
+                "teamColors": {
+                  "primary": "#00ccff",
+                  "secondary": "#00aeff",
+                  "text": "#00aeff"
+                },
+                "fieldTranslations": {
+                  "nameTranslation": {
+                    "ar": "\u0625\u0633\u062a\u0648\u062f\u064a\u0627\u0646\u062a\u0633 \u062f\u064a \u0631\u064a\u0648 \u0643\u0648\u0627\u062a\u0631\u0648",
+                    "ru": "\u042d\u0441\u0442\u0443\u0434\u0438\u0430\u043d\u0442\u0435\u0441 \u0420\u0438\u043e \u041a\u0443\u0430\u0440\u0442\u043e"
+                  },
+                  "shortNameTranslation": {
+                    "ar": "\u0625\u0633\u062a\u0648\u062f\u064a\u0627\u0646\u062a\u0633 \u0631.\u0633."
+                  }
+                }
+              },
+              "descriptions": [],
+              "position": 14,
+              "matches": 7,
+              "wins": 1,
+              "scoresFor": 3,
+              "scoresAgainst": 11,
+              "id": 2062276,
+              "losses": 5,
+              "draws": 1,
+              "points": 4,
+              "scoreDiffFormatted": "-8"
+            },
+            {
+              "team": {
+                "name": "Aldosivi",
+                "slug": "aldosivi",
+                "gender": "M",
+                "sport": {
+                  "name": "Football",
+                  "slug": "football",
+                  "id": 1
+                },
+                "userCount": 9044,
+                "nameCode": "CAA",
+                "national": false,
+                "type": 0,
+                "country": {
+                  "alpha2": "AR",
+                  "alpha3": "ARG",
+                  "name": "Argentina",
+                  "slug": "argentina"
+                },
+                "id": 36836,
+                "teamColors": {
+                  "primary": "#ffff00",
+                  "secondary": "#006600",
+                  "text": "#006600"
+                },
+                "fieldTranslations": {
+                  "nameTranslation": {
+                    "ar": "\u0623\u0644\u062f\u0648\u0633\u064a\u0641\u064a",
+                    "ru": "\u041a\u0410 \u0410\u043b\u044c\u0434\u043e\u0441\u0438\u0432\u0438"
+                  },
+                  "shortNameTranslation": {}
+                }
+              },
+              "descriptions": [],
+              "position": 15,
+              "matches": 6,
+              "wins": 0,
+              "scoresFor": 2,
+              "scoresAgainst": 6,
+              "id": 2062267,
+              "losses": 3,
+              "draws": 3,
+              "points": 3,
+              "scoreDiffFormatted": "-4"
+            }
+          ],
+          "id": 240434,
+          "tournament": {
+            "name": "Liga Profesional de F\u00fatbol, Apertura",
+            "slug": "primera-lfp-apertura",
+            "category": {
+              "name": "Argentina",
+              "slug": "argentina",
+              "sport": {
+                "name": "Football",
+                "slug": "football",
+                "id": 1
+              },
+              "country": {
+                "alpha2": "AR",
+                "alpha3": "ARG",
+                "name": "Argentina",
+                "slug": "argentina"
+              },
+              "id": 48,
+              "flag": "argentina",
+              "alpha2": "AR",
+              "fieldTranslations": {
+                "nameTranslation": {
+                  "ar": "\u0627\u0644\u0623\u0631\u062c\u0646\u062a\u064a\u0646",
+                  "ru": "\u0410\u0440\u0433\u0435\u043d\u0442\u0438\u043d\u0430"
+                },
+                "shortNameTranslation": {}
+              }
+            },
+            "uniqueTournament": {
+              "name": "Liga Profesional de F\u00fatbol",
+              "slug": "liga-profesional-de-futbol",
+              "primaryColorHex": "#0cbad8",
+              "secondaryColorHex": "#daa813",
+              "category": {
+                "name": "Argentina",
+                "slug": "argentina",
+                "sport": {
+                  "name": "Football",
+                  "slug": "football",
+                  "id": 1
+                },
+                "country": {
+                  "alpha2": "AR",
+                  "alpha3": "ARG",
+                  "name": "Argentina",
+                  "slug": "argentina"
+                },
+                "id": 48,
+                "flag": "argentina",
+                "alpha2": "AR",
+                "fieldTranslations": {
+                  "nameTranslation": {
+                    "ar": "\u0627\u0644\u0623\u0631\u062c\u0646\u062a\u064a\u0646",
+                    "ru": "\u0410\u0440\u0433\u0435\u043d\u0442\u0438\u043d\u0430"
+                  },
+                  "shortNameTranslation": {}
+                }
+              },
+              "userCount": 56536,
+              "hasPerformanceGraphFeature": false,
+              "country": {},
+              "id": 155,
+              "displayInverseHomeAwayTeams": false,
+              "fieldTranslations": {
+                "nameTranslation": {
+                  "ar": "\u062f\u0648\u0631\u064a \u0643\u0631\u0629 \u0627\u0644\u0642\u062f\u0645 \u0644\u0644\u0645\u062d\u062a\u0631\u0641\u064a\u0646",
+                  "bn": "\u09b2\u09c0\u0997\u09be \u09aa\u09cd\u09b0\u09cb\u09ab\u09c7\u09b6\u09a8\u09be\u09b2 \u09a1\u09c7 \u09ab\u09c1\u099f\u09ac\u09b2",
+                  "hi": "\u0932\u0940\u0917\u093e \u092a\u094d\u0930\u094b\u092b\u0947\u0936\u0928\u0932 \u0921\u0940 \u092b\u0941\u091f\u092c\u0949\u0932"
+                },
+                "shortNameTranslation": {}
+              }
+            },
+            "priority": 0,
+            "isGroup": false,
+            "id": 143625,
+            "fieldTranslations": {
+              "nameTranslation": {
+                "ar": "\u0627\u0644\u062f\u0648\u0631\u064a \u0627\u0644\u0627\u062d\u062a\u0631\u0627\u0641\u064a \u0644\u0643\u0631\u0629 \u0627\u0644\u0642\u062f\u0645\u060c \u0630\u0647\u0627\u0628",
+                "bn": "\u09aa\u09cd\u09b0\u09bf\u09ae\u09c7\u09b0\u09be \u098f\u09b2\u09aa\u09bf\u098f\u09ab, \u0985\u09cd\u09af\u09be\u09aa\u09be\u09b0\u09cd\u09a4\u09c1\u09b0\u09be",
+                "hi": "\u092a\u094d\u0930\u093e\u0907\u092e\u0947\u0930\u093e \u090f\u0932\u092a\u0940\u090f\u092b, \u090f\u092a\u0930\u094d\u091f\u0941\u0930\u093e"
+              },
+              "shortNameTranslation": {}
+            }
+          },
+          "name": "Apertura, Group B",
+          "updatedAtTimestamp": 1772158140
+        },
+        {
+          "type": "total",
+          "descriptions": [],
+          "rows": [
+            {
+              "team": {
+                "name": "Independiente Rivadavia",
+                "slug": "independiente-rivadavia",
+                "shortName": "Ind. Rivadavia",
+                "gender": "M",
+                "sport": {
+                  "name": "Football",
+                  "slug": "football",
+                  "id": 1
+                },
+                "userCount": 13031,
+                "nameCode": "IRM",
+                "national": false,
+                "type": 0,
+                "country": {
+                  "alpha2": "AR",
+                  "alpha3": "ARG",
+                  "name": "Argentina",
+                  "slug": "argentina"
+                },
+                "id": 36842,
+                "teamColors": {
+                  "primary": "#ffffff",
+                  "secondary": "#000040",
+                  "text": "#000040"
+                },
+                "fieldTranslations": {
+                  "nameTranslation": {
+                    "ar": "\u0625\u0646\u062f\u064a\u0628\u0646\u062f\u0627\u0646\u062a \u0631\u064a\u0641\u0627\u062f\u0627\u0641\u064a\u0627 \u062f\u064a \u0645\u0646\u062f\u0648\u0632\u0627",
+                    "hi": "\u0907\u0902\u0921\u093f\u092a\u0947\u0902\u0921\u093f\u090f\u0902\u091f \u0930\u093f\u0935\u093e\u0921\u0935\u093f\u092f\u093e \u0921\u0940 \u092e\u0947\u0902\u0921\u094b\u091c\u093c\u093e",
+                    "ru": "\u0418\u043d\u0434\u0435\u043f\u0435\u043d\u0434\u044c\u0435\u043d\u0442\u0435 \u0420\u0438\u0432\u0430\u0434\u0430\u0432\u0438\u0430 \u0414\u0435 \u041c\u0435\u043d\u0434\u043e\u0441\u0430"
+                  },
+                  "shortNameTranslation": {}
+                }
+              },
+              "descriptions": [],
+              "promotion": {
+                "text": "Qualified for Copa Libertadores 2027 and Supercopa Internacional 2026",
+                "id": 14763
+              },
+              "position": 1,
+              "matches": 7,
+              "wins": 5,
+              "scoresFor": 11,
+              "scoresAgainst": 7,
+              "id": 2114934,
+              "losses": 1,
+              "draws": 1,
+              "points": 16,
+              "scoreDiffFormatted": "+4"
+            },
+            {
+              "team": {
+                "name": "Club Atl\u00e9tico Belgrano",
+                "slug": "belgrano",
+                "shortName": "Belgrano",
+                "gender": "M",
+                "sport": {
+                  "name": "Football",
+                  "slug": "football",
+                  "id": 1
+                },
+                "userCount": 20627,
+                "nameCode": "BEL",
+                "national": false,
+                "type": 0,
+                "country": {
+                  "alpha2": "AR",
+                  "alpha3": "ARG",
+                  "name": "Argentina",
+                  "slug": "argentina"
+                },
+                "id": 3203,
+                "teamColors": {
+                  "primary": "#3399ff",
+                  "secondary": "#3399ff",
+                  "text": "#3399ff"
+                },
+                "fieldTranslations": {
+                  "nameTranslation": {
+                    "ar": "\u0628\u064a\u0644\u063a\u0631\u0627\u0646\u0648",
+                    "ru": "\u0411\u0435\u043b\u044c\u0433\u0440\u0430\u043d\u043e \u0434\u0435 \u041a\u043e\u0440\u0434\u043e\u0431\u0430"
+                  },
+                  "shortNameTranslation": {}
+                }
+              },
+              "descriptions": [],
+              "promotion": {
+                "text": "Copa Libertadores",
+                "id": 19
+              },
+              "position": 2,
+              "matches": 7,
+              "wins": 4,
+              "scoresFor": 9,
+              "scoresAgainst": 4,
+              "id": 2114932,
+              "losses": 0,
+              "draws": 3,
+              "points": 15,
+              "scoreDiffFormatted": "+5"
+            },
+            {
+              "team": {
+                "name": "Estudiantes de La Plata",
+                "slug": "estudiantes-de-la-plata",
+                "shortName": "Estudiantes",
+                "gender": "M",
+                "sport": {
+                  "name": "Football",
+                  "slug": "football",
+                  "id": 1
+                },
+                "userCount": 40628,
+                "nameCode": "ELP",
+                "disabled": false,
+                "national": false,
+                "type": 0,
+                "country": {
+                  "alpha2": "AR",
+                  "alpha3": "ARG",
+                  "name": "Argentina",
+                  "slug": "argentina"
+                },
+                "id": 3206,
+                "teamColors": {
+                  "primary": "#ff0000",
+                  "secondary": "#ffffff",
+                  "text": "#ffffff"
+                },
+                "fieldTranslations": {
+                  "nameTranslation": {
+                    "ar": "\u0625\u0633\u062a\u0648\u064a\u0627\u0646\u062a\u0648\u0633 \u062f\u064a \u0644\u0627\u0628\u0644\u0627\u062f\u0627",
+                    "hi": "\u090f\u0938\u094d\u0924\u0941\u0921\u093f\u092f\u0928\u0924\u0947\u0938 \u0921\u0947 \u0932\u093e \u092a\u094d\u0932\u093e\u091f\u093e",
+                    "ru": "\u041a\u043b\u0443\u0431 \u042d\u0441\u0442\u0443\u0434\u0438\u0430\u043d\u0442\u0435\u0441 \u0434\u0435 \u041b\u0430-\u041f\u043b\u0430\u0442\u0430"
+                  },
+                  "shortNameTranslation": {}
+                }
+              },
+              "descriptions": [],
+              "promotion": {
+                "text": "Copa Libertadores",
+                "id": 19
+              },
+              "position": 3,
+              "matches": 7,
+              "wins": 4,
+              "scoresFor": 7,
+              "scoresAgainst": 2,
+              "id": 2114940,
+              "losses": 0,
+              "draws": 3,
+              "points": 15,
+              "scoreDiffFormatted": "+5"
+            },
+            {
+              "team": {
+                "name": "V\u00e9lez Sarsfield",
+                "slug": "velez-sarsfield",
+                "shortName": "V\u00e9lez Sarsfield",
+                "gender": "M",
+                "sport": {
+                  "name": "Football",
+                  "slug": "football",
+                  "id": 1
+                },
+                "userCount": 35070,
+                "nameCode": "VEL",
+                "disabled": false,
+                "national": false,
+                "type": 0,
+                "country": {
+                  "alpha2": "AR",
+                  "alpha3": "ARG",
+                  "name": "Argentina",
+                  "slug": "argentina"
+                },
+                "id": 3208,
+                "teamColors": {
+                  "primary": "#ffffff",
+                  "secondary": "#003366",
+                  "text": "#003366"
+                },
+                "fieldTranslations": {
+                  "nameTranslation": {
+                    "ar": "\u0641\u064a\u0644\u064a\u0632 \u0633\u0627\u0631\u0633\u0641\u064a\u0644\u062f",
+                    "ru": "\u0412\u0435\u043b\u0435\u0441 \u0421\u0430\u0440\u0441\u0444\u0438\u043b\u0434"
+                  },
+                  "shortNameTranslation": {
+                    "ar": "\u0641\u064a\u0644\u064a\u0632 \u0633\u0627\u0631\u0633\u0641\u064a\u0644\u062f"
+                  }
+                }
+              },
+              "descriptions": [],
+              "promotion": {
+                "text": "Copa Sudamericana",
+                "id": 21
+              },
+              "position": 4,
+              "matches": 7,
+              "wins": 4,
+              "scoresFor": 8,
+              "scoresAgainst": 4,
+              "id": 2114937,
+              "losses": 0,
+              "draws": 3,
+              "points": 15,
+              "scoreDiffFormatted": "+4"
+            },
+            {
+              "team": {
+                "name": "Tigre",
+                "slug": "tigre",
+                "shortName": "Tigre",
+                "gender": "M",
+                "sport": {
+                  "name": "Football",
+                  "slug": "football",
+                  "id": 1
+                },
+                "userCount": 22545,
+                "nameCode": "TIG",
+                "disabled": false,
+                "national": false,
+                "type": 0,
+                "country": {
+                  "alpha2": "AR",
+                  "alpha3": "ARG",
+                  "name": "Argentina",
+                  "slug": "argentina"
+                },
+                "id": 7628,
+                "teamColors": {
+                  "primary": "#000099",
+                  "secondary": "#ff0000",
+                  "text": "#ff0000"
+                },
+                "fieldTranslations": {
+                  "nameTranslation": {
+                    "ar": "\u062a\u064a\u063a\u0631\u064a",
+                    "ru": "\u041a\u0410 \u0422\u0438\u0433\u0440\u0435"
+                  },
+                  "shortNameTranslation": {
+                    "ar": "\u062a\u064a\u063a\u0631\u064a"
+                  }
+                }
+              },
+              "descriptions": [],
+              "promotion": {
+                "text": "Copa Sudamericana",
+                "id": 21
+              },
+              "position": 5,
+              "matches": 7,
+              "wins": 4,
+              "scoresFor": 12,
+              "scoresAgainst": 5,
+              "id": 2114929,
+              "losses": 1,
+              "draws": 2,
+              "points": 14,
+              "scoreDiffFormatted": "+7"
+            },
+            {
+              "team": {
+                "name": "Platense",
+                "slug": "platense",
+                "shortName": "Platense",
+                "gender": "M",
+                "sport": {
+                  "name": "Football",
+                  "slug": "football",
+                  "id": 1
+                },
+                "userCount": 18135,
+                "nameCode": "PLA",
+                "national": false,
+                "type": 0,
+                "country": {
+                  "alpha2": "AR",
+                  "alpha3": "ARG",
+                  "name": "Argentina",
+                  "slug": "argentina"
+                },
+                "id": 36837,
+                "teamColors": {
+                  "primary": "#442b0b",
+                  "secondary": "#f2f2f2",
+                  "text": "#f2f2f2"
+                },
+                "fieldTranslations": {
+                  "nameTranslation": {
+                    "ar": "\u0628\u0644\u0627\u062a\u064a\u0646\u0633\u064a",
+                    "ru": "\u041a\u0410 \u041f\u043b\u0430\u0442\u0435\u043d\u0441\u0435"
+                  },
+                  "shortNameTranslation": {
+                    "ar": "\u0628\u0644\u0627\u062a\u064a\u0646\u0633\u064a"
+                  }
+                }
+              },
+              "descriptions": [],
+              "promotion": {
+                "text": "Copa Sudamericana",
+                "id": 21
+              },
+              "position": 6,
+              "matches": 7,
+              "wins": 3,
+              "scoresFor": 5,
+              "scoresAgainst": 3,
+              "id": 2114928,
+              "losses": 1,
+              "draws": 3,
+              "points": 12,
+              "scoreDiffFormatted": "+2"
+            },
+            {
+              "team": {
+                "name": "Club Atl\u00e9tico Uni\u00f3n de Santa Fe",
+                "slug": "club-atletico-union",
+                "shortName": "Uni\u00f3n de Santa Fe",
+                "gender": "M",
+                "sport": {
+                  "name": "Football",
+                  "slug": "football",
+                  "id": 1
+                },
+                "userCount": 15731,
+                "nameCode": "UNI",
+                "disabled": false,
+                "national": false,
+                "type": 0,
+                "country": {
+                  "alpha2": "AR",
+                  "alpha3": "ARG",
+                  "name": "Argentina",
+                  "slug": "argentina"
+                },
+                "id": 3204,
+                "teamColors": {
+                  "primary": "#ffffff",
+                  "secondary": "#cc0000",
+                  "text": "#cc0000"
+                },
+                "fieldTranslations": {
+                  "nameTranslation": {
+                    "ar": "\u0646\u0627\u062f\u064a \u0623\u062a\u0644\u062a\u064a\u0643\u0648 \u064a\u0648\u0646\u064a\u0646 \u062f\u064a \u0633\u0627\u0646\u062a\u0627 \u0641\u064a",
+                    "ru": "\u042e\u043d\u0438\u043e\u043d \u0414\u0435 \u0421\u0430\u043d\u0442\u0430 \u0424\u0435"
+                  },
+                  "shortNameTranslation": {
+                    "ar": "\u064a\u0648\u0646\u064a\u0646 \u062f\u064a \u0633\u0627\u0646\u062a\u0627 \u0641\u064a"
+                  }
+                }
+              },
+              "descriptions": [],
+              "promotion": {
+                "text": "Copa Sudamericana",
+                "id": 21
+              },
+              "position": 7,
+              "matches": 7,
+              "wins": 3,
+              "scoresFor": 9,
+              "scoresAgainst": 4,
+              "id": 2114945,
+              "losses": 2,
+              "draws": 2,
+              "points": 11,
+              "scoreDiffFormatted": "+5"
+            },
+            {
+              "team": {
+                "name": "Rosario Central",
+                "slug": "rosario-central",
+                "shortName": "Rosario Central",
+                "gender": "M",
+                "sport": {
+                  "name": "Football",
+                  "slug": "football",
+                  "id": 1
+                },
+                "userCount": 34476,
+                "nameCode": "ROS",
+                "disabled": false,
+                "national": false,
+                "type": 0,
+                "country": {
+                  "alpha2": "AR",
+                  "alpha3": "ARG",
+                  "name": "Argentina",
+                  "slug": "argentina"
+                },
+                "id": 3217,
+                "teamColors": {
+                  "primary": "#000066",
+                  "secondary": "#ffcc00",
+                  "text": "#ffcc00"
+                },
+                "fieldTranslations": {
+                  "nameTranslation": {
+                    "ar": "\u0631\u0648\u0632\u0627\u0631\u064a\u0648 \u0633\u0646\u062a\u0631\u0627\u0644",
+                    "ru": "\u0420\u043e\u0441\u0430\u0440\u0438\u043e \u0426\u0435\u043d\u0442\u0440\u0430\u043b"
+                  },
+                  "shortNameTranslation": {
+                    "ar": "\u0631\u0648\u0632\u0627\u0631\u064a\u0648 \u0633\u0646\u062a\u0631\u0627\u0644"
+                  }
+                }
+              },
+              "descriptions": [],
+              "promotion": {
+                "text": "Copa Sudamericana",
+                "id": 21
+              },
+              "position": 8,
+              "matches": 7,
+              "wins": 3,
+              "scoresFor": 8,
+              "scoresAgainst": 6,
+              "id": 2114949,
+              "losses": 2,
+              "draws": 2,
+              "points": 11,
+              "scoreDiffFormatted": "+2"
+            },
+            {
+              "team": {
+                "name": "San Lorenzo",
+                "slug": "san-lorenzo",
+                "shortName": "San Lorenzo",
+                "gender": "M",
+                "sport": {
+                  "name": "Football",
+                  "slug": "football",
+                  "id": 1
+                },
+                "userCount": 30125,
+                "nameCode": "SLO",
+                "disabled": false,
+                "national": false,
+                "type": 0,
+                "country": {
+                  "alpha2": "AR",
+                  "alpha3": "ARG",
+                  "name": "Argentina",
+                  "slug": "argentina"
+                },
+                "id": 3201,
+                "teamColors": {
+                  "primary": "#ff0000",
+                  "secondary": "#000033",
+                  "text": "#000033"
+                },
+                "fieldTranslations": {
+                  "nameTranslation": {
+                    "ar": "\u0633\u0627\u0646 \u0644\u0648\u0631\u064a\u0646\u0632\u0648",
+                    "ru": "\u0421\u0430\u043d \u041b\u043e\u0440\u0435\u043d\u0446\u043e \u0434\u0435 \u0410\u043b\u044c\u043c\u0430\u0440\u0433\u043e"
+                  },
+                  "shortNameTranslation": {
+                    "ar": "\u0633\u0627\u0646 \u0644\u0648\u0631\u064a\u0646\u0632\u0648"
+                  }
+                }
+              },
+              "descriptions": [],
+              "promotion": {
+                "text": "Copa Sudamericana",
+                "id": 21
+              },
+              "position": 9,
+              "matches": 7,
+              "wins": 3,
+              "scoresFor": 7,
+              "scoresAgainst": 5,
+              "id": 2114947,
+              "losses": 2,
+              "draws": 2,
+              "points": 11,
+              "scoreDiffFormatted": "+2"
+            },
+            {
+              "team": {
+                "name": "Defensa y Justicia",
+                "slug": "defensa-y-justicia",
+                "shortName": "Def y Justicia",
+                "gender": "M",
+                "sport": {
+                  "name": "Football",
+                  "slug": "football",
+                  "id": 1
+                },
+                "userCount": 21467,
+                "nameCode": "DYJ",
+                "disabled": false,
+                "national": false,
+                "type": 0,
+                "country": {
+                  "alpha2": "AR",
+                  "alpha3": "ARG",
+                  "name": "Argentina",
+                  "slug": "argentina"
+                },
+                "id": 36839,
+                "teamColors": {
+                  "primary": "#ffff00",
+                  "secondary": "#339900",
+                  "text": "#339900"
+                },
+                "fieldTranslations": {
+                  "nameTranslation": {
+                    "ar": "\u062f\u064a\u0641\u0646\u0633\u0627 \u062e\u0648\u0633\u062a\u064a\u0643\u0627",
+                    "hi": "\u0921\u093f\u092b\u0947\u0902\u0938\u093e \u092f\u0940 \u091c\u0938\u094d\u091f\u093f\u0938\u093f\u092f\u093e",
+                    "ru": "\u0414\u0435\u0444\u0435\u043d\u0441\u0430 \u0438 \u042e\u0441\u0442\u0438\u0446\u0438\u044f"
+                  },
+                  "shortNameTranslation": {}
+                }
+              },
+              "descriptions": [],
+              "position": 10,
+              "matches": 7,
+              "wins": 2,
+              "scoresFor": 6,
+              "scoresAgainst": 4,
+              "id": 2114944,
+              "losses": 0,
+              "draws": 5,
+              "points": 11,
+              "scoreDiffFormatted": "+2"
+            },
+            {
+              "team": {
+                "name": "CA Independiente",
+                "slug": "independiente",
+                "shortName": "Independiente",
+                "gender": "M",
+                "sport": {
+                  "name": "Football",
+                  "slug": "football",
+                  "id": 1
+                },
+                "userCount": 38691,
+                "nameCode": "CAI",
+                "disabled": false,
+                "national": false,
+                "type": 0,
+                "country": {
+                  "alpha2": "AR",
+                  "alpha3": "ARG",
+                  "name": "Argentina",
+                  "slug": "argentina"
+                },
+                "id": 3209,
+                "teamColors": {
+                  "primary": "#cc0000",
+                  "secondary": "#cc0000",
+                  "text": "#cc0000"
+                },
+                "fieldTranslations": {
+                  "nameTranslation": {
+                    "ar": "\u0633\u064a \u0625\u064a\u0647 \u0625\u0646\u062f\u064a\u0628\u0646\u062f\u064a\u0646\u062a\u064a",
+                    "ru": "\u041a\u0410 \u0418\u043d\u0434\u0435\u043f\u0435\u043d\u0434\u044c\u0435\u043d\u0442\u0435"
+                  },
+                  "shortNameTranslation": {
+                    "ar": "\u0625\u0646\u062f\u064a\u0628\u0646\u062f\u064a\u0646\u062a\u064a"
+                  }
+                }
+              },
+              "descriptions": [],
+              "position": 11,
+              "matches": 7,
+              "wins": 2,
+              "scoresFor": 9,
+              "scoresAgainst": 7,
+              "id": 2114941,
+              "losses": 1,
+              "draws": 4,
+              "points": 10,
+              "scoreDiffFormatted": "+2"
+            },
+            {
+              "team": {
+                "name": "River Plate",
+                "slug": "river-plate",
+                "shortName": "River Plate",
+                "gender": "M",
+                "sport": {
+                  "name": "Football",
+                  "slug": "football",
+                  "id": 1
+                },
+                "userCount": 249948,
+                "nameCode": "RIV",
+                "disabled": false,
+                "national": false,
+                "type": 0,
+                "country": {
+                  "alpha2": "AR",
+                  "alpha3": "ARG",
+                  "name": "Argentina",
+                  "slug": "argentina"
+                },
+                "id": 3211,
+                "teamColors": {
+                  "primary": "#ffffff",
+                  "secondary": "#ff0000",
+                  "text": "#ff0000"
+                },
+                "fieldTranslations": {
+                  "nameTranslation": {
+                    "ar": "\u0631\u064a\u0641\u0631 \u0628\u0644\u0627\u064a\u062a",
+                    "bn": "\u09b0\u09bf\u09ad\u09be\u09b0 \u09aa\u09cd\u09b2\u09c7\u099f",
+                    "ru": "\u0420\u0438\u0432\u0435\u0440 \u041f\u043b\u0435\u0439\u0442"
+                  },
+                  "shortNameTranslation": {
+                    "ar": "\u0631\u064a\u0641\u0631 \u0628\u0644\u0627\u064a\u062a",
+                    "hi": "\u0930\u093f\u0935\u0930"
+                  }
+                }
+              },
+              "descriptions": [],
+              "position": 12,
+              "matches": 7,
+              "wins": 3,
+              "scoresFor": 7,
+              "scoresAgainst": 7,
+              "id": 2114938,
+              "losses": 3,
+              "draws": 1,
+              "points": 10,
+              "scoreDiffFormatted": "0"
+            },
+            {
+              "team": {
+                "name": "CA Talleres",
+                "slug": "talleres",
+                "shortName": "Talleres",
+                "gender": "M",
+                "sport": {
+                  "name": "Football",
+                  "slug": "football",
+                  "id": 1
+                },
+                "userCount": 27602,
+                "nameCode": "CAT",
+                "disabled": false,
+                "national": false,
+                "type": 0,
+                "country": {
+                  "alpha2": "AR",
+                  "alpha3": "ARG",
+                  "name": "Argentina",
+                  "slug": "argentina"
+                },
+                "id": 3210,
+                "teamColors": {
+                  "primary": "#050040",
+                  "secondary": "#ffffff",
+                  "text": "#ffffff"
+                },
+                "fieldTranslations": {
+                  "nameTranslation": {
+                    "ar": "\u062a\u0627\u0644\u064a\u0631\u064a\u0633",
+                    "ru": "\u0422\u0430\u043b\u043b\u0435\u0440\u0435\u0441 \u0434\u0435 \u041a\u043e\u0440\u0434\u043e\u0431\u0430"
+                  },
+                  "shortNameTranslation": {
+                    "ar": "\u062a\u0627\u0644\u064a\u0631\u064a\u0633"
+                  }
+                }
+              },
+              "descriptions": [],
+              "position": 13,
+              "matches": 7,
+              "wins": 3,
+              "scoresFor": 8,
+              "scoresAgainst": 9,
+              "id": 2114931,
+              "losses": 3,
+              "draws": 1,
+              "points": 10,
+              "scoreDiffFormatted": "-1"
+            },
+            {
+              "team": {
+                "name": "Gimnasia y Esgrima",
+                "slug": "gimnasia-y-esgrima",
+                "shortName": "Gimnasia",
+                "gender": "M",
+                "sport": {
+                  "name": "Football",
+                  "slug": "football",
+                  "id": 1
+                },
+                "userCount": 13584,
+                "nameCode": "GLP",
+                "disabled": false,
+                "national": false,
+                "type": 0,
+                "country": {
+                  "alpha2": "AR",
+                  "alpha3": "ARG",
+                  "name": "Argentina",
+                  "slug": "argentina"
+                },
+                "id": 3205,
+                "teamColors": {
+                  "primary": "#ffffff",
+                  "secondary": "#000033",
+                  "text": "#000033"
+                },
+                "fieldTranslations": {
+                  "nameTranslation": {
+                    "ar": "\u062e\u064a\u0645\u064a\u0646\u0627\u0633\u064a\u0627 \u0648\u0625\u0633\u063a\u0631\u064a\u0645\u0627",
+                    "ru": "\u0425\u0438\u043c\u043d\u0430\u0441\u0438\u044f \u0438 \u042d\u0441\u0433\u0440\u0438\u043c\u0430 \u041b\u0430 \u041f\u043b\u0430\u0442\u0430"
+                  },
+                  "shortNameTranslation": {
+                    "ar": "\u062e\u064a\u0645\u064a\u0646\u0627\u0633\u064a\u0627"
+                  }
+                }
+              },
+              "descriptions": [],
+              "position": 14,
+              "matches": 7,
+              "wins": 3,
+              "scoresFor": 7,
+              "scoresAgainst": 8,
+              "id": 2114933,
+              "losses": 3,
+              "draws": 1,
+              "points": 10,
+              "scoreDiffFormatted": "-1"
+            },
+            {
+              "team": {
+                "name": "Hurac\u00e1n",
+                "slug": "huracan",
+                "shortName": "Hurac\u00e1n",
+                "gender": "M",
+                "sport": {
+                  "name": "Football",
+                  "slug": "football",
+                  "id": 1
+                },
+                "userCount": 27160,
+                "nameCode": "HUR",
+                "disabled": false,
+                "national": false,
+                "type": 0,
+                "country": {
+                  "alpha2": "AR",
+                  "alpha3": "ARG",
+                  "name": "Argentina",
+                  "slug": "argentina"
+                },
+                "id": 7629,
+                "teamColors": {
+                  "primary": "#ffffff",
+                  "secondary": "#dd0000",
+                  "text": "#dd0000"
+                },
+                "fieldTranslations": {
+                  "nameTranslation": {
+                    "ar": "\u0647\u0648\u0631\u064a\u0643\u0627\u0646",
+                    "ru": "\u041a\u0410 \u0425\u0443\u0440\u0430\u043a\u0430\u043d"
+                  },
+                  "shortNameTranslation": {
+                    "ar": "\u0647\u0648\u0631\u064a\u0643\u0627\u0646"
+                  }
+                }
+              },
+              "descriptions": [],
+              "position": 15,
+              "matches": 7,
+              "wins": 2,
+              "scoresFor": 5,
+              "scoresAgainst": 6,
+              "id": 2114943,
+              "losses": 2,
+              "draws": 3,
+              "points": 9,
+              "scoreDiffFormatted": "-1"
+            },
+            {
+              "team": {
+                "name": "Boca Juniors",
+                "slug": "boca-juniors",
+                "shortName": "Boca Juniors",
+                "gender": "M",
+                "sport": {
+                  "name": "Football",
+                  "slug": "football",
+                  "id": 1
+                },
+                "userCount": 267417,
+                "nameCode": "BOC",
+                "disabled": false,
+                "national": false,
+                "type": 0,
+                "country": {
+                  "alpha2": "AR",
+                  "alpha3": "ARG",
+                  "name": "Argentina",
+                  "slug": "argentina"
+                },
+                "id": 3202,
+                "teamColors": {
+                  "primary": "#003399",
+                  "secondary": "#ffcc66",
+                  "text": "#ffcc66"
+                },
+                "fieldTranslations": {
+                  "nameTranslation": {
+                    "ar": "\u0628\u0648\u0643\u0627 \u062c\u0648\u0646\u064a\u0648\u0631\u0632",
+                    "hi": "\u092c\u094b\u0915\u093e \u091c\u0942\u0928\u093f\u092f\u0930\u094d\u0938",
+                    "ru": "\u0411\u043e\u043a\u0430 \u0425\u0443\u043d\u0438\u043e\u0440\u0441"
+                  },
+                  "shortNameTranslation": {}
+                }
+              },
+              "descriptions": [],
+              "position": 16,
+              "matches": 6,
+              "wins": 2,
+              "scoresFor": 5,
+              "scoresAgainst": 4,
+              "id": 2114935,
+              "losses": 2,
+              "draws": 2,
+              "points": 8,
+              "scoreDiffFormatted": "+1"
+            },
+            {
+              "team": {
+                "name": "Argentinos Juniors",
+                "slug": "argentinos-juniors",
+                "shortName": "Argentinos Jrs.",
+                "gender": "M",
+                "sport": {
+                  "name": "Football",
+                  "slug": "football",
+                  "id": 1
+                },
+                "userCount": 27203,
+                "nameCode": "ARG",
+                "disabled": false,
+                "national": false,
+                "type": 0,
+                "country": {
+                  "alpha2": "AR",
+                  "alpha3": "ARG",
+                  "name": "Argentina",
+                  "slug": "argentina"
+                },
+                "id": 3216,
+                "teamColors": {
+                  "primary": "#cc0000",
+                  "secondary": "#ffffff",
+                  "text": "#ffffff"
+                },
+                "fieldTranslations": {
+                  "nameTranslation": {
+                    "ar": "\u0623\u0631\u062c\u0646\u062a\u064a\u0646\u0648\u0633 \u062c\u0648\u0646\u064a\u0648\u0631\u0632",
+                    "hi": "\u0905\u0930\u094d\u091c\u0947\u0902\u091f\u0940\u0928\u094b\u0938 \u091c\u0942\u0928\u093f\u092f\u0930\u094d\u0938",
+                    "ru": "\u0410\u0440\u0433\u0435\u043d\u0442\u0438\u043d\u043e\u0441 \u0425\u0443\u043d\u0438\u043e\u0440\u0441"
+                  },
+                  "shortNameTranslation": {}
+                }
+              },
+              "descriptions": [],
+              "position": 17,
+              "matches": 5,
+              "wins": 2,
+              "scoresFor": 3,
+              "scoresAgainst": 2,
+              "id": 2114939,
+              "losses": 1,
+              "draws": 2,
+              "points": 8,
+              "scoreDiffFormatted": "+1"
+            },
+            {
+              "team": {
+                "name": "CA Lan\u00fas",
+                "slug": "lanus",
+                "shortName": "Lan\u00fas",
+                "gender": "M",
+                "sport": {
+                  "name": "Football",
+                  "slug": "football",
+                  "id": 1
+                },
+                "userCount": 35581,
+                "nameCode": "LAN",
+                "disabled": false,
+                "national": false,
+                "type": 0,
+                "country": {
+                  "alpha2": "AR",
+                  "alpha3": "ARG",
+                  "name": "Argentina",
+                  "slug": "argentina"
+                },
+                "id": 3218,
+                "teamColors": {
+                  "primary": "#660033",
+                  "secondary": "#ffffff",
+                  "text": "#ffffff"
+                },
+                "fieldTranslations": {
+                  "nameTranslation": {
+                    "ar": "\u0644\u0627\u0646\u0648\u0633",
+                    "ru": "\u0410\u0442\u043b\u0435\u0442\u0438\u043a\u043e \u041b\u0430\u043d\u0443\u0441"
+                  },
+                  "shortNameTranslation": {
+                    "ar": "\u0644\u0627\u0646\u0648\u0633"
+                  }
+                }
+              },
+              "descriptions": [],
+              "position": 18,
+              "matches": 5,
+              "wins": 2,
+              "scoresFor": 8,
+              "scoresAgainst": 8,
+              "id": 2114930,
+              "losses": 1,
+              "draws": 2,
+              "points": 8,
+              "scoreDiffFormatted": "0"
+            },
+            {
+              "team": {
+                "name": "Instituto De C\u00f3rdoba",
+                "slug": "instituto-cordoba",
+                "shortName": "Instituto",
+                "gender": "M",
+                "sport": {
+                  "name": "Football",
+                  "slug": "football",
+                  "id": 1
+                },
+                "userCount": 11435,
+                "nameCode": "IAC",
+                "national": false,
+                "type": 0,
+                "country": {
+                  "alpha2": "AR",
+                  "alpha3": "ARG",
+                  "name": "Argentina",
+                  "slug": "argentina"
+                },
+                "id": 4937,
+                "teamColors": {
+                  "primary": "#e72328",
+                  "secondary": "#222226",
+                  "text": "#222226"
+                },
+                "fieldTranslations": {
+                  "nameTranslation": {
+                    "ar": "\u0645\u0639\u0647\u062f \u062f\u064a \u0642\u0631\u0637\u0628\u0629",
+                    "ru": "\u0418\u043d\u0441\u0442\u0438\u0442\u0443\u0442\u043e \u0410\u0442\u043b\u0435\u0442\u0438\u043a\u043e"
+                  },
+                  "shortNameTranslation": {
+                    "ar": "\u0645\u0639\u0647\u062f"
+                  }
+                }
+              },
+              "descriptions": [],
+              "position": 19,
+              "matches": 7,
+              "wins": 2,
+              "scoresFor": 8,
+              "scoresAgainst": 8,
+              "id": 2114956,
+              "losses": 3,
+              "draws": 2,
+              "points": 8,
+              "scoreDiffFormatted": "0"
+            },
+            {
+              "team": {
+                "name": "Racing Club",
+                "slug": "racing-club",
+                "shortName": "Racing",
+                "gender": "M",
+                "sport": {
+                  "name": "Football",
+                  "slug": "football",
+                  "id": 1
+                },
+                "userCount": 79780,
+                "nameCode": "RCS",
+                "disabled": false,
+                "national": false,
+                "type": 0,
+                "country": {
+                  "alpha2": "AR",
+                  "alpha3": "ARG",
+                  "name": "Argentina",
+                  "slug": "argentina"
+                },
+                "id": 3215,
+                "teamColors": {
+                  "primary": "#00ccff",
+                  "secondary": "#ffffff",
+                  "text": "#ffffff"
+                },
+                "fieldTranslations": {
+                  "nameTranslation": {
+                    "ar": "\u0631\u0627\u0633\u064a\u0646\u063a \u0643\u0644\u0648\u0628",
+                    "ru": "\u0420\u0430\u0441\u0438\u043d\u0433 \u041a\u043b\u0430\u0431"
+                  },
+                  "shortNameTranslation": {
+                    "ar": "\u0631\u0627\u0633\u064a\u0646\u063a"
+                  }
+                }
+              },
+              "descriptions": [],
+              "position": 20,
+              "matches": 7,
+              "wins": 2,
+              "scoresFor": 8,
+              "scoresAgainst": 9,
+              "id": 2114951,
+              "losses": 3,
+              "draws": 2,
+              "points": 8,
+              "scoreDiffFormatted": "-1"
+            },
+            {
+              "team": {
+                "name": "Barracas Central",
+                "slug": "barracas-central",
+                "shortName": "Barracas",
+                "gender": "M",
+                "sport": {
+                  "name": "Football",
+                  "slug": "football",
+                  "id": 1
+                },
+                "userCount": 12031,
+                "nameCode": "BAR",
+                "national": false,
+                "type": 0,
+                "country": {
+                  "alpha2": "AR",
+                  "alpha3": "ARG",
+                  "name": "Argentina",
+                  "slug": "argentina"
+                },
+                "id": 65668,
+                "teamColors": {
+                  "primary": "#ffffff",
+                  "secondary": "#ff0000",
+                  "text": "#ff0000"
+                },
+                "fieldTranslations": {
+                  "nameTranslation": {
+                    "ar": "\u0628\u0627\u0631\u0643\u0627\u0633 \u0633\u0646\u062a\u0631\u0627\u0644",
+                    "ru": "\u0411\u0430\u0440\u0440\u0430\u043a\u0430\u0441 \u0426\u0435\u043d\u0442\u0440\u0430\u043b"
+                  },
+                  "shortNameTranslation": {}
+                }
+              },
+              "descriptions": [],
+              "position": 21,
+              "matches": 7,
+              "wins": 2,
+              "scoresFor": 5,
+              "scoresAgainst": 6,
+              "id": 2114954,
+              "losses": 3,
+              "draws": 2,
+              "points": 8,
+              "scoreDiffFormatted": "-1"
+            },
+            {
+              "team": {
+                "name": "Central C\u00f3rdoba",
+                "slug": "central-cordoba",
+                "shortName": "Central C\u00f3rdoba",
+                "gender": "M",
+                "sport": {
+                  "name": "Football",
+                  "slug": "football",
+                  "id": 1
+                },
+                "userCount": 18626,
+                "nameCode": "CC",
+                "disabled": false,
+                "national": false,
+                "type": 0,
+                "country": {
+                  "alpha2": "AR",
+                  "alpha3": "ARG",
+                  "name": "Argentina",
+                  "slug": "argentina"
+                },
+                "id": 65676,
+                "teamColors": {
+                  "primary": "#ffffff",
+                  "secondary": "#000000",
+                  "text": "#000000"
+                },
+                "fieldTranslations": {
+                  "nameTranslation": {
+                    "ar": "\u0633\u0646\u062a\u0631\u0627\u0644 \u0642\u0631\u0637\u0628\u0629",
+                    "ru": "\u0426\u0435\u043d\u0440\u0430\u043b \u041a\u043e\u0440\u0434\u043e\u0431\u0430"
+                  },
+                  "shortNameTranslation": {
+                    "ar": "\u0633\u0646\u062a\u0631\u0627\u0644 \u0642\u0631\u0637\u0628\u0629"
+                  }
+                }
+              },
+              "descriptions": [],
+              "position": 22,
+              "matches": 7,
+              "wins": 2,
+              "scoresFor": 3,
+              "scoresAgainst": 4,
+              "id": 2114952,
+              "losses": 3,
+              "draws": 2,
+              "points": 8,
+              "scoreDiffFormatted": "-1"
+            },
+            {
+              "team": {
+                "name": "Banfield",
+                "slug": "banfield",
+                "shortName": "Banfield",
+                "gender": "M",
+                "sport": {
+                  "name": "Football",
+                  "slug": "football",
+                  "id": 1
+                },
+                "userCount": 13870,
+                "nameCode": "BAN",
+                "disabled": false,
+                "national": false,
+                "type": 0,
+                "country": {
+                  "alpha2": "AR",
+                  "alpha3": "ARG",
+                  "name": "Argentina",
+                  "slug": "argentina"
+                },
+                "id": 3219,
+                "teamColors": {
+                  "primary": "#009900",
+                  "secondary": "#ffffff",
+                  "text": "#ffffff"
+                },
+                "fieldTranslations": {
+                  "nameTranslation": {
+                    "ar": "\u0628\u0627\u0646\u0641\u064a\u0644\u062f",
+                    "ru": "\u041a\u0410 \u0411\u0430\u043d\u0444\u0438\u043b\u0434"
+                  },
+                  "shortNameTranslation": {
+                    "ar": "\u0628\u0627\u0646\u0641\u064a\u0644\u062f"
+                  }
+                }
+              },
+              "descriptions": [],
+              "position": 23,
+              "matches": 7,
+              "wins": 2,
+              "scoresFor": 7,
+              "scoresAgainst": 9,
+              "id": 2114942,
+              "losses": 4,
+              "draws": 1,
+              "points": 7,
+              "scoreDiffFormatted": "-2"
+            },
+            {
+              "team": {
+                "name": "Gimnasia y Esgrima Mendoza",
+                "slug": "gimnasia-y-esgrima-mendoza",
+                "shortName": "Gimnasia Mendoza",
+                "gender": "M",
+                "sport": {
+                  "name": "Football",
+                  "slug": "football",
+                  "id": 1
+                },
+                "userCount": 4590,
+                "nameCode": "GEM",
+                "national": false,
+                "type": 0,
+                "country": {
+                  "alpha2": "AR",
+                  "alpha3": "ARG",
+                  "name": "Argentina",
+                  "slug": "argentina"
+                },
+                "id": 188441,
+                "teamColors": {
+                  "primary": "#000000",
+                  "secondary": "#ffffff",
+                  "text": "#ffffff"
+                },
+                "fieldTranslations": {
+                  "nameTranslation": {
+                    "ar": "\u062c\u064a\u0645\u0646\u0627\u0633\u064a\u0627 \u0625\u064a\u0633\u062c\u0631\u064a\u0645\u0627 \u0645\u064a\u0646\u062f\u0648\u0632\u0627",
+                    "hi": "\u091c\u093f\u092e\u094d\u0928\u093e\u0938\u093f\u092f\u093e \u0935\u093e\u0908 \u090f\u0938\u0917\u094d\u0930\u093f\u092e\u093e \u092e\u0947\u0902\u0921\u094b\u091c\u093c\u093e",
+                    "ru": "\u0425\u0438\u043c\u043d\u0430\u0441\u0438\u044f \u0438 \u042d\u0441\u0433\u0440\u0438\u043c\u0430 \u041c\u0435\u043d\u0434\u043e\u0441\u0430"
+                  },
+                  "shortNameTranslation": {}
+                }
+              },
+              "descriptions": [],
+              "position": 24,
+              "matches": 7,
+              "wins": 2,
+              "scoresFor": 4,
+              "scoresAgainst": 9,
+              "id": 2114936,
+              "losses": 4,
+              "draws": 1,
+              "points": 7,
+              "scoreDiffFormatted": "-5"
+            },
+            {
+              "team": {
+                "name": "Sarmiento",
+                "slug": "sarmiento",
+                "shortName": "Sarmiento",
+                "gender": "M",
+                "sport": {
+                  "name": "Football",
+                  "slug": "football",
+                  "id": 1
+                },
+                "userCount": 8701,
+                "nameCode": "CAS",
+                "disabled": false,
+                "national": false,
+                "type": 0,
+                "country": {
+                  "alpha2": "AR",
+                  "alpha3": "ARG",
+                  "name": "Argentina",
+                  "slug": "argentina"
+                },
+                "id": 42338,
+                "teamColors": {
+                  "primary": "#006600",
+                  "secondary": "#006600",
+                  "text": "#006600"
+                },
+                "fieldTranslations": {
+                  "nameTranslation": {
+                    "ar": "\u0633\u0627\u0631\u0645\u064a\u0646\u062a\u0648",
+                    "ru": "\u041a\u0410 \u0421\u0430\u0440\u043c\u0438\u0435\u043d\u0442\u043e"
+                  },
+                  "shortNameTranslation": {}
+                }
+              },
+              "descriptions": [],
+              "position": 25,
+              "matches": 7,
+              "wins": 2,
+              "scoresFor": 5,
+              "scoresAgainst": 9,
+              "id": 2114955,
+              "losses": 5,
+              "draws": 0,
+              "points": 6,
+              "scoreDiffFormatted": "-4"
+            },
+            {
+              "team": {
+                "name": "Atl\u00e9tico Tucum\u00e1n",
+                "slug": "atletico-tucuman",
+                "shortName": "Atl\u00e9tico Tucum\u00e1n",
+                "gender": "M",
+                "sport": {
+                  "name": "Football",
+                  "slug": "football",
+                  "id": 1
+                },
+                "userCount": 17295,
+                "nameCode": "CAT",
+                "disabled": false,
+                "national": false,
+                "type": 0,
+                "country": {
+                  "alpha2": "AR",
+                  "alpha3": "ARG",
+                  "name": "Argentina",
+                  "slug": "argentina"
+                },
+                "id": 36833,
+                "teamColors": {
+                  "primary": "#ffffff",
+                  "secondary": "#33ccff",
+                  "text": "#33ccff"
+                },
+                "fieldTranslations": {
+                  "nameTranslation": {
+                    "ar": "\u0623\u062a\u0644\u062a\u064a\u0643\u0648 \u062a\u0648\u0643\u0648\u0645\u0627\u0646",
+                    "ru": "\u0410\u0442\u043b\u0435\u0442\u0438\u043a\u043e \u0422\u0443\u043a\u0443\u043c\u0430\u043d"
+                  },
+                  "shortNameTranslation": {
+                    "ar": "\u0623\u062a\u0644\u062a\u064a\u0643\u0648 \u062a\u0648\u0643\u0648\u0645\u0627\u0646"
+                  }
+                }
+              },
+              "descriptions": [],
+              "position": 26,
+              "matches": 7,
+              "wins": 1,
+              "scoresFor": 9,
+              "scoresAgainst": 10,
+              "id": 2114950,
+              "losses": 4,
+              "draws": 2,
+              "points": 5,
+              "scoreDiffFormatted": "-1"
+            },
+            {
+              "team": {
+                "name": "Deportivo Riestra",
+                "slug": "deportivo-riestra",
+                "shortName": "Dep. Riestra",
+                "gender": "M",
+                "sport": {
+                  "name": "Football",
+                  "slug": "football",
+                  "id": 1
+                },
+                "userCount": 13218,
+                "nameCode": "RIE",
+                "disabled": false,
+                "national": false,
+                "type": 0,
+                "country": {
+                  "alpha2": "AR",
+                  "alpha3": "ARG",
+                  "name": "Argentina",
+                  "slug": "argentina"
+                },
+                "id": 189723,
+                "teamColors": {
+                  "primary": "#ffffff",
+                  "secondary": "#000000",
+                  "text": "#000000"
+                },
+                "fieldTranslations": {
+                  "nameTranslation": {
+                    "ar": "\u062f\u064a\u0628\u0648\u0631\u062a\u064a\u0641\u0648 \u0631\u064a\u064a\u0633\u062a\u0631\u0627",
+                    "ru": "\u0414\u0435\u043f\u043e\u0440\u0442\u0438\u0432\u043e \u0420\u0438\u0435\u0441\u0442\u0440\u0430"
+                  },
+                  "shortNameTranslation": {}
+                }
+              },
+              "descriptions": [],
+              "position": 27,
+              "matches": 7,
+              "wins": 0,
+              "scoresFor": 2,
+              "scoresAgainst": 5,
+              "id": 2114953,
+              "losses": 3,
+              "draws": 4,
+              "points": 4,
+              "scoreDiffFormatted": "-3"
+            },
+            {
+              "team": {
+                "name": "Estudiantes de R\u00edo Cuarto",
+                "slug": "estudiantes-de-rio-cuarto",
+                "shortName": "Estudiantes R.C.",
+                "gender": "M",
+                "sport": {
+                  "name": "Football",
+                  "slug": "football",
+                  "id": 1
+                },
+                "userCount": 4938,
+                "nameCode": "RCU",
+                "disabled": false,
+                "national": false,
+                "type": 0,
+                "country": {
+                  "alpha2": "AR",
+                  "alpha3": "ARG",
+                  "name": "Argentina",
+                  "slug": "argentina"
+                },
+                "id": 266694,
+                "teamColors": {
+                  "primary": "#00ccff",
+                  "secondary": "#00aeff",
+                  "text": "#00aeff"
+                },
+                "fieldTranslations": {
+                  "nameTranslation": {
+                    "ar": "\u0625\u0633\u062a\u0648\u062f\u064a\u0627\u0646\u062a\u0633 \u062f\u064a \u0631\u064a\u0648 \u0643\u0648\u0627\u062a\u0631\u0648",
+                    "ru": "\u042d\u0441\u0442\u0443\u0434\u0438\u0430\u043d\u0442\u0435\u0441 \u0420\u0438\u043e \u041a\u0443\u0430\u0440\u0442\u043e"
+                  },
+                  "shortNameTranslation": {
+                    "ar": "\u0625\u0633\u062a\u0648\u062f\u064a\u0627\u0646\u062a\u0633 \u0631.\u0633."
+                  }
+                }
+              },
+              "descriptions": [],
+              "position": 28,
+              "matches": 7,
+              "wins": 1,
+              "scoresFor": 3,
+              "scoresAgainst": 11,
+              "id": 2114957,
+              "losses": 5,
+              "draws": 1,
+              "points": 4,
+              "scoreDiffFormatted": "-8"
+            },
+            {
+              "team": {
+                "name": "Aldosivi",
+                "slug": "aldosivi",
+                "gender": "M",
+                "sport": {
+                  "name": "Football",
+                  "slug": "football",
+                  "id": 1
+                },
+                "userCount": 9044,
+                "nameCode": "CAA",
+                "national": false,
+                "type": 0,
+                "country": {
+                  "alpha2": "AR",
+                  "alpha3": "ARG",
+                  "name": "Argentina",
+                  "slug": "argentina"
+                },
+                "id": 36836,
+                "teamColors": {
+                  "primary": "#ffff00",
+                  "secondary": "#006600",
+                  "text": "#006600"
+                },
+                "fieldTranslations": {
+                  "nameTranslation": {
+                    "ar": "\u0623\u0644\u062f\u0648\u0633\u064a\u0641\u064a",
+                    "ru": "\u041a\u0410 \u0410\u043b\u044c\u0434\u043e\u0441\u0438\u0432\u0438"
+                  },
+                  "shortNameTranslation": {}
+                }
+              },
+              "descriptions": [],
+              "position": 29,
+              "matches": 6,
+              "wins": 0,
+              "scoresFor": 2,
+              "scoresAgainst": 6,
+              "id": 2114946,
+              "losses": 3,
+              "draws": 3,
+              "points": 3,
+              "scoreDiffFormatted": "-4"
+            },
+            {
+              "team": {
+                "name": "Newell's Old Boys",
+                "slug": "newells-old-boys",
+                "shortName": "Newell's",
+                "gender": "M",
+                "sport": {
+                  "name": "Football",
+                  "slug": "football",
+                  "id": 1
+                },
+                "userCount": 20471,
+                "nameCode": "NOB",
+                "disabled": false,
+                "national": false,
+                "type": 0,
+                "country": {
+                  "alpha2": "AR",
+                  "alpha3": "ARG",
+                  "name": "Argentina",
+                  "slug": "argentina"
+                },
+                "id": 3212,
+                "teamColors": {
+                  "primary": "#ff0000",
+                  "secondary": "#000000",
+                  "text": "#000000"
+                },
+                "fieldTranslations": {
+                  "nameTranslation": {
+                    "ar": "\u0646\u064a\u0648\u0644\u0632 \u0623\u0648\u0644\u062f \u0628\u0648\u064a\u0632",
+                    "hi": "\u0928\u0947\u0935\u0947\u0932\u094d\u0932\u094d\u0938 \u0913\u0932\u094d\u0921 \u092c\u0949\u092f\u091c",
+                    "ru": "\u041d\u044c\u044e\u044d\u043b\u043b\u0441 \u041e\u043b\u0434 \u0411\u043e\u0439\u0437"
+                  },
+                  "shortNameTranslation": {}
+                }
+              },
+              "descriptions": [],
+              "promotion": {
+                "text": "Relegation",
+                "id": 3
+              },
+              "position": 30,
+              "matches": 7,
+              "wins": 0,
+              "scoresFor": 5,
+              "scoresAgainst": 14,
+              "id": 2114948,
+              "losses": 5,
+              "draws": 2,
+              "points": 2,
+              "scoreDiffFormatted": "-9"
+            }
+          ],
+          "id": 246857,
+          "tournament": {
+            "name": "Liga Profesional de F\u00fatbol, Apertura",
+            "slug": "primera-lfp-apertura",
+            "category": {
+              "name": "Argentina",
+              "slug": "argentina",
+              "sport": {
+                "name": "Football",
+                "slug": "football",
+                "id": 1
+              },
+              "country": {
+                "alpha2": "AR",
+                "alpha3": "ARG",
+                "name": "Argentina",
+                "slug": "argentina"
+              },
+              "id": 48,
+              "flag": "argentina",
+              "alpha2": "AR",
+              "fieldTranslations": {
+                "nameTranslation": {
+                  "ar": "\u0627\u0644\u0623\u0631\u062c\u0646\u062a\u064a\u0646",
+                  "ru": "\u0410\u0440\u0433\u0435\u043d\u0442\u0438\u043d\u0430"
+                },
+                "shortNameTranslation": {}
+              }
+            },
+            "uniqueTournament": {
+              "name": "Liga Profesional de F\u00fatbol",
+              "slug": "liga-profesional-de-futbol",
+              "primaryColorHex": "#0cbad8",
+              "secondaryColorHex": "#daa813",
+              "category": {
+                "name": "Argentina",
+                "slug": "argentina",
+                "sport": {
+                  "name": "Football",
+                  "slug": "football",
+                  "id": 1
+                },
+                "country": {
+                  "alpha2": "AR",
+                  "alpha3": "ARG",
+                  "name": "Argentina",
+                  "slug": "argentina"
+                },
+                "id": 48,
+                "flag": "argentina",
+                "alpha2": "AR",
+                "fieldTranslations": {
+                  "nameTranslation": {
+                    "ar": "\u0627\u0644\u0623\u0631\u062c\u0646\u062a\u064a\u0646",
+                    "ru": "\u0410\u0440\u0433\u0435\u043d\u0442\u0438\u043d\u0430"
+                  },
+                  "shortNameTranslation": {}
+                }
+              },
+              "userCount": 56536,
+              "hasPerformanceGraphFeature": false,
+              "country": {},
+              "id": 155,
+              "displayInverseHomeAwayTeams": false,
+              "fieldTranslations": {
+                "nameTranslation": {
+                  "ar": "\u062f\u0648\u0631\u064a \u0643\u0631\u0629 \u0627\u0644\u0642\u062f\u0645 \u0644\u0644\u0645\u062d\u062a\u0631\u0641\u064a\u0646",
+                  "bn": "\u09b2\u09c0\u0997\u09be \u09aa\u09cd\u09b0\u09cb\u09ab\u09c7\u09b6\u09a8\u09be\u09b2 \u09a1\u09c7 \u09ab\u09c1\u099f\u09ac\u09b2",
+                  "hi": "\u0932\u0940\u0917\u093e \u092a\u094d\u0930\u094b\u092b\u0947\u0936\u0928\u0932 \u0921\u0940 \u092b\u0941\u091f\u092c\u0949\u0932"
+                },
+                "shortNameTranslation": {}
+              }
+            },
+            "priority": 0,
+            "isGroup": false,
+            "id": 143625,
+            "fieldTranslations": {
+              "nameTranslation": {
+                "ar": "\u0627\u0644\u062f\u0648\u0631\u064a \u0627\u0644\u0627\u062d\u062a\u0631\u0627\u0641\u064a \u0644\u0643\u0631\u0629 \u0627\u0644\u0642\u062f\u0645\u060c \u0630\u0647\u0627\u0628",
+                "bn": "\u09aa\u09cd\u09b0\u09bf\u09ae\u09c7\u09b0\u09be \u098f\u09b2\u09aa\u09bf\u098f\u09ab, \u0985\u09cd\u09af\u09be\u09aa\u09be\u09b0\u09cd\u09a4\u09c1\u09b0\u09be",
+                "hi": "\u092a\u094d\u0930\u093e\u0907\u092e\u0947\u0930\u093e \u090f\u0932\u092a\u0940\u090f\u092b, \u090f\u092a\u0930\u094d\u091f\u0941\u0930\u093e"
+              },
+              "shortNameTranslation": {}
+            }
+          },
+          "name": "Anual 2026",
+          "updatedAtTimestamp": 1772162714
+        },
+        {
+          "type": "total",
+          "descriptions": [],
+          "rows": [
+            {
+              "team": {
+                "name": "Boca Juniors",
+                "slug": "boca-juniors",
+                "shortName": "Boca Juniors",
+                "gender": "M",
+                "sport": {
+                  "name": "Football",
+                  "slug": "football",
+                  "id": 1
+                },
+                "userCount": 267417,
+                "nameCode": "BOC",
+                "disabled": false,
+                "national": false,
+                "type": 0,
+                "country": {
+                  "alpha2": "AR",
+                  "alpha3": "ARG",
+                  "name": "Argentina",
+                  "slug": "argentina"
+                },
+                "id": 3202,
+                "teamColors": {
+                  "primary": "#003399",
+                  "secondary": "#ffcc66",
+                  "text": "#ffcc66"
+                },
+                "fieldTranslations": {
+                  "nameTranslation": {
+                    "ar": "\u0628\u0648\u0643\u0627 \u062c\u0648\u0646\u064a\u0648\u0631\u0632",
+                    "hi": "\u092c\u094b\u0915\u093e \u091c\u0942\u0928\u093f\u092f\u0930\u094d\u0938",
+                    "ru": "\u0411\u043e\u043a\u0430 \u0425\u0443\u043d\u0438\u043e\u0440\u0441"
+                  },
+                  "shortNameTranslation": {}
+                }
+              },
+              "descriptions": [],
+              "position": 1,
+              "matches": 79,
+              "pointsPerGame": 1.734,
+              "pointsPrevPrevSeason": 67,
+              "pointsPrevSeason": 62,
+              "pointsCurrSeason": 8,
+              "id": 2114898,
+              "points": 137
+            },
+            {
+              "team": {
+                "name": "River Plate",
+                "slug": "river-plate",
+                "shortName": "River Plate",
+                "gender": "M",
+                "sport": {
+                  "name": "Football",
+                  "slug": "football",
+                  "id": 1
+                },
+                "userCount": 249948,
+                "nameCode": "RIV",
+                "disabled": false,
+                "national": false,
+                "type": 0,
+                "country": {
+                  "alpha2": "AR",
+                  "alpha3": "ARG",
+                  "name": "Argentina",
+                  "slug": "argentina"
+                },
+                "id": 3211,
+                "teamColors": {
+                  "primary": "#ffffff",
+                  "secondary": "#ff0000",
+                  "text": "#ff0000"
+                },
+                "fieldTranslations": {
+                  "nameTranslation": {
+                    "ar": "\u0631\u064a\u0641\u0631 \u0628\u0644\u0627\u064a\u062a",
+                    "bn": "\u09b0\u09bf\u09ad\u09be\u09b0 \u09aa\u09cd\u09b2\u09c7\u099f",
+                    "ru": "\u0420\u0438\u0432\u0435\u0440 \u041f\u043b\u0435\u0439\u0442"
+                  },
+                  "shortNameTranslation": {
+                    "ar": "\u0631\u064a\u0641\u0631 \u0628\u0644\u0627\u064a\u062a",
+                    "hi": "\u0930\u093f\u0935\u0930"
+                  }
+                }
+              },
+              "descriptions": [],
+              "position": 2,
+              "matches": 80,
+              "pointsPerGame": 1.662,
+              "pointsPrevPrevSeason": 70,
+              "pointsPrevSeason": 53,
+              "pointsCurrSeason": 10,
+              "id": 2114899,
+              "points": 133
+            },
+            {
+              "team": {
+                "name": "V\u00e9lez Sarsfield",
+                "slug": "velez-sarsfield",
+                "shortName": "V\u00e9lez Sarsfield",
+                "gender": "M",
+                "sport": {
+                  "name": "Football",
+                  "slug": "football",
+                  "id": 1
+                },
+                "userCount": 35070,
+                "nameCode": "VEL",
+                "disabled": false,
+                "national": false,
+                "type": 0,
+                "country": {
+                  "alpha2": "AR",
+                  "alpha3": "ARG",
+                  "name": "Argentina",
+                  "slug": "argentina"
+                },
+                "id": 3208,
+                "teamColors": {
+                  "primary": "#ffffff",
+                  "secondary": "#003366",
+                  "text": "#003366"
+                },
+                "fieldTranslations": {
+                  "nameTranslation": {
+                    "ar": "\u0641\u064a\u0644\u064a\u0632 \u0633\u0627\u0631\u0633\u0641\u064a\u0644\u062f",
+                    "ru": "\u0412\u0435\u043b\u0435\u0441 \u0421\u0430\u0440\u0441\u0444\u0438\u043b\u0434"
+                  },
+                  "shortNameTranslation": {
+                    "ar": "\u0641\u064a\u0644\u064a\u0632 \u0633\u0627\u0631\u0633\u0641\u064a\u0644\u062f"
+                  }
+                }
+              },
+              "descriptions": [],
+              "position": 3,
+              "matches": 80,
+              "pointsPerGame": 1.638,
+              "pointsPrevPrevSeason": 76,
+              "pointsPrevSeason": 40,
+              "pointsCurrSeason": 15,
+              "id": 2114901,
+              "points": 131
+            },
+            {
+              "team": {
+                "name": "Racing Club",
+                "slug": "racing-club",
+                "shortName": "Racing",
+                "gender": "M",
+                "sport": {
+                  "name": "Football",
+                  "slug": "football",
+                  "id": 1
+                },
+                "userCount": 79780,
+                "nameCode": "RCS",
+                "disabled": false,
+                "national": false,
+                "type": 0,
+                "country": {
+                  "alpha2": "AR",
+                  "alpha3": "ARG",
+                  "name": "Argentina",
+                  "slug": "argentina"
+                },
+                "id": 3215,
+                "teamColors": {
+                  "primary": "#00ccff",
+                  "secondary": "#ffffff",
+                  "text": "#ffffff"
+                },
+                "fieldTranslations": {
+                  "nameTranslation": {
+                    "ar": "\u0631\u0627\u0633\u064a\u0646\u063a \u0643\u0644\u0648\u0628",
+                    "ru": "\u0420\u0430\u0441\u0438\u043d\u0433 \u041a\u043b\u0430\u0431"
+                  },
+                  "shortNameTranslation": {
+                    "ar": "\u0631\u0627\u0633\u064a\u0646\u063a"
+                  }
+                }
+              },
+              "descriptions": [],
+              "position": 4,
+              "matches": 80,
+              "pointsPerGame": 1.638,
+              "pointsPrevPrevSeason": 70,
+              "pointsPrevSeason": 53,
+              "pointsCurrSeason": 8,
+              "id": 2114900,
+              "points": 131
+            },
+            {
+              "team": {
+                "name": "Argentinos Juniors",
+                "slug": "argentinos-juniors",
+                "shortName": "Argentinos Jrs.",
+                "gender": "M",
+                "sport": {
+                  "name": "Football",
+                  "slug": "football",
+                  "id": 1
+                },
+                "userCount": 27203,
+                "nameCode": "ARG",
+                "disabled": false,
+                "national": false,
+                "type": 0,
+                "country": {
+                  "alpha2": "AR",
+                  "alpha3": "ARG",
+                  "name": "Argentina",
+                  "slug": "argentina"
+                },
+                "id": 3216,
+                "teamColors": {
+                  "primary": "#cc0000",
+                  "secondary": "#ffffff",
+                  "text": "#ffffff"
+                },
+                "fieldTranslations": {
+                  "nameTranslation": {
+                    "ar": "\u0623\u0631\u062c\u0646\u062a\u064a\u0646\u0648\u0633 \u062c\u0648\u0646\u064a\u0648\u0631\u0632",
+                    "hi": "\u0905\u0930\u094d\u091c\u0947\u0902\u091f\u0940\u0928\u094b\u0938 \u091c\u0942\u0928\u093f\u092f\u0930\u094d\u0938",
+                    "ru": "\u0410\u0440\u0433\u0435\u043d\u0442\u0438\u043d\u043e\u0441 \u0425\u0443\u043d\u0438\u043e\u0440\u0441"
+                  },
+                  "shortNameTranslation": {}
+                }
+              },
+              "descriptions": [],
+              "position": 5,
+              "matches": 78,
+              "pointsPerGame": 1.551,
+              "pointsPrevPrevSeason": 56,
+              "pointsPrevSeason": 57,
+              "pointsCurrSeason": 8,
+              "id": 2114902,
+              "points": 121
+            },
+            {
+              "team": {
+                "name": "Rosario Central",
+                "slug": "rosario-central",
+                "shortName": "Rosario Central",
+                "gender": "M",
+                "sport": {
+                  "name": "Football",
+                  "slug": "football",
+                  "id": 1
+                },
+                "userCount": 34476,
+                "nameCode": "ROS",
+                "disabled": false,
+                "national": false,
+                "type": 0,
+                "country": {
+                  "alpha2": "AR",
+                  "alpha3": "ARG",
+                  "name": "Argentina",
+                  "slug": "argentina"
+                },
+                "id": 3217,
+                "teamColors": {
+                  "primary": "#000066",
+                  "secondary": "#ffcc00",
+                  "text": "#ffcc00"
+                },
+                "fieldTranslations": {
+                  "nameTranslation": {
+                    "ar": "\u0631\u0648\u0632\u0627\u0631\u064a\u0648 \u0633\u0646\u062a\u0631\u0627\u0644",
+                    "ru": "\u0420\u043e\u0441\u0430\u0440\u0438\u043e \u0426\u0435\u043d\u0442\u0440\u0430\u043b"
+                  },
+                  "shortNameTranslation": {
+                    "ar": "\u0631\u0648\u0632\u0627\u0631\u064a\u0648 \u0633\u0646\u062a\u0631\u0627\u0644"
+                  }
+                }
+              },
+              "descriptions": [],
+              "position": 6,
+              "matches": 80,
+              "pointsPerGame": 1.55,
+              "pointsPrevPrevSeason": 47,
+              "pointsPrevSeason": 66,
+              "pointsCurrSeason": 11,
+              "id": 2114903,
+              "points": 124
+            },
+            {
+              "team": {
+                "name": "Estudiantes de La Plata",
+                "slug": "estudiantes-de-la-plata",
+                "shortName": "Estudiantes",
+                "gender": "M",
+                "sport": {
+                  "name": "Football",
+                  "slug": "football",
+                  "id": 1
+                },
+                "userCount": 40628,
+                "nameCode": "ELP",
+                "disabled": false,
+                "national": false,
+                "type": 0,
+                "country": {
+                  "alpha2": "AR",
+                  "alpha3": "ARG",
+                  "name": "Argentina",
+                  "slug": "argentina"
+                },
+                "id": 3206,
+                "teamColors": {
+                  "primary": "#ff0000",
+                  "secondary": "#ffffff",
+                  "text": "#ffffff"
+                },
+                "fieldTranslations": {
+                  "nameTranslation": {
+                    "ar": "\u0625\u0633\u062a\u0648\u064a\u0627\u0646\u062a\u0648\u0633 \u062f\u064a \u0644\u0627\u0628\u0644\u0627\u062f\u0627",
+                    "hi": "\u090f\u0938\u094d\u0924\u0941\u0921\u093f\u092f\u0928\u0924\u0947\u0938 \u0921\u0947 \u0932\u093e \u092a\u094d\u0932\u093e\u091f\u093e",
+                    "ru": "\u041a\u043b\u0443\u0431 \u042d\u0441\u0442\u0443\u0434\u0438\u0430\u043d\u0442\u0435\u0441 \u0434\u0435 \u041b\u0430-\u041f\u043b\u0430\u0442\u0430"
+                  },
+                  "shortNameTranslation": {}
+                }
+              },
+              "descriptions": [],
+              "position": 7,
+              "matches": 80,
+              "pointsPerGame": 1.5,
+              "pointsPrevPrevSeason": 63,
+              "pointsPrevSeason": 42,
+              "pointsCurrSeason": 15,
+              "id": 2114908,
+              "points": 120
+            },
+            {
+              "team": {
+                "name": "CA Independiente",
+                "slug": "independiente",
+                "shortName": "Independiente",
+                "gender": "M",
+                "sport": {
+                  "name": "Football",
+                  "slug": "football",
+                  "id": 1
+                },
+                "userCount": 38691,
+                "nameCode": "CAI",
+                "disabled": false,
+                "national": false,
+                "type": 0,
+                "country": {
+                  "alpha2": "AR",
+                  "alpha3": "ARG",
+                  "name": "Argentina",
+                  "slug": "argentina"
+                },
+                "id": 3209,
+                "teamColors": {
+                  "primary": "#cc0000",
+                  "secondary": "#cc0000",
+                  "text": "#cc0000"
+                },
+                "fieldTranslations": {
+                  "nameTranslation": {
+                    "ar": "\u0633\u064a \u0625\u064a\u0647 \u0625\u0646\u062f\u064a\u0628\u0646\u062f\u064a\u0646\u062a\u064a",
+                    "ru": "\u041a\u0410 \u0418\u043d\u0434\u0435\u043f\u0435\u043d\u0434\u044c\u0435\u043d\u0442\u0435"
+                  },
+                  "shortNameTranslation": {
+                    "ar": "\u0625\u0646\u062f\u064a\u0628\u0646\u062f\u064a\u0646\u062a\u064a"
+                  }
+                }
+              },
+              "descriptions": [],
+              "position": 8,
+              "matches": 80,
+              "pointsPerGame": 1.5,
+              "pointsPrevPrevSeason": 63,
+              "pointsPrevSeason": 47,
+              "pointsCurrSeason": 10,
+              "id": 2114905,
+              "points": 120
+            },
+            {
+              "team": {
+                "name": "CA Lan\u00fas",
+                "slug": "lanus",
+                "shortName": "Lan\u00fas",
+                "gender": "M",
+                "sport": {
+                  "name": "Football",
+                  "slug": "football",
+                  "id": 1
+                },
+                "userCount": 35581,
+                "nameCode": "LAN",
+                "disabled": false,
+                "national": false,
+                "type": 0,
+                "country": {
+                  "alpha2": "AR",
+                  "alpha3": "ARG",
+                  "name": "Argentina",
+                  "slug": "argentina"
+                },
+                "id": 3218,
+                "teamColors": {
+                  "primary": "#660033",
+                  "secondary": "#ffffff",
+                  "text": "#ffffff"
+                },
+                "fieldTranslations": {
+                  "nameTranslation": {
+                    "ar": "\u0644\u0627\u0646\u0648\u0633",
+                    "ru": "\u0410\u0442\u043b\u0435\u0442\u0438\u043a\u043e \u041b\u0430\u043d\u0443\u0441"
+                  },
+                  "shortNameTranslation": {
+                    "ar": "\u0644\u0627\u0646\u0648\u0633"
+                  }
+                }
+              },
+              "descriptions": [],
+              "position": 9,
+              "matches": 78,
+              "pointsPerGame": 1.5,
+              "pointsPrevPrevSeason": 59,
+              "pointsPrevSeason": 50,
+              "pointsCurrSeason": 8,
+              "id": 2114904,
+              "points": 117
+            },
+            {
+              "team": {
+                "name": "Hurac\u00e1n",
+                "slug": "huracan",
+                "shortName": "Hurac\u00e1n",
+                "gender": "M",
+                "sport": {
+                  "name": "Football",
+                  "slug": "football",
+                  "id": 1
+                },
+                "userCount": 27160,
+                "nameCode": "HUR",
+                "disabled": false,
+                "national": false,
+                "type": 0,
+                "country": {
+                  "alpha2": "AR",
+                  "alpha3": "ARG",
+                  "name": "Argentina",
+                  "slug": "argentina"
+                },
+                "id": 7629,
+                "teamColors": {
+                  "primary": "#ffffff",
+                  "secondary": "#dd0000",
+                  "text": "#dd0000"
+                },
+                "fieldTranslations": {
+                  "nameTranslation": {
+                    "ar": "\u0647\u0648\u0631\u064a\u0643\u0627\u0646",
+                    "ru": "\u041a\u0410 \u0425\u0443\u0440\u0430\u043a\u0430\u043d"
+                  },
+                  "shortNameTranslation": {
+                    "ar": "\u0647\u0648\u0631\u064a\u0643\u0627\u0646"
+                  }
+                }
+              },
+              "descriptions": [],
+              "position": 10,
+              "matches": 80,
+              "pointsPerGame": 1.475,
+              "pointsPrevPrevSeason": 62,
+              "pointsPrevSeason": 47,
+              "pointsCurrSeason": 9,
+              "id": 2114906,
+              "points": 118
+            },
+            {
+              "team": {
+                "name": "CA Talleres",
+                "slug": "talleres",
+                "shortName": "Talleres",
+                "gender": "M",
+                "sport": {
+                  "name": "Football",
+                  "slug": "football",
+                  "id": 1
+                },
+                "userCount": 27602,
+                "nameCode": "CAT",
+                "disabled": false,
+                "national": false,
+                "type": 0,
+                "country": {
+                  "alpha2": "AR",
+                  "alpha3": "ARG",
+                  "name": "Argentina",
+                  "slug": "argentina"
+                },
+                "id": 3210,
+                "teamColors": {
+                  "primary": "#050040",
+                  "secondary": "#ffffff",
+                  "text": "#ffffff"
+                },
+                "fieldTranslations": {
+                  "nameTranslation": {
+                    "ar": "\u062a\u0627\u0644\u064a\u0631\u064a\u0633",
+                    "ru": "\u0422\u0430\u043b\u043b\u0435\u0440\u0435\u0441 \u0434\u0435 \u041a\u043e\u0440\u0434\u043e\u0431\u0430"
+                  },
+                  "shortNameTranslation": {
+                    "ar": "\u062a\u0627\u0644\u064a\u0631\u064a\u0633"
+                  }
+                }
+              },
+              "descriptions": [],
+              "position": 11,
+              "matches": 80,
+              "pointsPerGame": 1.45,
+              "pointsPrevPrevSeason": 72,
+              "pointsPrevSeason": 34,
+              "pointsCurrSeason": 10,
+              "id": 2114907,
+              "points": 116
+            },
+            {
+              "team": {
+                "name": "Club Atl\u00e9tico Uni\u00f3n de Santa Fe",
+                "slug": "club-atletico-union",
+                "shortName": "Uni\u00f3n de Santa Fe",
+                "gender": "M",
+                "sport": {
+                  "name": "Football",
+                  "slug": "football",
+                  "id": 1
+                },
+                "userCount": 15731,
+                "nameCode": "UNI",
+                "disabled": false,
+                "national": false,
+                "type": 0,
+                "country": {
+                  "alpha2": "AR",
+                  "alpha3": "ARG",
+                  "name": "Argentina",
+                  "slug": "argentina"
+                },
+                "id": 3204,
+                "teamColors": {
+                  "primary": "#ffffff",
+                  "secondary": "#cc0000",
+                  "text": "#cc0000"
+                },
+                "fieldTranslations": {
+                  "nameTranslation": {
+                    "ar": "\u0646\u0627\u062f\u064a \u0623\u062a\u0644\u062a\u064a\u0643\u0648 \u064a\u0648\u0646\u064a\u0646 \u062f\u064a \u0633\u0627\u0646\u062a\u0627 \u0641\u064a",
+                    "ru": "\u042e\u043d\u0438\u043e\u043d \u0414\u0435 \u0421\u0430\u043d\u0442\u0430 \u0424\u0435"
+                  },
+                  "shortNameTranslation": {
+                    "ar": "\u064a\u0648\u0646\u064a\u0646 \u062f\u064a \u0633\u0627\u0646\u062a\u0627 \u0641\u064a"
+                  }
+                }
+              },
+              "descriptions": [],
+              "position": 12,
+              "matches": 80,
+              "pointsPerGame": 1.375,
+              "pointsPrevPrevSeason": 60,
+              "pointsPrevSeason": 39,
+              "pointsCurrSeason": 11,
+              "id": 2114909,
+              "points": 110
+            },
+            {
+              "team": {
+                "name": "San Lorenzo",
+                "slug": "san-lorenzo",
+                "shortName": "San Lorenzo",
+                "gender": "M",
+                "sport": {
+                  "name": "Football",
+                  "slug": "football",
+                  "id": 1
+                },
+                "userCount": 30125,
+                "nameCode": "SLO",
+                "disabled": false,
+                "national": false,
+                "type": 0,
+                "country": {
+                  "alpha2": "AR",
+                  "alpha3": "ARG",
+                  "name": "Argentina",
+                  "slug": "argentina"
+                },
+                "id": 3201,
+                "teamColors": {
+                  "primary": "#ff0000",
+                  "secondary": "#000033",
+                  "text": "#000033"
+                },
+                "fieldTranslations": {
+                  "nameTranslation": {
+                    "ar": "\u0633\u0627\u0646 \u0644\u0648\u0631\u064a\u0646\u0632\u0648",
+                    "ru": "\u0421\u0430\u043d \u041b\u043e\u0440\u0435\u043d\u0446\u043e \u0434\u0435 \u0410\u043b\u044c\u043c\u0430\u0440\u0433\u043e"
+                  },
+                  "shortNameTranslation": {
+                    "ar": "\u0633\u0627\u0646 \u0644\u0648\u0631\u064a\u0646\u0632\u0648"
+                  }
+                }
+              },
+              "descriptions": [],
+              "position": 13,
+              "matches": 80,
+              "pointsPerGame": 1.338,
+              "pointsPrevPrevSeason": 45,
+              "pointsPrevSeason": 51,
+              "pointsCurrSeason": 11,
+              "id": 2114913,
+              "points": 107
+            },
+            {
+              "team": {
+                "name": "Defensa y Justicia",
+                "slug": "defensa-y-justicia",
+                "shortName": "Def y Justicia",
+                "gender": "M",
+                "sport": {
+                  "name": "Football",
+                  "slug": "football",
+                  "id": 1
+                },
+                "userCount": 21467,
+                "nameCode": "DYJ",
+                "disabled": false,
+                "national": false,
+                "type": 0,
+                "country": {
+                  "alpha2": "AR",
+                  "alpha3": "ARG",
+                  "name": "Argentina",
+                  "slug": "argentina"
+                },
+                "id": 36839,
+                "teamColors": {
+                  "primary": "#ffff00",
+                  "secondary": "#339900",
+                  "text": "#339900"
+                },
+                "fieldTranslations": {
+                  "nameTranslation": {
+                    "ar": "\u062f\u064a\u0641\u0646\u0633\u0627 \u062e\u0648\u0633\u062a\u064a\u0643\u0627",
+                    "hi": "\u0921\u093f\u092b\u0947\u0902\u0938\u093e \u092f\u0940 \u091c\u0938\u094d\u091f\u093f\u0938\u093f\u092f\u093e",
+                    "ru": "\u0414\u0435\u0444\u0435\u043d\u0441\u0430 \u0438 \u042e\u0441\u0442\u0438\u0446\u0438\u044f"
+                  },
+                  "shortNameTranslation": {}
+                }
+              },
+              "descriptions": [],
+              "position": 14,
+              "matches": 80,
+              "pointsPerGame": 1.338,
+              "pointsPrevPrevSeason": 58,
+              "pointsPrevSeason": 38,
+              "pointsCurrSeason": 11,
+              "id": 2114912,
+              "points": 107
+            },
+            {
+              "team": {
+                "name": "Barracas Central",
+                "slug": "barracas-central",
+                "shortName": "Barracas",
+                "gender": "M",
+                "sport": {
+                  "name": "Football",
+                  "slug": "football",
+                  "id": 1
+                },
+                "userCount": 12031,
+                "nameCode": "BAR",
+                "national": false,
+                "type": 0,
+                "country": {
+                  "alpha2": "AR",
+                  "alpha3": "ARG",
+                  "name": "Argentina",
+                  "slug": "argentina"
+                },
+                "id": 65668,
+                "teamColors": {
+                  "primary": "#ffffff",
+                  "secondary": "#ff0000",
+                  "text": "#ff0000"
+                },
+                "fieldTranslations": {
+                  "nameTranslation": {
+                    "ar": "\u0628\u0627\u0631\u0643\u0627\u0633 \u0633\u0646\u062a\u0631\u0627\u0644",
+                    "ru": "\u0411\u0430\u0440\u0440\u0430\u043a\u0430\u0441 \u0426\u0435\u043d\u0442\u0440\u0430\u043b"
+                  },
+                  "shortNameTranslation": {}
+                }
+              },
+              "descriptions": [],
+              "position": 15,
+              "matches": 80,
+              "pointsPerGame": 1.325,
+              "pointsPrevPrevSeason": 49,
+              "pointsPrevSeason": 49,
+              "pointsCurrSeason": 8,
+              "id": 2114911,
+              "points": 106
+            },
+            {
+              "team": {
+                "name": "Independiente Rivadavia",
+                "slug": "independiente-rivadavia",
+                "shortName": "Ind. Rivadavia",
+                "gender": "M",
+                "sport": {
+                  "name": "Football",
+                  "slug": "football",
+                  "id": 1
+                },
+                "userCount": 13031,
+                "nameCode": "IRM",
+                "national": false,
+                "type": 0,
+                "country": {
+                  "alpha2": "AR",
+                  "alpha3": "ARG",
+                  "name": "Argentina",
+                  "slug": "argentina"
+                },
+                "id": 36842,
+                "teamColors": {
+                  "primary": "#ffffff",
+                  "secondary": "#000040",
+                  "text": "#000040"
+                },
+                "fieldTranslations": {
+                  "nameTranslation": {
+                    "ar": "\u0625\u0646\u062f\u064a\u0628\u0646\u062f\u0627\u0646\u062a \u0631\u064a\u0641\u0627\u062f\u0627\u0641\u064a\u0627 \u062f\u064a \u0645\u0646\u062f\u0648\u0632\u0627",
+                    "hi": "\u0907\u0902\u0921\u093f\u092a\u0947\u0902\u0921\u093f\u090f\u0902\u091f \u0930\u093f\u0935\u093e\u0921\u0935\u093f\u092f\u093e \u0921\u0940 \u092e\u0947\u0902\u0921\u094b\u091c\u093c\u093e",
+                    "ru": "\u0418\u043d\u0434\u0435\u043f\u0435\u043d\u0434\u044c\u0435\u043d\u0442\u0435 \u0420\u0438\u0432\u0430\u0434\u0430\u0432\u0438\u0430 \u0414\u0435 \u041c\u0435\u043d\u0434\u043e\u0441\u0430"
+                  },
+                  "shortNameTranslation": {}
+                }
+              },
+              "descriptions": [],
+              "position": 16,
+              "matches": 80,
+              "pointsPerGame": 1.312,
+              "pointsPrevPrevSeason": 46,
+              "pointsPrevSeason": 43,
+              "pointsCurrSeason": 16,
+              "id": 2114915,
+              "points": 105
+            },
+            {
+              "team": {
+                "name": "Platense",
+                "slug": "platense",
+                "shortName": "Platense",
+                "gender": "M",
+                "sport": {
+                  "name": "Football",
+                  "slug": "football",
+                  "id": 1
+                },
+                "userCount": 18135,
+                "nameCode": "PLA",
+                "national": false,
+                "type": 0,
+                "country": {
+                  "alpha2": "AR",
+                  "alpha3": "ARG",
+                  "name": "Argentina",
+                  "slug": "argentina"
+                },
+                "id": 36837,
+                "teamColors": {
+                  "primary": "#442b0b",
+                  "secondary": "#f2f2f2",
+                  "text": "#f2f2f2"
+                },
+                "fieldTranslations": {
+                  "nameTranslation": {
+                    "ar": "\u0628\u0644\u0627\u062a\u064a\u0646\u0633\u064a",
+                    "ru": "\u041a\u0410 \u041f\u043b\u0430\u0442\u0435\u043d\u0441\u0435"
+                  },
+                  "shortNameTranslation": {
+                    "ar": "\u0628\u0644\u0627\u062a\u064a\u0646\u0633\u064a"
+                  }
+                }
+              },
+              "descriptions": [],
+              "position": 17,
+              "matches": 80,
+              "pointsPerGame": 1.3,
+              "pointsPrevPrevSeason": 57,
+              "pointsPrevSeason": 35,
+              "pointsCurrSeason": 12,
+              "id": 2114914,
+              "points": 104
+            },
+            {
+              "team": {
+                "name": "Deportivo Riestra",
+                "slug": "deportivo-riestra",
+                "shortName": "Dep. Riestra",
+                "gender": "M",
+                "sport": {
+                  "name": "Football",
+                  "slug": "football",
+                  "id": 1
+                },
+                "userCount": 13218,
+                "nameCode": "RIE",
+                "disabled": false,
+                "national": false,
+                "type": 0,
+                "country": {
+                  "alpha2": "AR",
+                  "alpha3": "ARG",
+                  "name": "Argentina",
+                  "slug": "argentina"
+                },
+                "id": 189723,
+                "teamColors": {
+                  "primary": "#ffffff",
+                  "secondary": "#000000",
+                  "text": "#000000"
+                },
+                "fieldTranslations": {
+                  "nameTranslation": {
+                    "ar": "\u062f\u064a\u0628\u0648\u0631\u062a\u064a\u0641\u0648 \u0631\u064a\u064a\u0633\u062a\u0631\u0627",
+                    "ru": "\u0414\u0435\u043f\u043e\u0440\u0442\u0438\u0432\u043e \u0420\u0438\u0435\u0441\u0442\u0440\u0430"
+                  },
+                  "shortNameTranslation": {}
+                }
+              },
+              "descriptions": [],
+              "position": 18,
+              "matches": 80,
+              "pointsPerGame": 1.3,
+              "pointsPrevPrevSeason": 48,
+              "pointsPrevSeason": 52,
+              "pointsCurrSeason": 4,
+              "id": 2114910,
+              "points": 104
+            },
+            {
+              "team": {
+                "name": "Tigre",
+                "slug": "tigre",
+                "shortName": "Tigre",
+                "gender": "M",
+                "sport": {
+                  "name": "Football",
+                  "slug": "football",
+                  "id": 1
+                },
+                "userCount": 22545,
+                "nameCode": "TIG",
+                "disabled": false,
+                "national": false,
+                "type": 0,
+                "country": {
+                  "alpha2": "AR",
+                  "alpha3": "ARG",
+                  "name": "Argentina",
+                  "slug": "argentina"
+                },
+                "id": 7628,
+                "teamColors": {
+                  "primary": "#000099",
+                  "secondary": "#ff0000",
+                  "text": "#ff0000"
+                },
+                "fieldTranslations": {
+                  "nameTranslation": {
+                    "ar": "\u062a\u064a\u063a\u0631\u064a",
+                    "ru": "\u041a\u0410 \u0422\u0438\u0433\u0440\u0435"
+                  },
+                  "shortNameTranslation": {
+                    "ar": "\u062a\u064a\u063a\u0631\u064a"
+                  }
+                }
+              },
+              "descriptions": [],
+              "position": 19,
+              "matches": 80,
+              "pointsPerGame": 1.275,
+              "pointsPrevPrevSeason": 39,
+              "pointsPrevSeason": 49,
+              "pointsCurrSeason": 14,
+              "id": 2114916,
+              "points": 102
+            },
+            {
+              "team": {
+                "name": "Club Atl\u00e9tico Belgrano",
+                "slug": "belgrano",
+                "shortName": "Belgrano",
+                "gender": "M",
+                "sport": {
+                  "name": "Football",
+                  "slug": "football",
+                  "id": 1
+                },
+                "userCount": 20627,
+                "nameCode": "BEL",
+                "national": false,
+                "type": 0,
+                "country": {
+                  "alpha2": "AR",
+                  "alpha3": "ARG",
+                  "name": "Argentina",
+                  "slug": "argentina"
+                },
+                "id": 3203,
+                "teamColors": {
+                  "primary": "#3399ff",
+                  "secondary": "#3399ff",
+                  "text": "#3399ff"
+                },
+                "fieldTranslations": {
+                  "nameTranslation": {
+                    "ar": "\u0628\u064a\u0644\u063a\u0631\u0627\u0646\u0648",
+                    "ru": "\u0411\u0435\u043b\u044c\u0433\u0440\u0430\u043d\u043e \u0434\u0435 \u041a\u043e\u0440\u0434\u043e\u0431\u0430"
+                  },
+                  "shortNameTranslation": {}
+                }
+              },
+              "descriptions": [],
+              "position": 20,
+              "matches": 80,
+              "pointsPerGame": 1.262,
+              "pointsPrevPrevSeason": 49,
+              "pointsPrevSeason": 37,
+              "pointsCurrSeason": 15,
+              "id": 2114917,
+              "points": 101
+            },
+            {
+              "team": {
+                "name": "Gimnasia y Esgrima",
+                "slug": "gimnasia-y-esgrima",
+                "shortName": "Gimnasia",
+                "gender": "M",
+                "sport": {
+                  "name": "Football",
+                  "slug": "football",
+                  "id": 1
+                },
+                "userCount": 13584,
+                "nameCode": "GLP",
+                "disabled": false,
+                "national": false,
+                "type": 0,
+                "country": {
+                  "alpha2": "AR",
+                  "alpha3": "ARG",
+                  "name": "Argentina",
+                  "slug": "argentina"
+                },
+                "id": 3205,
+                "teamColors": {
+                  "primary": "#ffffff",
+                  "secondary": "#000033",
+                  "text": "#000033"
+                },
+                "fieldTranslations": {
+                  "nameTranslation": {
+                    "ar": "\u062e\u064a\u0645\u064a\u0646\u0627\u0633\u064a\u0627 \u0648\u0625\u0633\u063a\u0631\u064a\u0645\u0627",
+                    "ru": "\u0425\u0438\u043c\u043d\u0430\u0441\u0438\u044f \u0438 \u042d\u0441\u0433\u0440\u0438\u043c\u0430 \u041b\u0430 \u041f\u043b\u0430\u0442\u0430"
+                  },
+                  "shortNameTranslation": {
+                    "ar": "\u062e\u064a\u0645\u064a\u0646\u0627\u0633\u064a\u0627"
+                  }
+                }
+              },
+              "descriptions": [],
+              "position": 21,
+              "matches": 80,
+              "pointsPerGame": 1.2,
+              "pointsPrevPrevSeason": 48,
+              "pointsPrevSeason": 38,
+              "pointsCurrSeason": 10,
+              "id": 2114918,
+              "points": 96
+            },
+            {
+              "team": {
+                "name": "Instituto De C\u00f3rdoba",
+                "slug": "instituto-cordoba",
+                "shortName": "Instituto",
+                "gender": "M",
+                "sport": {
+                  "name": "Football",
+                  "slug": "football",
+                  "id": 1
+                },
+                "userCount": 11435,
+                "nameCode": "IAC",
+                "national": false,
+                "type": 0,
+                "country": {
+                  "alpha2": "AR",
+                  "alpha3": "ARG",
+                  "name": "Argentina",
+                  "slug": "argentina"
+                },
+                "id": 4937,
+                "teamColors": {
+                  "primary": "#e72328",
+                  "secondary": "#222226",
+                  "text": "#222226"
+                },
+                "fieldTranslations": {
+                  "nameTranslation": {
+                    "ar": "\u0645\u0639\u0647\u062f \u062f\u064a \u0642\u0631\u0637\u0628\u0629",
+                    "ru": "\u0418\u043d\u0441\u0442\u0438\u0442\u0443\u0442\u043e \u0410\u0442\u043b\u0435\u0442\u0438\u043a\u043e"
+                  },
+                  "shortNameTranslation": {
+                    "ar": "\u0645\u0639\u0647\u062f"
+                  }
+                }
+              },
+              "descriptions": [],
+              "position": 22,
+              "matches": 80,
+              "pointsPerGame": 1.188,
+              "pointsPrevPrevSeason": 53,
+              "pointsPrevSeason": 34,
+              "pointsCurrSeason": 8,
+              "id": 2114919,
+              "points": 95
+            },
+            {
+              "team": {
+                "name": "Central C\u00f3rdoba",
+                "slug": "central-cordoba",
+                "shortName": "Central C\u00f3rdoba",
+                "gender": "M",
+                "sport": {
+                  "name": "Football",
+                  "slug": "football",
+                  "id": 1
+                },
+                "userCount": 18626,
+                "nameCode": "CC",
+                "disabled": false,
+                "national": false,
+                "type": 0,
+                "country": {
+                  "alpha2": "AR",
+                  "alpha3": "ARG",
+                  "name": "Argentina",
+                  "slug": "argentina"
+                },
+                "id": 65676,
+                "teamColors": {
+                  "primary": "#ffffff",
+                  "secondary": "#000000",
+                  "text": "#000000"
+                },
+                "fieldTranslations": {
+                  "nameTranslation": {
+                    "ar": "\u0633\u0646\u062a\u0631\u0627\u0644 \u0642\u0631\u0637\u0628\u0629",
+                    "ru": "\u0426\u0435\u043d\u0440\u0430\u043b \u041a\u043e\u0440\u0434\u043e\u0431\u0430"
+                  },
+                  "shortNameTranslation": {
+                    "ar": "\u0633\u0646\u062a\u0631\u0627\u0644 \u0642\u0631\u0637\u0628\u0629"
+                  }
+                }
+              },
+              "descriptions": [],
+              "position": 23,
+              "matches": 80,
+              "pointsPerGame": 1.15,
+              "pointsPrevPrevSeason": 42,
+              "pointsPrevSeason": 42,
+              "pointsCurrSeason": 8,
+              "id": 2114921,
+              "points": 92
+            },
+            {
+              "team": {
+                "name": "Atl\u00e9tico Tucum\u00e1n",
+                "slug": "atletico-tucuman",
+                "shortName": "Atl\u00e9tico Tucum\u00e1n",
+                "gender": "M",
+                "sport": {
+                  "name": "Football",
+                  "slug": "football",
+                  "id": 1
+                },
+                "userCount": 17295,
+                "nameCode": "CAT",
+                "disabled": false,
+                "national": false,
+                "type": 0,
+                "country": {
+                  "alpha2": "AR",
+                  "alpha3": "ARG",
+                  "name": "Argentina",
+                  "slug": "argentina"
+                },
+                "id": 36833,
+                "teamColors": {
+                  "primary": "#ffffff",
+                  "secondary": "#33ccff",
+                  "text": "#33ccff"
+                },
+                "fieldTranslations": {
+                  "nameTranslation": {
+                    "ar": "\u0623\u062a\u0644\u062a\u064a\u0643\u0648 \u062a\u0648\u0643\u0648\u0645\u0627\u0646",
+                    "ru": "\u0410\u0442\u043b\u0435\u0442\u0438\u043a\u043e \u0422\u0443\u043a\u0443\u043c\u0430\u043d"
+                  },
+                  "shortNameTranslation": {
+                    "ar": "\u0623\u062a\u0644\u062a\u064a\u0643\u0648 \u062a\u0648\u0643\u0648\u0645\u0627\u0646"
+                  }
+                }
+              },
+              "descriptions": [],
+              "position": 24,
+              "matches": 80,
+              "pointsPerGame": 1.112,
+              "pointsPrevPrevSeason": 50,
+              "pointsPrevSeason": 34,
+              "pointsCurrSeason": 5,
+              "id": 2114920,
+              "points": 89
+            },
+            {
+              "team": {
+                "name": "Newell's Old Boys",
+                "slug": "newells-old-boys",
+                "shortName": "Newell's",
+                "gender": "M",
+                "sport": {
+                  "name": "Football",
+                  "slug": "football",
+                  "id": 1
+                },
+                "userCount": 20471,
+                "nameCode": "NOB",
+                "disabled": false,
+                "national": false,
+                "type": 0,
+                "country": {
+                  "alpha2": "AR",
+                  "alpha3": "ARG",
+                  "name": "Argentina",
+                  "slug": "argentina"
+                },
+                "id": 3212,
+                "teamColors": {
+                  "primary": "#ff0000",
+                  "secondary": "#000000",
+                  "text": "#000000"
+                },
+                "fieldTranslations": {
+                  "nameTranslation": {
+                    "ar": "\u0646\u064a\u0648\u0644\u0632 \u0623\u0648\u0644\u062f \u0628\u0648\u064a\u0632",
+                    "hi": "\u0928\u0947\u0935\u0947\u0932\u094d\u0932\u094d\u0938 \u0913\u0932\u094d\u0921 \u092c\u0949\u092f\u091c",
+                    "ru": "\u041d\u044c\u044e\u044d\u043b\u043b\u0441 \u041e\u043b\u0434 \u0411\u043e\u0439\u0437"
+                  },
+                  "shortNameTranslation": {}
+                }
+              },
+              "descriptions": [],
+              "position": 25,
+              "matches": 80,
+              "pointsPerGame": 1.05,
+              "pointsPrevPrevSeason": 49,
+              "pointsPrevSeason": 33,
+              "pointsCurrSeason": 2,
+              "id": 2114922,
+              "points": 84
+            },
+            {
+              "team": {
+                "name": "Banfield",
+                "slug": "banfield",
+                "shortName": "Banfield",
+                "gender": "M",
+                "sport": {
+                  "name": "Football",
+                  "slug": "football",
+                  "id": 1
+                },
+                "userCount": 13870,
+                "nameCode": "BAN",
+                "disabled": false,
+                "national": false,
+                "type": 0,
+                "country": {
+                  "alpha2": "AR",
+                  "alpha3": "ARG",
+                  "name": "Argentina",
+                  "slug": "argentina"
+                },
+                "id": 3219,
+                "teamColors": {
+                  "primary": "#009900",
+                  "secondary": "#ffffff",
+                  "text": "#ffffff"
+                },
+                "fieldTranslations": {
+                  "nameTranslation": {
+                    "ar": "\u0628\u0627\u0646\u0641\u064a\u0644\u062f",
+                    "ru": "\u041a\u0410 \u0411\u0430\u043d\u0444\u0438\u043b\u0434"
+                  },
+                  "shortNameTranslation": {
+                    "ar": "\u0628\u0627\u0646\u0641\u064a\u0644\u062f"
+                  }
+                }
+              },
+              "descriptions": [],
+              "position": 26,
+              "matches": 80,
+              "pointsPerGame": 1.038,
+              "pointsPrevPrevSeason": 41,
+              "pointsPrevSeason": 35,
+              "pointsCurrSeason": 7,
+              "id": 2114923,
+              "points": 83
+            },
+            {
+              "team": {
+                "name": "Gimnasia y Esgrima Mendoza",
+                "slug": "gimnasia-y-esgrima-mendoza",
+                "shortName": "Gimnasia Mendoza",
+                "gender": "M",
+                "sport": {
+                  "name": "Football",
+                  "slug": "football",
+                  "id": 1
+                },
+                "userCount": 4590,
+                "nameCode": "GEM",
+                "national": false,
+                "type": 0,
+                "country": {
+                  "alpha2": "AR",
+                  "alpha3": "ARG",
+                  "name": "Argentina",
+                  "slug": "argentina"
+                },
+                "id": 188441,
+                "teamColors": {
+                  "primary": "#000000",
+                  "secondary": "#ffffff",
+                  "text": "#ffffff"
+                },
+                "fieldTranslations": {
+                  "nameTranslation": {
+                    "ar": "\u062c\u064a\u0645\u0646\u0627\u0633\u064a\u0627 \u0625\u064a\u0633\u062c\u0631\u064a\u0645\u0627 \u0645\u064a\u0646\u062f\u0648\u0632\u0627",
+                    "hi": "\u091c\u093f\u092e\u094d\u0928\u093e\u0938\u093f\u092f\u093e \u0935\u093e\u0908 \u090f\u0938\u0917\u094d\u0930\u093f\u092e\u093e \u092e\u0947\u0902\u0921\u094b\u091c\u093c\u093e",
+                    "ru": "\u0425\u0438\u043c\u043d\u0430\u0441\u0438\u044f \u0438 \u042d\u0441\u0433\u0440\u0438\u043c\u0430 \u041c\u0435\u043d\u0434\u043e\u0441\u0430"
+                  },
+                  "shortNameTranslation": {}
+                }
+              },
+              "descriptions": [],
+              "position": 27,
+              "matches": 7,
+              "pointsPerGame": 1,
+              "pointsPrevPrevSeason": 0,
+              "pointsPrevSeason": 0,
+              "pointsCurrSeason": 7,
+              "id": 2114926,
+              "points": 7
+            },
+            {
+              "team": {
+                "name": "Sarmiento",
+                "slug": "sarmiento",
+                "shortName": "Sarmiento",
+                "gender": "M",
+                "sport": {
+                  "name": "Football",
+                  "slug": "football",
+                  "id": 1
+                },
+                "userCount": 8701,
+                "nameCode": "CAS",
+                "disabled": false,
+                "national": false,
+                "type": 0,
+                "country": {
+                  "alpha2": "AR",
+                  "alpha3": "ARG",
+                  "name": "Argentina",
+                  "slug": "argentina"
+                },
+                "id": 42338,
+                "teamColors": {
+                  "primary": "#006600",
+                  "secondary": "#006600",
+                  "text": "#006600"
+                },
+                "fieldTranslations": {
+                  "nameTranslation": {
+                    "ar": "\u0633\u0627\u0631\u0645\u064a\u0646\u062a\u0648",
+                    "ru": "\u041a\u0410 \u0421\u0430\u0440\u043c\u0438\u0435\u043d\u0442\u043e"
+                  },
+                  "shortNameTranslation": {}
+                }
+              },
+              "descriptions": [],
+              "position": 28,
+              "matches": 80,
+              "pointsPerGame": 0.95,
+              "pointsPrevPrevSeason": 35,
+              "pointsPrevSeason": 35,
+              "pointsCurrSeason": 6,
+              "id": 2114925,
+              "points": 76
+            },
+            {
+              "team": {
+                "name": "Aldosivi",
+                "slug": "aldosivi",
+                "gender": "M",
+                "sport": {
+                  "name": "Football",
+                  "slug": "football",
+                  "id": 1
+                },
+                "userCount": 9044,
+                "nameCode": "CAA",
+                "national": false,
+                "type": 0,
+                "country": {
+                  "alpha2": "AR",
+                  "alpha3": "ARG",
+                  "name": "Argentina",
+                  "slug": "argentina"
+                },
+                "id": 36836,
+                "teamColors": {
+                  "primary": "#ffff00",
+                  "secondary": "#006600",
+                  "text": "#006600"
+                },
+                "fieldTranslations": {
+                  "nameTranslation": {
+                    "ar": "\u0623\u0644\u062f\u0648\u0633\u064a\u0641\u064a",
+                    "ru": "\u041a\u0410 \u0410\u043b\u044c\u0434\u043e\u0441\u0438\u0432\u0438"
+                  },
+                  "shortNameTranslation": {}
+                }
+              },
+              "descriptions": [],
+              "position": 29,
+              "matches": 38,
+              "pointsPerGame": 0.947,
+              "pointsPrevPrevSeason": 0,
+              "pointsPrevSeason": 33,
+              "pointsCurrSeason": 3,
+              "id": 2114924,
+              "points": 36
+            },
+            {
+              "team": {
+                "name": "Estudiantes de R\u00edo Cuarto",
+                "slug": "estudiantes-de-rio-cuarto",
+                "shortName": "Estudiantes R.C.",
+                "gender": "M",
+                "sport": {
+                  "name": "Football",
+                  "slug": "football",
+                  "id": 1
+                },
+                "userCount": 4938,
+                "nameCode": "RCU",
+                "disabled": false,
+                "national": false,
+                "type": 0,
+                "country": {
+                  "alpha2": "AR",
+                  "alpha3": "ARG",
+                  "name": "Argentina",
+                  "slug": "argentina"
+                },
+                "id": 266694,
+                "teamColors": {
+                  "primary": "#00ccff",
+                  "secondary": "#00aeff",
+                  "text": "#00aeff"
+                },
+                "fieldTranslations": {
+                  "nameTranslation": {
+                    "ar": "\u0625\u0633\u062a\u0648\u062f\u064a\u0627\u0646\u062a\u0633 \u062f\u064a \u0631\u064a\u0648 \u0643\u0648\u0627\u062a\u0631\u0648",
+                    "ru": "\u042d\u0441\u0442\u0443\u0434\u0438\u0430\u043d\u0442\u0435\u0441 \u0420\u0438\u043e \u041a\u0443\u0430\u0440\u0442\u043e"
+                  },
+                  "shortNameTranslation": {
+                    "ar": "\u0625\u0633\u062a\u0648\u062f\u064a\u0627\u0646\u062a\u0633 \u0631.\u0633."
+                  }
+                }
+              },
+              "descriptions": [],
+              "promotion": {
+                "text": "Relegation",
+                "id": 3
+              },
+              "position": 30,
+              "matches": 7,
+              "pointsPerGame": 0.571,
+              "pointsPrevPrevSeason": 0,
+              "pointsPrevSeason": 0,
+              "pointsCurrSeason": 4,
+              "id": 2114927,
+              "points": 4
+            }
+          ],
+          "id": 246856,
+          "tournament": {
+            "name": "Liga Profesional de F\u00fatbol, Apertura",
+            "slug": "primera-lfp-apertura",
+            "category": {
+              "name": "Argentina",
+              "slug": "argentina",
+              "sport": {
+                "name": "Football",
+                "slug": "football",
+                "id": 1
+              },
+              "country": {
+                "alpha2": "AR",
+                "alpha3": "ARG",
+                "name": "Argentina",
+                "slug": "argentina"
+              },
+              "id": 48,
+              "flag": "argentina",
+              "alpha2": "AR",
+              "fieldTranslations": {
+                "nameTranslation": {
+                  "ar": "\u0627\u0644\u0623\u0631\u062c\u0646\u062a\u064a\u0646",
+                  "ru": "\u0410\u0440\u0433\u0435\u043d\u0442\u0438\u043d\u0430"
+                },
+                "shortNameTranslation": {}
+              }
+            },
+            "uniqueTournament": {
+              "name": "Liga Profesional de F\u00fatbol",
+              "slug": "liga-profesional-de-futbol",
+              "primaryColorHex": "#0cbad8",
+              "secondaryColorHex": "#daa813",
+              "category": {
+                "name": "Argentina",
+                "slug": "argentina",
+                "sport": {
+                  "name": "Football",
+                  "slug": "football",
+                  "id": 1
+                },
+                "country": {
+                  "alpha2": "AR",
+                  "alpha3": "ARG",
+                  "name": "Argentina",
+                  "slug": "argentina"
+                },
+                "id": 48,
+                "flag": "argentina",
+                "alpha2": "AR",
+                "fieldTranslations": {
+                  "nameTranslation": {
+                    "ar": "\u0627\u0644\u0623\u0631\u062c\u0646\u062a\u064a\u0646",
+                    "ru": "\u0410\u0440\u0433\u0435\u043d\u0442\u0438\u043d\u0430"
+                  },
+                  "shortNameTranslation": {}
+                }
+              },
+              "userCount": 56536,
+              "hasPerformanceGraphFeature": false,
+              "country": {},
+              "id": 155,
+              "displayInverseHomeAwayTeams": false,
+              "fieldTranslations": {
+                "nameTranslation": {
+                  "ar": "\u062f\u0648\u0631\u064a \u0643\u0631\u0629 \u0627\u0644\u0642\u062f\u0645 \u0644\u0644\u0645\u062d\u062a\u0631\u0641\u064a\u0646",
+                  "bn": "\u09b2\u09c0\u0997\u09be \u09aa\u09cd\u09b0\u09cb\u09ab\u09c7\u09b6\u09a8\u09be\u09b2 \u09a1\u09c7 \u09ab\u09c1\u099f\u09ac\u09b2",
+                  "hi": "\u0932\u0940\u0917\u093e \u092a\u094d\u0930\u094b\u092b\u0947\u0936\u0928\u0932 \u0921\u0940 \u092b\u0941\u091f\u092c\u0949\u0932"
+                },
+                "shortNameTranslation": {}
+              }
+            },
+            "priority": 0,
+            "isGroup": false,
+            "id": 143625,
+            "fieldTranslations": {
+              "nameTranslation": {
+                "ar": "\u0627\u0644\u062f\u0648\u0631\u064a \u0627\u0644\u0627\u062d\u062a\u0631\u0627\u0641\u064a \u0644\u0643\u0631\u0629 \u0627\u0644\u0642\u062f\u0645\u060c \u0630\u0647\u0627\u0628",
+                "bn": "\u09aa\u09cd\u09b0\u09bf\u09ae\u09c7\u09b0\u09be \u098f\u09b2\u09aa\u09bf\u098f\u09ab, \u0985\u09cd\u09af\u09be\u09aa\u09be\u09b0\u09cd\u09a4\u09c1\u09b0\u09be",
+                "hi": "\u092a\u094d\u0930\u093e\u0907\u092e\u0947\u0930\u093e \u090f\u0932\u092a\u0940\u090f\u092b, \u090f\u092a\u0930\u094d\u091f\u0941\u0930\u093e"
+              },
+              "shortNameTranslation": {}
+            }
+          },
+          "name": "Promedios 2026",
+          "updatedAtTimestamp": 1772152029
+        }
+      ],
+      "hasHomeAwayStandings": true,
+      "hasEvents": true,
+      "hasCupTree": true
+    }
+  }
+]

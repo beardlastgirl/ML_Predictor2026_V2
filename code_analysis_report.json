@@ -1,0 +1,341 @@
+{
+  "analysis_date": "2026-03-01T09:58:00-08:00",
+  "file_path": "c:\\Scripts\\ML_Predictor2026_V2\\main.py",
+  "total_issues": 48,
+  "issues_by_severity": {
+    "error": 40,
+    "warning": 7,
+    "info": 1
+  },
+  "issues_by_category": {
+    "line_length": 16,
+    "import_organization": 7,
+    "undefined_variables": 11,
+    "unused_variables": 3,
+    "function_calls": 1,
+    "f_string_issues": 1,
+    "exception_handling": 2,
+    "module_size": 1,
+    "spelling": 2
+  },
+  "detailed_issues": [
+    {
+      "type": "line_length",
+      "severity": "error",
+      "line": 10,
+      "message": "line too long (84 > 79 characters)",
+      "code": "Purpose:\\n- Train a gradient-boosted classifier (LightGBM or CatBoost) enhanced with\\n  Poisson distribution-based goal modeling for Liga Profesional Argentina."
+    },
+    {
+      "type": "import_organization",
+      "severity": "error", 
+      "line": 39,
+      "message": "module level import not at top of file",
+      "code": "import matplotlib.pyplot as plt"
+    },
+    {
+      "type": "import_organization",
+      "severity": "error",
+      "line": 40,
+      "message": "module level import not at top of file", 
+      "code": "import numpy as np"
+    },
+    {
+      "type": "import_organization",
+      "severity": "error",
+      "line": 41,
+      "message": "module level import not at top of file",
+      "code": "import pandas as pd"
+    },
+    {
+      "type": "import_organization",
+      "severity": "error",
+      "line": 42,
+      "message": "module level import not at top of file",
+      "code": "from catboost import CatBoostClassifier"
+    },
+    {
+      "type": "import_organization",
+      "severity": "error",
+      "line": 43,
+      "message": "module level import not at top of file",
+      "code": "from lightgbm import LGBMClassifier"
+    },
+    {
+      "type": "import_organization",
+      "severity": "error",
+      "line": 44,
+      "message": "module level import not at top of file",
+      "code": "from scipy.stats import poisson"
+    },
+    {
+      "type": "import_organization",
+      "severity": "error",
+      "line": 45,
+      "message": "module level import not at top of file",
+      "code": "from sklearn.metrics import accuracy_score, log_loss"
+    },
+    {
+      "type": "import_organization",
+      "severity": "error",
+      "line": 46,
+      "message": "module level import not at top of file",
+      "code": "from sklearn.model_selection import TimeSeriesSplit"
+    },
+    {
+      "type": "line_length",
+      "severity": "error",
+      "line": 217,
+      "message": "line too long (83 > 79 characters)",
+      "code": "\"played\": row.get(\"matches\", row.get(\"played\", 0)),"
+    },
+    {
+      "type": "line_length",
+      "severity": "error",
+      "line": 227,
+      "message": "line too long (80 > 79 characters)",
+      "code": "\"goal_difference\": row.get(\"goalDifference\", 0),"
+    },
+    {
+      "type": "line_length",
+      "severity": "error",
+      "line": 271,
+      "message": "line too long (87 > 79 characters)",
+      "code": "return str(name).strip().upper().replace(\".\", \"\").replace(\"-\", \" \").replace(\"  \", \" \")"
+    },
+    {
+      "type": "line_length",
+      "severity": "error",
+      "line": 373,
+      "message": "line too long (81 > 79 characters)",
+      "code": "def calculate_expected_goals(elo_home, elo_away, avg_gf_home, avg_gf_away, avg_ga_home, avg_ga_away):"
+    },
+    {
+      "type": "line_length",
+      "severity": "error",
+      "line": 467,
+      "message": "line too long (89 > 79 characters)",
+      "code": "def calculate_poisson_features(elo_home, elo_away, avg_gf_home, avg_gf_away, avg_ga_home, avg_ga_away):"
+    },
+    {
+      "type": "line_length",
+      "severity": "error",
+      "line": 565,
+      "message": "line too long (85 > 79 characters)",
+      "code": "\"Home_Avg_GF\": home_stats.get('avg_gf', 1.0),"
+    },
+    {
+      "type": "line_length",
+      "severity": "error",
+      "line": 566,
+      "message": "line too long (85 > 79 characters)",
+      "code": "\"Home_Avg_GA\": home_stats.get('avg_ga', 1.0),"
+    },
+    {
+      "type": "line_length",
+      "severity": "error",
+      "line": 660,
+      "message": "line too long (92 > 79 characters)",
+      "code": "def predict_gameweek(fixtures_df, elo_ratings, model, features, df_mean=None, historical_matches=None):"
+    },
+    {
+      "type": "undefined_variables",
+      "severity": "error",
+      "line": 754,
+      "message": "undefined name 'sofascore_data'",
+      "code": "if sofascore_data:"
+    },
+    {
+      "type": "undefined_variables",
+      "severity": "error",
+      "line": 757,
+      "message": "undefined name 'sofascore_data'",
+      "code": "fixtures_df['Home_Sofa_Position'] = fixtures_df['Home'].apply("
+    },
+    {
+      "type": "line_length",
+      "severity": "error",
+      "line": 733,
+      "message": "line too long (84 > 79 characters)",
+      "code": "def predict_gameweek(fixtures_df, elo_ratings, model, features, df_mean=None, historical_matches=None):"
+    },
+    {
+      "type": "undefined_variables",
+      "severity": "error",
+      "line": 794,
+      "message": "Unused variable 'idx'",
+      "code": "for idx, row in fixtures_df.iterrows():"
+    },
+    {
+      "type": "line_length",
+      "severity": "error",
+      "line": 941,
+      "message": "line too long (84 > 79 characters)",
+      "code": "sorted_elo = sorted(elo_ratings.items(), key=lambda x: x[1], reverse=True)[:5]"
+    },
+    {
+      "type": "line_length",
+      "severity": "error",
+      "line": 962,
+      "message": "line too long (81 > 79 characters)",
+      "code": "print(f\"  {team}: {rating:.0f}\")"
+    },
+    {
+      "type": "line_length",
+      "severity": "error",
+      "line": 1021,
+      "message": "line too long (88 > 79 characters)",
+      "code": "log_info(f\"  Fold {fold}: train {train_dates.min().date()} to {train_dates.max().date()}, \""
+    },
+    {
+      "type": "line_length",
+      "severity": "error",
+      "line": 1063,
+      "message": "line too long (82 > 79 characters)",
+      "code": "f\"val {val_dates.min().date()} to {val_dates.max().date()} -> Acc: {acc:.3f}, LL: {ll:.3f}\""
+    },
+    {
+      "type": "line_length",
+      "severity": "error",
+      "line": 1234,
+      "message": "line too long (85 > 79 characters)",
+      "code": "\"coral\" if \"Poisson\" in f or \"xG\" in f else \"steelblue\""
+    },
+    {
+      "type": "line_length",
+      "severity": "error",
+      "line": 1239,
+      "message": "line too long (83 > 79 characters)",
+      "code": "plt.figure(figsize=(12, 8))"
+    },
+    {
+      "type": "line_length",
+      "severity": "error",
+      "line": 1271,
+      "message": "line too long (81 > 79 characters)",
+      "code": "if s_upper.startswith('FECHA') or s_upper.startswith('CANTIDAD'):"
+    },
+    {
+      "type": "function_calls",
+      "severity": "error",
+      "line": 1326,
+      "message": "Too many positional arguments for function call",
+      "code": "fixtures = predict_gameweek(fixtures, elo_ratings, model, features, df_mean, df_std, matches, sofascore_data)"
+    },
+    {
+      "type": "line_length",
+      "severity": "error",
+      "line": 1382,
+      "message": "line too long (86 > 79 characters)",
+      "code": "f.write(f\"Confianza: {confidence} (Elo: {elo_diff:+.0f}, Poisson: {poisson_prob:.0%})\\n\\n\")"
+    },
+    {
+      "type": "line_length",
+      "severity": "error",
+      "line": 1392,
+      "message": "line too long (86 > 79 characters)",
+      "code": "f.write(f\"Partidos predichos: {len(fixtures) if not fixtures.empty else 0}\\n\")"
+    },
+    {
+      "type": "line_length",
+      "severity": "error",
+      "line": 1403,
+      "message": "line too long (83 > 79 characters)",
+      "code": "f.write(\"Nota: Este modelo usa distribucion Poisson para modelar goles.\\n\")"
+    },
+    {
+      "type": "f_string_issues",
+      "severity": "error",
+      "line": 1416,
+      "message": "f-string is missing placeholders",
+      "code": "log_info(f\"\\n=== Sample Predictions ===\")"
+    },
+    {
+      "type": "exception_handling",
+      "severity": "warning",
+      "line": 172,
+      "message": "Catching too general exception Exception",
+      "code": "except Exception as e:"
+    },
+    {
+      "type": "exception_handling",
+      "severity": "warning",
+      "line": 250,
+      "message": "Catching too general exception Exception",
+      "code": "except Exception as e:"
+    },
+    {
+      "type": "exception_handling",
+      "severity": "warning",
+      "line": 1038,
+      "message": "Catching too general exception Exception",
+      "code": "except Exception as e:"
+    },
+    {
+      "type": "module_size",
+      "severity": "info",
+      "line": 1,
+      "message": "Too many lines in module (1454/1000)",
+      "code": "Entire file"
+    },
+    {
+      "type": "spelling",
+      "severity": "info",
+      "line": 6,
+      "message": "\"Liga\": Unknown word.",
+      "code": "Liga Profesional Argentina"
+    },
+    {
+      "type": "spelling",
+      "severity": "info",
+      "line": 6,
+      "message": "\"Profesional\": Misspelled word.",
+      "code": "Liga Profesional Argentina"
+    }
+  ],
+  "recommended_fixes": [
+    {
+      "priority": "critical",
+      "category": "undefined_variables",
+      "description": "Fix undefined 'sofascore_data' variable references",
+      "affected_lines": [754, 757, 760, 763, 766, 770, 773, 776, 779, 781],
+      "solution": "Add sofascore_data parameter to predict_gameweek function or remove references"
+    },
+    {
+      "priority": "high",
+      "category": "function_calls",
+      "description": "Fix function call with too many arguments",
+      "affected_lines": [1326],
+      "solution": "Remove df_std parameter from predict_gameweek call"
+    },
+    {
+      "priority": "medium",
+      "category": "line_length",
+      "description": "Break long lines into multiple lines",
+      "affected_lines": [10, 217, 227, 271, 373, 467, 565, 566, 660, 733, 941, 962, 1021, 1063, 1234, 1239, 1271, 1382, 1392, 1403],
+      "solution": "Use line continuation or reformat expressions"
+    },
+    {
+      "priority": "medium",
+      "category": "import_organization",
+      "description": "Move all imports to top of file",
+      "affected_lines": [39, 40, 41, 42, 43, 44, 45, 46],
+      "solution": "Consolidate imports in proper order at file beginning"
+    },
+    {
+      "priority": "low",
+      "category": "unused_variables",
+      "description": "Remove or use unused variables",
+      "affected_lines": [794],
+      "solution": "Remove unused idx variable or use it in loop"
+    },
+    {
+      "priority": "low",
+      "category": "f_string_issues",
+      "description": "Fix f-string without placeholders",
+      "affected_lines": [1416],
+      "solution": "Use regular string instead of f-string"
+    }
+  ],
+  "summary": "The main.py file has 48 linting issues with 40 errors. Critical issues include undefined variable references and function call problems. The script runs but has code quality issues that should be addressed for maintainability."
+}

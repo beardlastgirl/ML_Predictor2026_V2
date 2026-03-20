@@ -1,0 +1,7 @@
+description = "Generates inline documentation and updates the README."
+prompt = """
+Analyze the current file or directory. 
+1. Add clear docstrings and comments to all functions and classes.
+2. Update the project README.md if new features or changes were detected.
+Ensure the documentation follows standard industry conventions.
+"""

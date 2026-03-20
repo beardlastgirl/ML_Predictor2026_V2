@@ -1,0 +1,185 @@
+# Team Name Glossary for Liga Profesional Argentina
+# 
+# Purpose: Map team name variations to normalized names for consistent data processing
+# Format: Source Name -> Normalized Name
+# Also supports: Source Name = Normalized Name or Source Name : Normalized Name
+#
+# Rules:
+# - Lines starting with # are comments
+# - Matching is case-insensitive
+# - Normalized names should match those in ARG.csv (after normalization)
+#
+# Last updated: 2026-03-01
+
+# ========================================
+# Common Variations - Buenos Aires Teams
+# ========================================
+
+Boca Jr -> BOCA JUNIORS
+Boca Jrs -> BOCA JUNIORS
+CA Boca Juniors -> BOCA JUNIORS
+Club Atletico Boca Juniors -> BOCA JUNIORS
+
+River -> RIVER PLATE
+CA River Plate -> RIVER PLATE
+Club Atletico River Plate -> RIVER PLATE
+River Plate -> RIVER PLATE
+
+Racing -> RACING CLUB
+Racing Club de Avellaneda -> RACING CLUB
+Racing Avellaneda -> RACING CLUB
+
+Independiente -> INDEPENDIENTE
+CA Independiente -> INDEPENDIENTE
+Club Atletico Independiente -> INDEPENDIENTE
+Ind -> INDEPENDIENTE
+
+San Lorenzo -> SAN LORENZO
+San Lorenzo de Almagro -> SAN LORENZO
+Club Atletico San Lorenzo de Almagro -> SAN LORENZO
+CASLA -> SAN LORENZO
+
+Huracan -> HURACAN
+Huracán -> HURACAN
+CA Huracan -> HURACAN
+Club Atletico Huracan -> HURACAN
+
+Argentinos -> ARGENTINOS JRS
+Argentinos Jrs -> ARGENTINOS JRS
+Argentinos Jr -> ARGENTINOS JRS
+AA Argentinos Juniors -> ARGENTINOS JRS
+ARG JUNIORS -> ARGENTINOS JRS
+Argentinos Juniors -> ARGENTINOS JRS
+Club Atletico Argentinos Juniors -> ARGENTINOS JRS
+
+Velez -> VELEZ SARSFIELD
+Vélez -> VELEZ SARSFIELD
+Velez Sarsfield -> VELEZ SARSFIELD
+Vélez Sarsfield -> VELEZ SARSFIELD
+CA Velez Sarsfield -> VELEZ SARSFIELD
+
+# ========================================
+# Interior Teams
+# ========================================
+
+Newells -> NEWELLS OLD BOYS
+Newell's -> NEWELLS OLD BOYS
+Newell's Old Boys -> NEWELLS OLD BOYS
+NEWELL'S OB -> NEWELLS OLD BOYS
+NOB -> NEWELLS OLD BOYS
+Club Atletico Newell's Old Boys -> NEWELLS OLD BOYS
+
+Rosario Central -> ROSARIO CENTRAL
+Central -> ROSARIO CENTRAL
+RC -> ROSARIO CENTRAL
+Club Atletico Rosario Central -> ROSARIO CENTRAL
+
+Gimnasia -> GIMNASIA LP
+Gimnasia LP -> GIMNASIA LP
+Gimnasia y Esgrima La Plata -> GIMNASIA LP
+Gimnasia y Esgrima -> GIMNASIA LP
+GELP -> GIMNASIA LP
+GIMNASIA–LP -> GIMNASIA LP
+Club de Gimnasia y Esgrima La Plata -> GIMNASIA LP
+
+Estudiantes -> ESTUDIANTES LP
+Estudiantes LP -> ESTUDIANTES LP
+Estudiantes de La Plata -> ESTUDIANTES LP
+EDLP -> ESTUDIANTES LP
+ESTUDIANTES–LP -> ESTUDIANTES LP
+Club Atletico Estudiantes de La Plata -> ESTUDIANTES LP
+
+Talleres -> TALLERES CORDOBA
+Talleres Cordoba -> TALLERES CORDOBA
+Talleres Córdoba -> TALLERES CORDOBA
+Talleres de Cordoba -> TALLERES CORDOBA
+Club Atletico Talleres -> TALLERES CORDOBA
+
+Belgrano -> BELGRANO
+Belgrano Cordoba -> BELGRANO
+Belgrano Córdoba -> BELGRANO
+Club Belgrano -> BELGRANO
+
+Instituto -> INSTITUTO
+Instituto Cordoba -> INSTITUTO
+Instituto Córdoba -> INSTITUTO
+Instituto ACC -> INSTITUTO
+
+Colon -> COLON SANTA FE
+Colón -> COLON SANTA FE
+Colon Santa Fe -> COLON SANTA FE
+Colón de Santa Fe -> COLON SANTA FE
+Colon Santa FE -> COLON SANTA FE
+
+Union -> UNION DE SANTA FE
+Unión -> UNION DE SANTA FE
+Union Santa Fe -> UNION DE SANTA FE
+Unión de Santa Fe -> UNION DE SANTA FE
+Club Atletico Union -> UNION DE SANTA FE
+
+Lanus -> LANUS
+Lanús -> LANUS
+CA Lanus -> LANUS
+Club Atletico Lanús -> LANUS
+
+Banfield -> BANFIELD
+CA Banfield -> BANFIELD
+Club Atletico Banfield -> BANFIELD
+
+# ========================================
+# Other Teams
+# ========================================
+
+Tigre -> TIGRE
+CA Tigre -> TIGRE
+Club Atletico Tigre -> TIGRE
+
+Defensa -> DEFENSA Y JUSTICIA
+Defensa y Justicia -> DEFENSA Y JUSTICIA
+DyJ -> DEFENSA Y JUSTICIA
+DEFENSA Y JUST -> DEFENSA Y JUSTICIA
+Club Social y Deportivo Defensa y Justicia -> DEFENSA Y JUSTICIA
+
+Platense -> PLATENSE
+CA Platense -> PLATENSE
+Club Atletico Platense -> PLATENSE
+
+Arsenal -> ARSENAL SARANDI
+Arsenal Sarandi -> ARSENAL SARANDI
+Arsenal de Sarandi -> ARSENAL SARANDI
+
+Barracas -> BARRACAS CENTRAL
+Barracas Central -> BARRACAS CENTRAL
+Club Atletico Barracas Central -> BARRACAS CENTRAL
+
+Sarmiento -> SARMIENTO JUNIN
+Sarmiento Junin -> SARMIENTO JUNIN
+Sarmiento Junín -> SARMIENTO JUNIN
+Club Atletico Sarmiento -> SARMIENTO JUNIN
+
+Central Cordoba -> CENTRAL CORDOBA
+Central Córdoba -> CENTRAL CORDOBA
+Central Cordoba SdE -> CENTRAL CORDOBA
+Central Córdoba Santiago -> CENTRAL CORDOBA
+CEN CÓRDOBA–SDE -> CENTRAL CORDOBA
+Club Atletico Central Córdoba -> CENTRAL CORDOBA
+
+Godoy Cruz -> GODOY CRUZ
+Godoy Cruz Antonio Tomba -> GODOY CRUZ
+
+Atletico Tucuman -> ATL TUCUMAN
+Atlético Tucumán -> ATL TUCUMAN
+ATLÉ TUCUMÁN -> ATL TUCUMAN
+Atl Tucuman -> ATL TUCUMAN
+Club Atletico Tucumán -> ATL TUCUMAN
+
+Independ Rivadavia -> IND RIVADAVIA
+Independiente Rivadavia -> IND RIVADAVIA
+Ind Rivadavia -> IND RIVADAVIA
+
+Riestra -> DEP RIESTRA
+Deportivo Riestra -> DEP RIESTRA
+Club Deportivo Riestra -> DEP RIESTRA
+
+Aldosivi -> ALDOSIVI
+Club Atletico Aldosivi -> ALDOSIVI

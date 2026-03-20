@@ -1,0 +1,29 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python:*)",
+      "Bash(pip install:*)",
+      "Bash(..venvScriptsActivate.ps1:*)",
+      "Bash(C:/Scripts/ML_Predictor2026_V2/.venv/Scripts/python.exe:*)",
+      "Bash(./.venv/Scripts/python.exe:*)",
+      "mcp__playwright__browser_snapshot",
+      "mcp__playwright__browser_evaluate",
+      "mcp__playwright__browser_take_screenshot",
+      "mcp__playwright__browser_click",
+      "mcp__playwright__browser_navigate",
+      "mcp__playwright__browser_close",
+      "Bash(./.venv/Scripts/pip.exe install:*)",
+      "WebFetch(domain:docs.apify.com)",
+      "Bash(ls:*)",
+      "Bash(powershell:*)",
+      "Bash(bash:*)",
+      "Bash(.venv/Scripts/python.exe:*)",
+      "Bash(start:*)",
+      "Bash(cd:*)",
+      "WebFetch(domain:footystats.org)",
+      "Skill(gsd:map-codebase)",
+      "Bash(git add:*)",
+      "Bash(node:*)"
+    ]
+  }
+}

@@ -8,16 +8,16 @@ A modular, agent-based football prediction system for Argentine leagues (Liga Pr
 
 Deliver match outcome (1X2) and scoreline predictions that outperform naive baselines with realistic probability distributions and data-driven insights.
 
-## Current Milestone: v2.0 Initialization & Alignment
+## Current Milestone: v2.0 — Initialization & Alignment
 
-**Goal:** Re-initialize the project foundation to ensure a clean path for engine calibration, data quality improvements, and agent architecture expansion.
+**Goal:** Complete engine calibration, data quality improvements, and lay groundwork for agent architecture expansion.
 
 **Target features:**
-- Betting odds integration (closing odds for calibration)
-- Time-series validation (preventing data leakage)
-- Poisson calibration (realistic scoreline spread)
-- Coordinator-Worker agent architecture
-- Advanced feature engineering (form, xG, congestion)
+- **DATA-01**: Betting odds integration (closing odds for calibration)
+- **DATA-02**: Time-series validation (preventing data leakage)
+- **POISS-01**: Poisson calibration (realistic scoreline spread)
+- **MODEL-01**: Baseline performance comparisons (naive, bookie models)
+- **AGENT-01**: Coordinator-Worker agent architecture
 
 ## Requirements
 
@@ -52,4 +52,4 @@ Deliver match outcome (1X2) and scoreline predictions that outperform naive base
 | Time-series Validation | Crucial for avoiding look-ahead bias in sports data | — Planned |
 
 ---
-*Last updated: 2026-03-19 after initialization*
+*Last updated: 2026-03-21 — Milestone v2.0 requirements phase started*

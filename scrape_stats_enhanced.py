@@ -663,6 +663,7 @@ def main():
     log_info(f"Page timeout: {page_timeout}s")
     log_info(f"Force continue after solve: {force_continue_after_solve}")
     
+    driver = None
     try:
         # Fetch page with Selenium (pass the force flag so wait routine can use it)
         page_source, driver = fetch_page_with_selenium(url, headless=headless, page_timeout=page_timeout, force_continue_after_solve=force_continue_after_solve)
@@ -674,10 +675,6 @@ def main():
         # Extract tables
         log_info("Extracting tables from page...")
         tables = extract_tables_from_html(page_source)
-        
-        # Close driver
-        driver.quit()
-        log_info("Browser closed")
         
         if not tables:
             log_error("No tables found on the page")
@@ -747,6 +744,13 @@ def main():
         import traceback
         traceback.print_exc()
         sys.exit(1)
+    finally:
+        if driver is not None:
+            try:
+                driver.quit()
+                log_info("Browser closed")
+            except Exception as e:
+                log_warning(f"Error closing browser: {e}")
 
 
 if __name__ == '__main__':

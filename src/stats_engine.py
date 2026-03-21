@@ -29,6 +29,11 @@ def update_elo(home_elo, away_elo, result):
 
     home_elo_new = home_elo + K_FACTOR * (home_score - exp_home)
     away_elo_new = away_elo + K_FACTOR * (away_score - exp_away)
+    
+    # Bound Elo ratings to reasonable range (800-2800)
+    home_elo_new = np.clip(home_elo_new, 800, 2800)
+    away_elo_new = np.clip(away_elo_new, 800, 2800)
+    
     return home_elo_new, away_elo_new
 
 def calculate_expected_goals(
@@ -105,9 +110,13 @@ def calculate_outcome_probabilities(xG_home, xG_away, max_goals=MAX_GOALS):
 
     # Re-normalize to ensure probabilities sum to 1
     total = p_home_win + p_draw_calibrated + p_away_win
-    p_home_win /= total
-    p_draw_calibrated /= total
-    p_away_win /= total
+    if total > 1e-10:  # Avoid numerical instability
+        p_home_win /= total
+        p_draw_calibrated /= total
+        p_away_win /= total
+    else:
+        # Fallback to uniform distribution if probabilities are too small
+        p_home_win = p_draw_calibrated = p_away_win = 1.0 / 3.0
 
     expected_home_goals = (h_idx * grid).sum()
     expected_away_goals = (a_idx * grid).sum()

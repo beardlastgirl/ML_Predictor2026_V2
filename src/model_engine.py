@@ -49,10 +49,19 @@ def predict_gameweek(fixtures_df, elo_ratings, model, features, df_mean=None, hi
 
     if sofascore_data:
         for side in ["Home", "Away"]:
-            fixtures_df[f"{side}_Sofa_Position"] = fixtures_df[side].apply(lambda x: sofascore_data.get(x.upper(), {}).get("position", 28))
-            fixtures_df[f"{side}_Sofa_Points"] = fixtures_df[side].apply(lambda x: sofascore_data.get(x.upper(), {}).get("points", 0))
-            fixtures_df[f"{side}_Sofa_GF"] = fixtures_df[side].apply(lambda x: sofascore_data.get(x.upper(), {}).get("goals_for", 0))
-            fixtures_df[f"{side}_Sofa_GA"] = fixtures_df[side].apply(lambda x: sofascore_data.get(x.upper(), {}).get("goals_against", 0))
+            def get_sofa_value(team_name, key, default=None):
+                """Safely get Sofascore data with fallback."""
+                try:
+                    if isinstance(team_name, str):
+                        return sofascore_data.get(team_name.upper(), {}).get(key, default)
+                    return default
+                except (AttributeError, TypeError):
+                    return default
+            
+            fixtures_df[f"{side}_Sofa_Position"] = fixtures_df[side].apply(lambda x: get_sofa_value(x, "position", 28))
+            fixtures_df[f"{side}_Sofa_Points"] = fixtures_df[side].apply(lambda x: get_sofa_value(x, "points", 0))
+            fixtures_df[f"{side}_Sofa_GF"] = fixtures_df[side].apply(lambda x: get_sofa_value(x, "goals_for", 0))
+            fixtures_df[f"{side}_Sofa_GA"] = fixtures_df[side].apply(lambda x: get_sofa_value(x, "goals_against", 0))
         log_info(f"Added Sofascore features for {len(sofascore_data)} teams")
     
     for side in ["Home", "Away"]:
@@ -71,7 +80,7 @@ def predict_gameweek(fixtures_df, elo_ratings, model, features, df_mean=None, hi
             "Away_Avg_GA": a_stats.get("avg_ga", df_mean.get("Away_Avg_GA", 1.0) if df_mean else 1.0),
             "Away_Form": a_stats.get("form", df_mean.get("Away_Form", 0.5) if df_mean else 0.5),
         })
-    fixtures_df = pd.concat([fixtures_df, pd.DataFrame(team_stats_list, index=fixtures_df.index)], axis=1)
+    fixtures_df = pd.concat([fixtures_df, pd.DataFrame(team_stats_list, index=fixtures_df.index).reset_index(drop=True)], axis=1)
     
     poisson_features = []
     for _, row in fixtures_df.iterrows():

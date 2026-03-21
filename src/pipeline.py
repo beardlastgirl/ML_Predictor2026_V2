@@ -91,12 +91,25 @@ def load_data(
 
     try:
         matches = pd.read_csv(historical_path)
+        
+        # Validate required columns exist
+        required_cols = ["Home", "Away", "Res", "Date"]
+        missing_cols = [col for col in required_cols if col not in matches.columns]
+        if missing_cols:
+            raise ValueError(f"Missing required columns: {missing_cols}")
+        
         matches = matches.dropna(subset=["Home", "Away", "Res"])
         matches = matches.dropna(subset=["Date"])
         matches["Date"] = pd.to_datetime(matches["Date"], dayfirst=True, errors="coerce")
         matches["Home"] = matches["Home"].map(lambda x: normalize_team_name(x, glossary))
         matches["Away"] = matches["Away"].map(lambda x: normalize_team_name(x, glossary))
         matches["Res"] = matches["Res"].map(RESULT_ENCODING)
+        
+        # Validate result encoding - warn if any unmapped results
+        if matches["Res"].isna().any():
+            unmapped_count = matches["Res"].isna().sum()
+            log_warning(f"{unmapped_count} matches have invalid result codes (not H/D/A)")
+        
         matches = matches.sort_values("Date").reset_index(drop=True)
         log_ok(f"Historical matches loaded: {len(matches)}")
     except Exception as e:
@@ -291,19 +304,23 @@ def write_outputs(
     feature_importance_path = os.path.join(
         output_dir, f"feature_importance_{today}.png"
     )
-    plt.figure(figsize=(12, 8))
-    plt.barh(
-        feature_importance["feature"],
-        feature_importance["importance"],
-        color=[
-            "coral" if "Poisson" in f or "xG" in f else "steelblue"
-            for f in feature_importance["feature"]
-        ],
-    )
-    plt.gca().invert_yaxis()
-    plt.tight_layout()
-    plt.savefig(feature_importance_path, dpi=150)
-    plt.close()
+    fig = None
+    try:
+        fig = plt.figure(figsize=(12, 8))
+        plt.barh(
+            feature_importance["feature"],
+            feature_importance["importance"],
+            color=[
+                "coral" if "Poisson" in f or "xG" in f else "steelblue"
+                for f in feature_importance["feature"]
+            ],
+        )
+        plt.gca().invert_yaxis()
+        plt.tight_layout()
+        plt.savefig(feature_importance_path, dpi=150)
+    finally:
+        if fig is not None:
+            plt.close(fig)
     log_ok(f"Feature importance chart saved: {feature_importance_path}")
 
     output_file = os.path.join(output_dir, f"Resultados_{today}.txt")
@@ -313,7 +330,8 @@ def write_outputs(
         )
         total_goals = 0
         for _, row in fixtures.iterrows():
-            hg, ag = int(row["Pred_Home_Goals"]), int(row["Pred_Away_Goals"])
+            hg = int(np.clip(row.get("Pred_Home_Goals", 0), 0, 6))
+            ag = int(np.clip(row.get("Pred_Away_Goals", 0), 0, 6))
             total_goals += hg + ag
             f.write(
                 f"{row.get('Raw_Home', row['Home'])} - {row.get('Raw_Away', row['Away'])}\n"

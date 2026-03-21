@@ -27,7 +27,7 @@ def get_team_trailing_stats(history, window):
             points += 3
         elif gf == ga:
             points += 1
-    form = points / len(recent)
+    form = points / len(recent) if len(recent) > 0 else np.nan
     return {
         "avg_gf": avg_gf,
         "avg_ga": avg_ga,

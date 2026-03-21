@@ -1,5 +1,5 @@
 {
-  "scraped_at": "2026-03-19T22:13:01.082043",
+  "scraped_at": "2026-03-20T15:01:16.947753",
   "source": "sofascore",
   "source_type": "apify",
   "url": "https://www.sofascore.com/football/tournament/argentina/liga-profesional-de-futbol/155",
@@ -37,7 +37,7 @@
             "shortNameTranslation": {}
           }
         },
-        "userCount": 57239,
+        "userCount": 57245,
         "tier": 1,
         "titleHolder": {
           "name": "Estudiantes de La Plata",
@@ -49,7 +49,7 @@
             "slug": "football",
             "id": 1
           },
-          "userCount": 41675,
+          "userCount": 41689,
           "nameCode": "ELP",
           "disabled": false,
           "national": false,
@@ -155,7 +155,7 @@
               "slug": "football",
               "id": 1
             },
-            "userCount": 252343,
+            "userCount": 252463,
             "nameCode": "RIV",
             "disabled": false,
             "national": false,
@@ -397,7 +397,7 @@
               "shortNameTranslation": {}
             }
           },
-          "userCount": 57239,
+          "userCount": 57245,
           "id": 155,
           "displayInverseHomeAwayTeams": false,
           "fieldTranslations": {
@@ -473,7 +473,7 @@
                   "slug": "football",
                   "id": 1
                 },
-                "userCount": 35461,
+                "userCount": 35457,
                 "nameCode": "VEL",
                 "disabled": false,
                 "national": false,
@@ -527,7 +527,7 @@
                   "slug": "football",
                   "id": 1
                 },
-                "userCount": 41675,
+                "userCount": 41689,
                 "nameCode": "ELP",
                 "disabled": false,
                 "national": false,
@@ -580,7 +580,7 @@
                   "slug": "football",
                   "id": 1
                 },
-                "userCount": 16353,
+                "userCount": 16338,
                 "nameCode": "UNI",
                 "disabled": false,
                 "national": false,
@@ -634,7 +634,7 @@
                   "slug": "football",
                   "id": 1
                 },
-                "userCount": 21720,
+                "userCount": 21698,
                 "nameCode": "DYJ",
                 "disabled": false,
                 "national": false,
@@ -687,7 +687,7 @@
                   "slug": "football",
                   "id": 1
                 },
-                "userCount": 36102,
+                "userCount": 36078,
                 "nameCode": "LAN",
                 "disabled": false,
                 "national": false,
@@ -741,7 +741,7 @@
                   "slug": "football",
                   "id": 1
                 },
-                "userCount": 27728,
+                "userCount": 27705,
                 "nameCode": "CAT",
                 "disabled": false,
                 "national": false,
@@ -795,7 +795,7 @@
                   "slug": "football",
                   "id": 1
                 },
-                "userCount": 270577,
+                "userCount": 270718,
                 "nameCode": "BOC",
                 "disabled": false,
                 "national": false,
@@ -848,7 +848,7 @@
                   "slug": "football",
                   "id": 1
                 },
-                "userCount": 40033,
+                "userCount": 40035,
                 "nameCode": "CAI",
                 "disabled": false,
                 "national": false,
@@ -902,7 +902,7 @@
                   "slug": "football",
                   "id": 1
                 },
-                "userCount": 18276,
+                "userCount": 18312,
                 "nameCode": "PLA",
                 "national": false,
                 "type": 0,
@@ -951,7 +951,7 @@
                   "slug": "football",
                   "id": 1
                 },
-                "userCount": 30615,
+                "userCount": 30623,
                 "nameCode": "SLO",
                 "disabled": false,
                 "national": false,
@@ -1001,7 +1001,7 @@
                   "slug": "football",
                   "id": 1
                 },
-                "userCount": 18788,
+                "userCount": 18770,
                 "nameCode": "CC",
                 "disabled": false,
                 "national": false,
@@ -1051,7 +1051,7 @@
                   "slug": "football",
                   "id": 1
                 },
-                "userCount": 11784,
+                "userCount": 11777,
                 "nameCode": "IAC",
                 "national": false,
                 "type": 0,
@@ -1100,7 +1100,7 @@
                   "slug": "football",
                   "id": 1
                 },
-                "userCount": 4957,
+                "userCount": 4951,
                 "nameCode": "GEM",
                 "national": false,
                 "type": 0,
@@ -1148,7 +1148,7 @@
                   "slug": "football",
                   "id": 1
                 },
-                "userCount": 13672,
+                "userCount": 13671,
                 "nameCode": "RIE",
                 "disabled": false,
                 "national": false,
@@ -1196,7 +1196,7 @@
                   "slug": "football",
                   "id": 1
                 },
-                "userCount": 20885,
+                "userCount": 20877,
                 "nameCode": "NOB",
                 "disabled": false,
                 "national": false,
@@ -1294,7 +1294,7 @@
                   "shortNameTranslation": {}
                 }
               },
-              "userCount": 57239,
+              "userCount": 57245,
               "hasPerformanceGraphFeature": false,
               "country": {},
               "id": 155,
@@ -1342,7 +1342,7 @@
                   "slug": "football",
                   "id": 1
                 },
-                "userCount": 13552,
+                "userCount": 13565,
                 "nameCode": "IRM",
                 "national": false,
                 "type": 0,
@@ -1394,7 +1394,7 @@
                   "slug": "football",
                   "id": 1
                 },
-                "userCount": 20885,
+                "userCount": 20878,
                 "nameCode": "BEL",
                 "national": false,
                 "type": 0,
@@ -1445,7 +1445,7 @@
                   "slug": "football",
                   "id": 1
                 },
-                "userCount": 35296,
+                "userCount": 35304,
                 "nameCode": "ROS",
                 "disabled": false,
                 "national": false,
@@ -1499,7 +1499,7 @@
                   "slug": "football",
                   "id": 1
                 },
-                "userCount": 23382,
+                "userCount": 23377,
                 "nameCode": "TIG",
                 "disabled": false,
                 "national": false,
@@ -1553,7 +1553,7 @@
                   "slug": "football",
                   "id": 1
                 },
-                "userCount": 252343,
+                "userCount": 252463,
                 "nameCode": "RIV",
                 "disabled": false,
                 "national": false,
@@ -1609,7 +1609,7 @@
                   "slug": "football",
                   "id": 1
                 },
-                "userCount": 80954,
+                "userCount": 80941,
                 "nameCode": "RCS",
                 "disabled": false,
                 "national": false,
@@ -1663,7 +1663,7 @@
                   "slug": "football",
                   "id": 1
                 },
-                "userCount": 12512,
+                "userCount": 12520,
                 "nameCode": "BAR",
                 "national": false,
                 "type": 0,
@@ -1714,7 +1714,7 @@
                   "slug": "football",
                   "id": 1
                 },
-                "userCount": 13599,
+                "userCount": 13605,
                 "nameCode": "GLP",
                 "disabled": false,
                 "national": false,
@@ -1768,7 +1768,7 @@
                   "slug": "football",
                   "id": 1
                 },
-                "userCount": 27727,
+                "userCount": 27712,
                 "nameCode": "HUR",
                 "disabled": false,
                 "national": false,
@@ -1818,7 +1818,7 @@
                   "slug": "football",
                   "id": 1
                 },
-                "userCount": 27428,
+                "userCount": 27422,
                 "nameCode": "ARG",
                 "disabled": false,
                 "national": false,
@@ -1867,7 +1867,7 @@
                   "slug": "football",
                   "id": 1
                 },
-                "userCount": 14244,
+                "userCount": 14246,
                 "nameCode": "BAN",
                 "disabled": false,
                 "national": false,
@@ -1917,7 +1917,7 @@
                   "slug": "football",
                   "id": 1
                 },
-                "userCount": 9060,
+                "userCount": 9053,
                 "nameCode": "CAS",
                 "disabled": false,
                 "national": false,
@@ -1965,7 +1965,7 @@
                   "slug": "football",
                   "id": 1
                 },
-                "userCount": 17599,
+                "userCount": 17604,
                 "nameCode": "CAT",
                 "disabled": false,
                 "national": false,
@@ -2014,7 +2014,7 @@
                   "slug": "football",
                   "id": 1
                 },
-                "userCount": 9483,
+                "userCount": 9470,
                 "nameCode": "CAA",
                 "national": false,
                 "type": 0,
@@ -2061,7 +2061,7 @@
                   "slug": "football",
                   "id": 1
                 },
-                "userCount": 5386,
+                "userCount": 5380,
                 "nameCode": "RCU",
                 "disabled": false,
                 "national": false,
@@ -2160,7 +2160,7 @@
                   "shortNameTranslation": {}
                 }
               },
-              "userCount": 57239,
+              "userCount": 57245,
               "hasPerformanceGraphFeature": false,
               "country": {},
               "id": 155,
@@ -2208,7 +2208,7 @@
                   "slug": "football",
                   "id": 1
                 },
-                "userCount": 35461,
+                "userCount": 35457,
                 "nameCode": "VEL",
                 "disabled": false,
                 "national": false,
@@ -2262,7 +2262,7 @@
                   "slug": "football",
                   "id": 1
                 },
-                "userCount": 13552,
+                "userCount": 13565,
                 "nameCode": "IRM",
                 "national": false,
                 "type": 0,
@@ -2314,7 +2314,7 @@
                   "slug": "football",
                   "id": 1
                 },
-                "userCount": 20885,
+                "userCount": 20878,
                 "nameCode": "BEL",
                 "national": false,
                 "type": 0,
@@ -2365,7 +2365,7 @@
                   "slug": "football",
                   "id": 1
                 },
-                "userCount": 35296,
+                "userCount": 35304,
                 "nameCode": "ROS",
                 "disabled": false,
                 "national": false,
@@ -2419,7 +2419,7 @@
                   "slug": "football",
                   "id": 1
                 },
-                "userCount": 41675,
+                "userCount": 41689,
                 "nameCode": "ELP",
                 "disabled": false,
                 "national": false,
@@ -2472,7 +2472,7 @@
                   "slug": "football",
                   "id": 1
                 },
-                "userCount": 23382,
+                "userCount": 23377,
                 "nameCode": "TIG",
                 "disabled": false,
                 "national": false,
@@ -2526,7 +2526,7 @@
                   "slug": "football",
                   "id": 1
                 },
-                "userCount": 252343,
+                "userCount": 252463,
                 "nameCode": "RIV",
                 "disabled": false,
                 "national": false,
@@ -2582,7 +2582,7 @@
                   "slug": "football",
                   "id": 1
                 },
-                "userCount": 16353,
+                "userCount": 16338,
                 "nameCode": "UNI",
                 "disabled": false,
                 "national": false,
@@ -2636,7 +2636,7 @@
                   "slug": "football",
                   "id": 1
                 },
-                "userCount": 21720,
+                "userCount": 21698,
                 "nameCode": "DYJ",
                 "disabled": false,
                 "national": false,
@@ -2689,7 +2689,7 @@
                   "slug": "football",
                   "id": 1
                 },
-                "userCount": 80954,
+                "userCount": 80941,
                 "nameCode": "RCS",
                 "disabled": false,
                 "national": false,
@@ -2739,7 +2739,7 @@
                   "slug": "football",
                   "id": 1
                 },
-                "userCount": 36102,
+                "userCount": 36078,
                 "nameCode": "LAN",
                 "disabled": false,
                 "national": false,
@@ -2789,7 +2789,7 @@
                   "slug": "football",
                   "id": 1
                 },
-                "userCount": 27728,
+                "userCount": 27705,
                 "nameCode": "CAT",
                 "disabled": false,
                 "national": false,
@@ -2839,7 +2839,7 @@
                   "slug": "football",
                   "id": 1
                 },
-                "userCount": 12512,
+                "userCount": 12520,
                 "nameCode": "BAR",
                 "national": false,
                 "type": 0,
@@ -2886,7 +2886,7 @@
                   "slug": "football",
                   "id": 1
                 },
-                "userCount": 270577,
+                "userCount": 270718,
                 "nameCode": "BOC",
                 "disabled": false,
                 "national": false,
@@ -2935,7 +2935,7 @@
                   "slug": "football",
                   "id": 1
                 },
-                "userCount": 40033,
+                "userCount": 40035,
                 "nameCode": "CAI",
                 "disabled": false,
                 "national": false,
@@ -2985,7 +2985,7 @@
                   "slug": "football",
                   "id": 1
                 },
-                "userCount": 18276,
+                "userCount": 18312,
                 "nameCode": "PLA",
                 "national": false,
                 "type": 0,
@@ -3034,7 +3034,7 @@
                   "slug": "football",
                   "id": 1
                 },
-                "userCount": 13599,
+                "userCount": 13605,
                 "nameCode": "GLP",
                 "disabled": false,
                 "national": false,
@@ -3084,7 +3084,7 @@
                   "slug": "football",
                   "id": 1
                 },
-                "userCount": 27727,
+                "userCount": 27712,
                 "nameCode": "HUR",
                 "disabled": false,
                 "national": false,
@@ -3134,7 +3134,7 @@
                   "slug": "football",
                   "id": 1
                 },
-                "userCount": 30615,
+                "userCount": 30623,
                 "nameCode": "SLO",
                 "disabled": false,
                 "national": false,
@@ -3184,7 +3184,7 @@
                   "slug": "football",
                   "id": 1
                 },
-                "userCount": 18788,
+                "userCount": 18770,
                 "nameCode": "CC",
                 "disabled": false,
                 "national": false,
@@ -3234,7 +3234,7 @@
                   "slug": "football",
                   "id": 1
                 },
-                "userCount": 27428,
+                "userCount": 27422,
                 "nameCode": "ARG",
                 "disabled": false,
                 "national": false,
@@ -3283,7 +3283,7 @@
                   "slug": "football",
                   "id": 1
                 },
-                "userCount": 11784,
+                "userCount": 11777,
                 "nameCode": "IAC",
                 "national": false,
                 "type": 0,
@@ -3332,7 +3332,7 @@
                   "slug": "football",
                   "id": 1
                 },
-                "userCount": 14244,
+                "userCount": 14246,
                 "nameCode": "BAN",
                 "disabled": false,
                 "national": false,
@@ -3382,7 +3382,7 @@
                   "slug": "football",
                   "id": 1
                 },
-                "userCount": 9060,
+                "userCount": 9053,
                 "nameCode": "CAS",
                 "disabled": false,
                 "national": false,
@@ -3430,7 +3430,7 @@
                   "slug": "football",
                   "id": 1
                 },
-                "userCount": 4957,
+                "userCount": 4951,
                 "nameCode": "GEM",
                 "national": false,
                 "type": 0,
@@ -3478,7 +3478,7 @@
                   "slug": "football",
                   "id": 1
                 },
-                "userCount": 13672,
+                "userCount": 13671,
                 "nameCode": "RIE",
                 "disabled": false,
                 "national": false,
@@ -3526,7 +3526,7 @@
                   "slug": "football",
                   "id": 1
                 },
-                "userCount": 17599,
+                "userCount": 17604,
                 "nameCode": "CAT",
                 "disabled": false,
                 "national": false,
@@ -3575,7 +3575,7 @@
                   "slug": "football",
                   "id": 1
                 },
-                "userCount": 9483,
+                "userCount": 9470,
                 "nameCode": "CAA",
                 "national": false,
                 "type": 0,
@@ -3622,7 +3622,7 @@
                   "slug": "football",
                   "id": 1
                 },
-                "userCount": 5386,
+                "userCount": 5380,
                 "nameCode": "RCU",
                 "disabled": false,
                 "national": false,
@@ -3672,7 +3672,7 @@
                   "slug": "football",
                   "id": 1
                 },
-                "userCount": 20885,
+                "userCount": 20877,
                 "nameCode": "NOB",
                 "disabled": false,
                 "national": false,
@@ -3774,7 +3774,7 @@
                   "shortNameTranslation": {}
                 }
               },
-              "userCount": 57239,
+              "userCount": 57245,
               "hasPerformanceGraphFeature": false,
               "country": {},
               "id": 155,
@@ -3822,7 +3822,7 @@
                   "slug": "football",
                   "id": 1
                 },
-                "userCount": 270577,
+                "userCount": 270718,
                 "nameCode": "BOC",
                 "disabled": false,
                 "national": false,
@@ -3869,7 +3869,7 @@
                   "slug": "football",
                   "id": 1
                 },
-                "userCount": 252343,
+                "userCount": 252463,
                 "nameCode": "RIV",
                 "disabled": false,
                 "national": false,
@@ -3919,7 +3919,7 @@
                   "slug": "football",
                   "id": 1
                 },
-                "userCount": 35461,
+                "userCount": 35457,
                 "nameCode": "VEL",
                 "disabled": false,
                 "national": false,
@@ -3967,7 +3967,7 @@
                   "slug": "football",
                   "id": 1
                 },
-                "userCount": 80954,
+                "userCount": 80941,
                 "nameCode": "RCS",
                 "disabled": false,
                 "national": false,
@@ -4015,7 +4015,7 @@
                   "slug": "football",
                   "id": 1
                 },
-                "userCount": 35296,
+                "userCount": 35304,
                 "nameCode": "ROS",
                 "disabled": false,
                 "national": false,
@@ -4063,7 +4063,7 @@
                   "slug": "football",
                   "id": 1
                 },
-                "userCount": 27428,
+                "userCount": 27422,
                 "nameCode": "ARG",
                 "disabled": false,
                 "national": false,
@@ -4110,7 +4110,7 @@
                   "slug": "football",
                   "id": 1
                 },
-                "userCount": 36102,
+                "userCount": 36078,
                 "nameCode": "LAN",
                 "disabled": false,
                 "national": false,
@@ -4158,7 +4158,7 @@
                   "slug": "football",
                   "id": 1
                 },
-                "userCount": 40033,
+                "userCount": 40035,
                 "nameCode": "CAI",
                 "disabled": false,
                 "national": false,
@@ -4206,7 +4206,7 @@
                   "slug": "football",
                   "id": 1
                 },
-                "userCount": 41675,
+                "userCount": 41689,
                 "nameCode": "ELP",
                 "disabled": false,
                 "national": false,
@@ -4253,7 +4253,7 @@
                   "slug": "football",
                   "id": 1
                 },
-                "userCount": 27727,
+                "userCount": 27712,
                 "nameCode": "HUR",
                 "disabled": false,
                 "national": false,
@@ -4301,7 +4301,7 @@
                   "slug": "football",
                   "id": 1
                 },
-                "userCount": 27728,
+                "userCount": 27705,
                 "nameCode": "CAT",
                 "disabled": false,
                 "national": false,
@@ -4349,7 +4349,7 @@
                   "slug": "football",
                   "id": 1
                 },
-                "userCount": 16353,
+                "userCount": 16338,
                 "nameCode": "UNI",
                 "disabled": false,
                 "national": false,
@@ -4397,7 +4397,7 @@
                   "slug": "football",
                   "id": 1
                 },
-                "userCount": 12512,
+                "userCount": 12520,
                 "nameCode": "BAR",
                 "national": false,
                 "type": 0,
@@ -4442,7 +4442,7 @@
                   "slug": "football",
                   "id": 1
                 },
-                "userCount": 21720,
+                "userCount": 21698,
                 "nameCode": "DYJ",
                 "disabled": false,
                 "national": false,
@@ -4489,7 +4489,7 @@
                   "slug": "football",
                   "id": 1
                 },
-                "userCount": 13552,
+                "userCount": 13565,
                 "nameCode": "IRM",
                 "national": false,
                 "type": 0,
@@ -4535,7 +4535,7 @@
                   "slug": "football",
                   "id": 1
                 },
-                "userCount": 30615,
+                "userCount": 30623,
                 "nameCode": "SLO",
                 "disabled": false,
                 "national": false,
@@ -4583,7 +4583,7 @@
                   "slug": "football",
                   "id": 1
                 },
-                "userCount": 18276,
+                "userCount": 18312,
                 "nameCode": "PLA",
                 "national": false,
                 "type": 0,
@@ -4630,7 +4630,7 @@
                   "slug": "football",
                   "id": 1
                 },
-                "userCount": 13672,
+                "userCount": 13671,
                 "nameCode": "RIE",
                 "disabled": false,
                 "national": false,
@@ -4676,7 +4676,7 @@
                   "slug": "football",
                   "id": 1
                 },
-                "userCount": 20885,
+                "userCount": 20878,
                 "nameCode": "BEL",
                 "national": false,
                 "type": 0,
@@ -4721,7 +4721,7 @@
                   "slug": "football",
                   "id": 1
                 },
-                "userCount": 23382,
+                "userCount": 23377,
                 "nameCode": "TIG",
                 "disabled": false,
                 "national": false,
@@ -4769,7 +4769,7 @@
                   "slug": "football",
                   "id": 1
                 },
-                "userCount": 13599,
+                "userCount": 13605,
                 "nameCode": "GLP",
                 "disabled": false,
                 "national": false,
@@ -4817,7 +4817,7 @@
                   "slug": "football",
                   "id": 1
                 },
-                "userCount": 11784,
+                "userCount": 11777,
                 "nameCode": "IAC",
                 "national": false,
                 "type": 0,
@@ -4864,7 +4864,7 @@
                   "slug": "football",
                   "id": 1
                 },
-                "userCount": 18788,
+                "userCount": 18770,
                 "nameCode": "CC",
                 "disabled": false,
                 "national": false,
@@ -4912,7 +4912,7 @@
                   "slug": "football",
                   "id": 1
                 },
-                "userCount": 17599,
+                "userCount": 17604,
                 "nameCode": "CAT",
                 "disabled": false,
                 "national": false,
@@ -4960,7 +4960,7 @@
                   "slug": "football",
                   "id": 1
                 },
-                "userCount": 14244,
+                "userCount": 14246,
                 "nameCode": "BAN",
                 "disabled": false,
                 "national": false,
@@ -5008,7 +5008,7 @@
                   "slug": "football",
                   "id": 1
                 },
-                "userCount": 20885,
+                "userCount": 20877,
                 "nameCode": "NOB",
                 "disabled": false,
                 "national": false,
@@ -5055,7 +5055,7 @@
                   "slug": "football",
                   "id": 1
                 },
-                "userCount": 9060,
+                "userCount": 9053,
                 "nameCode": "CAS",
                 "disabled": false,
                 "national": false,
@@ -5100,7 +5100,7 @@
                   "slug": "football",
                   "id": 1
                 },
-                "userCount": 9483,
+                "userCount": 9470,
                 "nameCode": "CAA",
                 "national": false,
                 "type": 0,
@@ -5145,7 +5145,7 @@
                   "slug": "football",
                   "id": 1
                 },
-                "userCount": 4957,
+                "userCount": 4951,
                 "nameCode": "GEM",
                 "national": false,
                 "type": 0,
@@ -5191,7 +5191,7 @@
                   "slug": "football",
                   "id": 1
                 },
-                "userCount": 5386,
+                "userCount": 5380,
                 "nameCode": "RCU",
                 "disabled": false,
                 "national": false,
@@ -5292,7 +5292,7 @@
                   "shortNameTranslation": {}
                 }
               },
-              "userCount": 57239,
+              "userCount": 57245,
               "hasPerformanceGraphFeature": false,
               "country": {},
               "id": 155,

@@ -20,6 +20,33 @@ XG_MAX = 2.5  # Maximum xG clamp
 
 # Probability calibration
 POISSON_DRAW_ADJUSTMENT = 0.85  # Multiply draw probability to reduce draw bias
+HOME_ADVANTAGE_BOOST = 0.08  # ~8% boost to home win probability
+ML_POISSON_BLEND_RATIO = 0.6  # Ensemble: 60% ML, 40% Poisson
+
+# Draw Calibration Strategy Documentation:
+# ============================================
+# Draw probability calibration happens in multiple stages:
+#
+# 1. POISSON STAGE (stats_engine.py:92-99)
+#    - Raw Poisson gives ~30% draws (too high for Liga Profesional)
+#    - Apply POISSON_DRAW_ADJUSTMENT (0.85x) to reduce to ~26%
+#    - Redistribute remainder proportionally to home/away
+#    - Add HOME_ADVANTAGE_BOOST (8%) to home win
+#
+# 2. ENSEMBLE STAGE (model_engine.py:115-120)
+#    - Blend ML model (60%) with Poisson (40%)
+#    - Poisson is better calibrated for draw outcomes
+#    - ML captures team-specific patterns
+#    - Final output: calibrated probabilities that sum to 1.0
+#
+# 3. PREDICTION STAGE (model_engine.py:143-165)
+#    - Use blended probabilities to choose prediction
+#    - Consider confidence thresholds
+#    - Adjust predicted goals based on outcome
+#
+# To adjust draw behavior globally:
+# - Change POISSON_DRAW_ADJUSTMENT in config.py
+# - All three stages will automatically apply it
 
 # Result encoding
 RESULT_ENCODING = {"H": 2, "D": 1, "A": 0}  # Home Win, Draw, Away Win

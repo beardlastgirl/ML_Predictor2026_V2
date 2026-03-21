@@ -108,6 +108,17 @@ def predict_gameweek(fixtures_df, elo_ratings, model, features, df_mean=None, hi
 
     # Hybrid prediction: blend ML probabilities with Poisson probabilities
     # This helps reduce draw bias by incorporating Poisson-derived outcomes
+    # 
+    # DRAW CALIBRATION - SECONDARY STAGE (ENSEMBLE):
+    # The Poisson probabilities have already been calibrated in stats_engine.py,
+    # and the ML model was trained to predict outcome probabilities.
+    # By blending them (60% ML, 40% Poisson), we get:
+    # - ML: Captures team-specific patterns, historical performance
+    # - Poisson: Better calibrated for realistic match distributions
+    # - Result: Balanced predictions that benefit from both approaches
+    #
+    # The blend ratio (60/40) can be tuned via config.py ML_POISSON_BLEND_RATIO
+    #
     poisson_home = fixtures_df["Poisson_Home_Win"].values
     poisson_draw = fixtures_df["Poisson_Draw"].values
     poisson_away = fixtures_df["Poisson_Away_Win"].values

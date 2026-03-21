@@ -69,6 +69,22 @@ def calculate_outcome_probabilities(xG_home, xG_away, max_goals=MAX_GOALS):
 
     Applies calibration adjustment to reduce draw bias toward league averages.
     Liga Profesional typical: ~45% Home, ~33% Draw, ~22% Away
+    
+    DRAW CALIBRATION APPLIED HERE:
+    This is the PRIMARY stage for draw calibration. The calculation:
+    1. Generates Poisson grid of all possible scorelines
+    2. Sums probabilities for each outcome: H/D/A
+    3. Applies POISSON_DRAW_ADJUSTMENT to reduce raw Poisson draws
+    4. Applies HOME_ADVANTAGE_BOOST to increase home win probability
+    
+    NOTE: This function ONLY calibrates Poisson probabilities.
+    The model prediction also applies ML ensemble blending (60/40) in model_engine.py,
+    which further refines the probabilities using trained ML model.
+    
+    DO NOT modify this logic without updating:
+    - config.py POISSON_DRAW_ADJUSTMENT documentation
+    - model_engine.py ensemble blending (line 115)
+    - tests/test_main.py calibration tests
     """
     goals = np.arange(max_goals + 1)
     p_home = poisson.pmf(goals, xG_home)

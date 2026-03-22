@@ -8,7 +8,7 @@ Purpose:
   local file
 - Verify the update with confirmation message and file properties
 
-Target: C:\\Scripts\\ML_Predictor2026_V2\\data\\ARG.csv
+Target: I:\\Scripts\\ML_Predictor2026_V2\\data\\ARG.csv
 Source: https://www.football-data.co.uk/new/ARG.csv
 """
 

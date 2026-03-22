@@ -22,7 +22,7 @@
         ]
       }
     ],
-    "AfterTool": [
+    "PostToolUse": [
       {
         "hooks": [
           {
@@ -36,7 +36,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "context-mode hook gemini-cli aftertool"
+            "command": "context-mode hook gemini-cli posttooluse"
           }
         ]
       }
@@ -65,6 +65,20 @@
       "command": "uvx",
       "args": ["git+https://github.com/googlecolab/colab-mcp"],
       "timeout": 30000
-    }
+    },
+    "playwright": {
+      "command": "npx",
+      "args": ["@modelcontextprotocol/server-playwright@latest"],
+      "description": "Playwright browser automation MCP server for web scraping, testing, and debugging"
+    },
+    "python": {
+      "command": "python",
+      "args": ["-m", "mcp.server.python"],
+      "description": "Python MCP server for code analysis, refactoring, and Python execution"
+    },
+	"roundtable": {
+	  "type": "http",
+	  "url": "https://mcp.roundtable.now/mcp"
+	}
   }
 }

@@ -33,6 +33,7 @@ from src.stats_engine import (
 )
 from src.features import compute_trailing_features
 from src.model_engine import create_model, predict_gameweek
+from src.validation import validate_pipeline_inputs, validate_model_features
 
 matplotlib.use("Agg")
 
@@ -117,7 +118,12 @@ def load_data(
         raise
 
     fixtures = parse_fixtures(fixtures_path, glossary)
-
+    
+    # Run validation checks
+    is_valid, errors = validate_pipeline_inputs(glossary, matches, fixtures, sofascore_data)
+    if not is_valid:
+        log_warning("Data validation completed with warnings/errors (see above)")
+    
     return glossary, sofascore_data, matches, fixtures
 
 
@@ -208,6 +214,12 @@ def train_validate(
     log_info(f"Training {model_type} model with {n_splits}-fold CV...")
 
     X, y = df[features].dropna(), df["Res"].loc[df[features].dropna().index]
+    
+    # Validate features before training
+    feature_validation = validate_model_features(X, features)
+    if not feature_validation.is_valid:
+        log_error("Feature validation failed - aborting training")
+        raise ValueError(f"Invalid features: {feature_validation.errors}")
 
     # Use sample weights to give more importance to non-draw outcomes
     # This helps the model learn to distinguish home/away wins better

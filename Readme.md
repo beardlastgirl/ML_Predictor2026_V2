@@ -36,7 +36,7 @@ pip install -r requirements.txt
 - Check the "Last updated" timestamp from https://www.football-data.co.uk/argentina.php
 - Download and overwrite data/ARG.csv only if the web version is newer than local file
 - Verify the update with confirmation message and file properties
-Target: C:\\Scripts\\ML_Predictor2026_v2\\data\\ARG.csv
+Target: I:\\Scripts\\ML_Predictor2026_V2\\data\\ARG.csv
 Source: https://www.football-data.co.uk/new/ARG.csv
 
 - `data/ARG.csv` - Historical match data

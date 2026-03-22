@@ -18,7 +18,7 @@ def main():
     log_info("=" * 60)
     log_info("Pipeline Summary")
     log_info("=" * 60)
-    log_info(f"Model: CatBoost")
+    log_info("Model: CatBoost")
     log_info(f"CV Accuracy: {sum(result.cv_accuracies)/len(result.cv_accuracies):.3f} (+/- {__import__('numpy').std(result.cv_accuracies):.3f})")
     log_info(f"Features: {len(result.features)}")
     if result.fixtures is not None:

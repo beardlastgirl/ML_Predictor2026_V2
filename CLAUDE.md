@@ -15,7 +15,7 @@ This version introduces Poisson distribution for goal modeling:
 ## Project Structure
 
 ```
-C:\Scripts\ML_Predictor2026_V2\
+I:\Scripts\ML_Predictor2026_V2\
 ├── .venv\                          # Python virtual environment
 ├── DEV_CONTEXT\                     # Development documentation
 ├── data\
@@ -77,7 +77,7 @@ C:\Scripts\ML_Predictor2026_V2\
 
 ### Using PowerShell Menu (Recommended)
 ```powershell
-cd C:\Scripts\ML_Predictor2026_V2
+cd I:\Scripts\ML_Predictor2026_V2
 .\run_model.ps1
 ```
 
@@ -101,7 +101,7 @@ Or run directly with option:
 
 ### Manual Execution
 ```powershell
-cd C:\Scripts\ML_Predictor2026_V2
+cd I:\Scripts\ML_Predictor2026_V2
 .\.venv\Scripts\Activate.ps1
 
 # Update data

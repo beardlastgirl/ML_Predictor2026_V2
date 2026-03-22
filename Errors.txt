@@ -1,0 +1,26 @@
+============================================================
+Sofascore Statistics Scraper - Liga Profesional Argentina
+============================================================
+[OK] Loaded 129 team name mappings from glossary
+
+INSTRUCTIONS:
+1. Close all Chrome windows
+2. Launch Chrome with debugging port:
+   "C:\Program Files\Google\Chrome\Application\chrome.exe"
+   --remote-debugging-port=9222 --user-data-dir="C:\ChromeDebug"
+3. Navigate to:
+   https://www.sofascore.com/football/tournament/argentina/liga-profesional-de-futbol/155
+4. Click on 'Standings' tab to see the table
+5. Press Enter in this terminal to continue...
+
+Press Enter when ready...
+[INFO] Connecting to Chrome on port 9222...
+(node:25200) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+[OK] Connected to Chrome
+[INFO] Current page: https://www.sofascore.com/football/tournament/argentina/liga-profesional-de-futbol/155#id:87913
+[INFO] Found 0 teams in standings
+[WARNING] No data extracted. Try scrolling to the standings table.
+
+[OK] Done!
+

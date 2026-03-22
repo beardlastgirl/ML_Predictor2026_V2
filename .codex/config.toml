@@ -74,3 +74,19 @@ config_file = "agents/gsd-verifier.toml"
 [[hooks]]
 event = "SessionStart"
 command = "node C:/Scripts/ML_Predictor2026_V2/.codex/get-shit-done/hooks/gsd-update-check.js"
+
+[[hooks]]
+event = "PostToolUse"
+command = "node C:/Scripts/ML_Predictor2026_V2/.codex/get-shit-done/hooks/gsd-context-monitor.js"
+
+# Status Line
+[statusLine]
+type = "command"
+command = "node C:/Scripts/ML_Predictor2026_V2/.codex/get-shit-done/hooks/gsd-statusline.js"
+
+# MCP Servers
+[mcpServers]
+playwright = { command = "npx", args = ["@modelcontextprotocol/server-playwright@latest"], description = "Playwright browser automation MCP server for web scraping and testing" }
+python = { command = "python", args = ["-m", "mcp.server.python"], description = "Python MCP server for code analysis and execution" }
+colab-mcp = { command = "uvx", args = ["git+https://github.com/googlecolab/colab-mcp"], timeout = 30000, description = "Google Colab integration for collaborative development" }
+roundtable = { type = "http", url = "https://mcp.roundtable.now/mcp", description = "Real-time collaboration platform for AI agents" }

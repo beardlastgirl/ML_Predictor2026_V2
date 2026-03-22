@@ -2,7 +2,7 @@
 setlocal enabledelayedexpansion
 
 :: Navigate to the project directory
-cd /d C:\Scripts\ML_Predictor2026_V2
+cd /d I:\Scripts\ML_Predictor2026_V2
 
 echo ========================================
 echo   ML_Predictor2026_V2 - GIT UPDATE TOOL

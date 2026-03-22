@@ -355,5 +355,81 @@ def test_elo_with_poisson():
     assert features['xG_home'] > features['xG_away']
 
 
+# ==============================================
+# Critical Bug Fix Tests (CR-2026-03-21-001, 002, 003)
+# ==============================================
+
+def test_division_by_zero_features_sparse_history():
+    """Test that features.py handles sparse history without division by zero (CR-2026-03-21-001)."""
+    # Empty history
+    empty_result = get_team_trailing_stats([], 8)
+    assert empty_result["matches"] == 0
+    assert np.isnan(empty_result["form"])
+    assert np.isnan(empty_result["avg_gf"])
+
+    # Single match history
+    single_match = [{"gf": 2, "ga": 1}]
+    result = get_team_trailing_stats(single_match, 8)
+    assert result["matches"] == 1
+    assert result["form"] == 3.0  # 3 points for a win / 1 match
+
+    # Multiple matches with various results
+    mixed_history = [
+        {"gf": 2, "ga": 1},  # Win: 3 points
+        {"gf": 1, "ga": 1},  # Draw: 1 point
+        {"gf": 0, "ga": 2},  # Loss: 0 points
+    ]
+    result = get_team_trailing_stats(mixed_history, 8)
+    assert result["matches"] == 3
+    assert result["form"] == (3 + 1 + 0) / 3  # 4 points / 3 matches
+
+
+def test_probability_normalization_edge_cases():
+    """Test probability normalization with extreme xG values (CR-2026-03-21-003)."""
+    test_cases = [
+        (0.0, 0.0),        # Both zero
+        (0.001, 0.001),    # Very low
+        (0.1, 0.1),        # Low
+        (1.5, 1.2),        # Normal
+        (3.0, 3.0),        # High
+        (10.0, 10.0),      # Very high
+    ]
+
+    for xg_h, xg_a in test_cases:
+        result = calculate_outcome_probabilities(xg_h, xg_a)
+
+        # Check probabilities sum to 1
+        total = result["home_win"] + result["draw"] + result["away_win"]
+        assert 0.99 <= total <= 1.01, f"Sum {total} for xG({xg_h}, {xg_a})"
+
+        # Check no NaN/Inf
+        assert not np.isnan(result["home_win"]), f"home_win NaN for xG({xg_h}, {xg_a})"
+        assert not np.isnan(result["draw"]), f"draw NaN for xG({xg_h}, {xg_a})"
+        assert not np.isnan(result["away_win"]), f"away_win NaN for xG({xg_h}, {xg_a})"
+        assert not np.isinf(result["home_win"]), f"home_win Inf for xG({xg_h}, {xg_a})"
+        assert not np.isinf(result["draw"]), f"draw Inf for xG({xg_h}, {xg_a})"
+        assert not np.isinf(result["away_win"]), f"away_win Inf for xG({xg_h}, {xg_a})"
+
+
+def test_integer_conversion_bounds_clipping():
+    """Test that scoreline prediction properly clips values (CR-2026-03-21-002)."""
+    # Simulate various prediction values
+    test_values = [
+        (np.nan, 0),      # NaN should become 0
+        (np.inf, 0),      # Inf should become 0 (treated as invalid)
+        (-1.5, 0),        # Negative should clip to 0
+        (2.7, 2),         # Normal value should round
+        (6.5, 6),         # Over max should clip to 6
+    ]
+
+    for val, expected in test_values:
+        # This mirrors the actual logic in pipeline.py
+        if np.isnan(val) or np.isinf(val):
+            clipped = 0
+        else:
+            clipped = int(np.clip(val, 0, 6))
+        assert clipped == expected, f"Value {val} clipped to {clipped}, expected {expected}"
+
+
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])

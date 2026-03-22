@@ -1,0 +1,12 @@
+{
+  "project_root": "I:\\Scripts\\ML_Predictor2026_V2",
+  "data_dir": "data",
+  "src_dir": "src",
+  "venv_dir": ".venv",
+  "scripts_dir": "scripts",
+  "dev_context_dir": "DEV_CONTEXT",
+  "report_dir": "Reporte",
+  "chrome_path": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+  "chrome_user_data_dir": "C:\\ChromeDebug",
+  "notes": "Update this file when moving the project to a new location. Change project_root to the new absolute path."
+}

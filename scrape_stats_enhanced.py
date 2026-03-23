@@ -45,6 +45,9 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException, WebDriverException
 
+from src.scraper_utils import resilient_scraper, CaptchaDetectedException, detect_captcha_in_content, get_health_monitor
+from src.utils import log_info, log_ok, log_error, log_warning
+
 # Try to import webdriver-manager for automatic driver management
 try:
     from selenium.webdriver.chrome.service import Service as ChromeService
@@ -276,6 +279,22 @@ def wait_for_user_captcha_solve(driver, protection_type, timeout=300, force_on_u
     return False
 
 
+# Global driver instance for decorator cleanup
+_current_driver = None
+
+
+def close_driver():
+    """Cleanup function for resilient_scraper."""
+    global _current_driver
+    if _current_driver:
+        try:
+            log_info("Decorator: Closing browser...")
+            _current_driver.quit()
+        except Exception as e:
+            log_error(f"Decorator: Error closing browser: {e}")
+        _current_driver = None
+
+
 def setup_driver(headless=False):
     """Set up and configure Chrome WebDriver with anti-detection measures.
     
@@ -365,18 +384,14 @@ def setup_driver(headless=False):
 
 
 def fetch_page_with_selenium(url, headless=False, page_timeout=60, force_continue_after_solve=False):
-    """Fetch page using Selenium with anti-bot detection and handling.
-    
-    Args:
-        url: Target URL
-        headless: Run browser in headless mode
-        page_timeout: Maximum time to wait for page load
-        force_continue_after_solve: If True, allow continuing when URL changes after manual solve
-    
-    Returns:
-        tuple: (page_source: str, driver: WebDriver)
-    """
-    driver = setup_driver(headless=headless)
+    """Placeholder for the real implementation to be wrapped by the decorator."""
+    return _fetch_page_with_selenium_impl(url, headless, page_timeout, force_continue_after_solve)
+
+def _fetch_page_with_selenium_impl(url, headless=False, page_timeout=60, force_continue_after_solve=False):
+    """Internal implementation of page fetching."""
+    global _current_driver
+    _current_driver = setup_driver(headless=headless)
+    driver = _current_driver
     
     try:
         log_info(f"Navigating to: {url}")
@@ -395,6 +410,13 @@ def fetch_page_with_selenium(url, headless=False, page_timeout=60, force_continu
         # Get initial page source
         page_source = driver.page_source
         
+        # CAPTCHA Detection
+        if detect_captcha_in_content(page_source):
+            log_warning("CAPTCHA detected in initial page source")
+            # If not headless, we might want to try to solve it instead of just raising
+            if headless:
+                raise CaptchaDetectedException("CAPTCHA detected in headless mode")
+        
         # First check: Is the page already ready? (no protection needed)
         if is_page_ready(driver, page_source):
             log_ok("Page loaded successfully and is ready for scraping")
@@ -406,7 +428,9 @@ def fetch_page_with_selenium(url, headless=False, page_timeout=60, force_continu
                 if headless:
                     log_error("Anti-bot protection detected in headless mode!")
                     log_error("Re-run without --headless to solve CAPTCHAs manually.")
-                    driver.quit()
+                    if _current_driver:
+                        _current_driver.quit()
+                        _current_driver = None
                     return None, None
                 
                 # Wait for user to solve CAPTCHA (may force on URL change)
@@ -414,7 +438,9 @@ def fetch_page_with_selenium(url, headless=False, page_timeout=60, force_continu
                 
                 if not solved:
                     log_error("Could not bypass protection")
-                    driver.quit()
+                    if _current_driver:
+                        _current_driver.quit()
+                        _current_driver = None
                     return None, None
                 
                 # After solve, verify page is ready (wait_for_user_captcha_solve should have confirmed this)
@@ -429,6 +455,9 @@ def fetch_page_with_selenium(url, headless=False, page_timeout=60, force_continu
         # Final verification: Ensure page is ready before proceeding
         if not is_page_ready(driver, page_source):
             log_warning("Page may not have expected content, but attempting to proceed...")
+            # Check again for captcha
+            if detect_captcha_in_content(page_source):
+                raise CaptchaDetectedException("CAPTCHA detected after manual solve/navigation")
         
         # Wait for tables to load (with timeout)
         try:
@@ -446,15 +475,31 @@ def fetch_page_with_selenium(url, headless=False, page_timeout=60, force_continu
         
         return page_source, driver
         
+    except CaptchaDetectedException:
+        if _current_driver: 
+            _current_driver.quit()
+            _current_driver = None
+        raise
     except TimeoutException:
         log_error(f"Page load timeout ({page_timeout}s)")
-        driver.quit()
+        if _current_driver: 
+            _current_driver.quit()
+            _current_driver = None
         return None, None
         
     except Exception as e:
         log_error(f"Error fetching page: {e}")
-        driver.quit()
+        if _current_driver: 
+            _current_driver.quit()
+            _current_driver = None
         return None, None
+
+# Wrap the implementation with the resilient decorator
+# Note: Since driver is returned, we need to be careful with resource_cleanup
+# If it fails, the decorator calls resource_cleanup.
+@resilient_scraper(max_retries=3, backoff_factor=2, timeout=60, fallback_source='footystats')
+def fetch_page_with_selenium(url, headless=False, page_timeout=60, force_continue_after_solve=False):
+    return _fetch_page_with_selenium_impl(url, headless, page_timeout, force_continue_after_solve)
 
 
 def clean_team_name(text):
@@ -745,6 +790,10 @@ def main():
         traceback.print_exc()
         sys.exit(1)
     finally:
+        # Log health report
+        monitor = get_health_monitor()
+        log_info(monitor.generate_report())
+        
         if driver is not None:
             try:
                 driver.quit()

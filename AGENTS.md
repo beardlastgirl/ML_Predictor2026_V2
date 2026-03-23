@@ -54,7 +54,8 @@ python -m pytest tests/test_main.py
 ## Commit & Pull Request Guidelines
 
 - **Commit format** (observed in git history): Conventional Commits-style prefixes such as `docs: ...`, `chore: ...`, `feat(scope): ...` (e.g., `feat(01-01): implement Shin Method in stats_engine.py`).
-- **PR expectations**: not documented in-repo; keep PRs small, include a clear description of data/feature changes, and attach before/after metrics when modifying model behavior.
+- **PR expectations**: Keep PRs small, include a clear description of data/feature changes, and attach before/after metrics when modifying model behavior.
+- **AI-powered PR Review**: This repository uses **Qodo Merge (PR-Agent)** for automated PR analysis, summaries, and suggestions. Tag `@CodiumAI-Agent /review` or use the GitHub Action flow for automated feedback.
 
 ---
 

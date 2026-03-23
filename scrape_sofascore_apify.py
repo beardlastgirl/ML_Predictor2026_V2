@@ -18,6 +18,9 @@ import argparse
 from datetime import datetime
 from pathlib import Path
 
+from src.scraper_utils import resilient_scraper, CaptchaDetectedException, detect_captcha_in_content, get_health_monitor
+from src.utils import log_info, log_ok, log_error, log_warning
+
 try:
     from apify_client import ApifyClient
 except ImportError:
@@ -46,7 +49,7 @@ def normalize_team_name(name):
         "Boca Juniors": "BOCA JUNIORS",
         "River Plate": "RIVER PLATE",
         "Estudiantes de La Plata": "ESTUDIANTES LP",
-        "Independiente Rivadavia": "INDEPENDIENTE RIVADAVIA",
+        "Independiente Rivadavia": "IND RIVADAVIA",
         "Club Atlético Independiente": "INDEPENDIENTE",
         "San Lorenzo de Almagro": "SAN LORENZO",
         "Vélez Sarsfield": "VELEZ SARSFIELD",
@@ -60,15 +63,15 @@ def normalize_team_name(name):
         "Tigre": "TIGRE",
         "Instituto": "INSTITUTO",
         "Central Córdoba": "CENTRAL CORDOBA",
-        "Unión de Santa Fe": "UNION",
+        "Unión de Santa Fe": "UNION DE SANTA FE",
         "Platense": "PLATENSE",
         "Barracas Central": "BARRACAS CENTRAL",
         "Newell's Old Boys": "NEWELLS OLD BOYS",
-        "Gimnasia y Esgrima": "GIMNASIA",
-        "Deportivo Riestra": "DEPORTIVO RIESTRA",
+        "Gimnasia y Esgrima": "GIMNASIA LP",
+        "Deportivo Riestra": "DEP RIESTRA",
         "Belgrano": "BELGRANO",
         "Sarmiento": "SARMIENTO JUNIN",
-        "Atlético Tucumán": "ATLETICO TUCUMAN",
+        "Atlético Tucumán": "ATL TUCUMAN",
         "Aldosivi": "ALDOSIVI",
     }
 
@@ -88,12 +91,13 @@ def parse_arguments():
     return parser.parse_args()
 
 
+@resilient_scraper(max_retries=3, backoff_factor=2, timeout=30)
 def run_apify_scraper():
     """Run the Apify scraper to fetch fresh data."""
-    print("[INFO] Initializing Apify client...")
+    log_info("Initializing Apify client...")
 
     if not API_TOKEN:
-        print("[ERROR] APIFY_API_TOKEN is not set. Set it in your environment before running.")
+        log_error("APIFY_API_TOKEN is not set. Set it in your environment before running.")
         return None
 
     client = ApifyClient(API_TOKEN)
@@ -105,22 +109,22 @@ def run_apify_scraper():
         ]
     }
 
-    print("[INFO] Running Apify scraper (this may take a minute)...")
+    log_info("Running Apify scraper (this may take a minute)...")
 
     # Run the Actor
     try:
         run = client.actor("azzouzana/sofascore-scraper-pro").call(run_input=run_input)
-        print(f"[OK] Scraper finished. Run ID: {run.get('id')}")
+        log_ok(f"Scraper finished. Run ID: {run.get('id')}")
 
         # Get dataset ID
         dataset_id = run.get("defaultDatasetId")
-        print(f"[INFO] Dataset ID: {dataset_id}")
+        log_info(f"Dataset ID: {dataset_id}")
 
         return dataset_id
 
     except Exception as e:
-        print(f"[ERROR] Failed to run scraper: {e}")
-        return None
+        log_error(f"Failed to run scraper: {e}")
+        raise
 
 
 def fetch_from_dataset(dataset_id):
@@ -129,20 +133,20 @@ def fetch_from_dataset(dataset_id):
         return []
 
     if not API_TOKEN:
-        print("[ERROR] APIFY_API_TOKEN is not set. Set it in your environment before running.")
+        log_error("APIFY_API_TOKEN is not set. Set it in your environment before running.")
         return []
 
     client = ApifyClient(API_TOKEN)
 
-    print("[INFO] Fetching data from dataset...")
+    log_info("Fetching data from dataset...")
 
     items = []
     try:
         for item in client.dataset(dataset_id).iterate_items():
             items.append(item)
-        print(f"[OK] Retrieved {len(items)} items")
+        log_ok(f"Retrieved {len(items)} items")
     except Exception as e:
-        print(f"[ERROR] Failed to fetch data: {e}")
+        log_error(f"Failed to fetch data: {e}")
 
     return items
 
@@ -150,25 +154,25 @@ def fetch_from_dataset(dataset_id):
 def fetch_from_store():
     """Fetch data from Apify key-value store."""
     if not API_TOKEN:
-        print("[ERROR] APIFY_API_TOKEN is not set. Set it in your environment before running.")
+        log_error("APIFY_API_TOKEN is not set. Set it in your environment before running.")
         return None
 
     client = ApifyClient(API_TOKEN)
 
-    print("[INFO] Fetching data from key-value store...")
+    log_info("Fetching data from key-value store...")
 
     try:
         store = client.key_value_store(STORE_ID)
         record = store.get_record("STANDINGS")
 
         if record:
-            print("[OK] Retrieved standings data")
+            log_ok("Retrieved standings data")
             return record.get("value")
         else:
-            print("[WARNING] No STANDINGS record found in store")
+            log_warning("No STANDINGS record found in store")
             return None
     except Exception as e:
-        print(f"[ERROR] Failed to fetch from store: {e}")
+        log_error(f"Failed to fetch from store: {e}")
         return None
 
 
@@ -180,7 +184,7 @@ def process_standings_data(data):
     if not data:
         return teams, standings
 
-    print(f"[INFO] Processing {len(data) if isinstance(data, list) else 1} records...")
+    log_info(f"Processing {len(data) if isinstance(data, list) else 1} records...")
 
     # Handle different data structures
     if isinstance(data, list):
@@ -265,34 +269,43 @@ def main():
     print("Sofascore Scraper - Apify Edition")
     print("=" * 60)
 
-    # Try to get data
-    raw_data = None
+    try:
+        # Try to get data
+        raw_data = None
 
-    # Option 1: Try fetching from key-value store first
-    raw_data = fetch_from_store()
+        # Option 1: Try fetching from key-value store first
+        raw_data = fetch_from_store()
 
-    # Option 2: If no store data, run the scraper
-    if not raw_data:
-        print("[INFO] No cached data found. Running scraper...")
-        dataset_id = run_apify_scraper()
-        if dataset_id:
-            raw_data = fetch_from_dataset(dataset_id)
+        # Option 2: If no store data, run the scraper
+        if not raw_data:
+            print("[INFO] No cached data found. Running scraper...")
+            dataset_id = run_apify_scraper()
+            if dataset_id:
+                raw_data = fetch_from_dataset(dataset_id)
 
-    # Process and save
-    if raw_data:
-        teams, standings = process_standings_data(raw_data)
+        # Process and save
+        if raw_data:
+            teams, standings = process_standings_data(raw_data)
 
-        if teams:
-            save_results(teams, standings, args.output)
+            if teams:
+                save_results(teams, standings, args.output)
+            else:
+                print("[WARNING] No team data found in response")
+                print("[INFO] Raw data sample:")
+                if isinstance(raw_data, list) and len(raw_data) > 0:
+                    print(json.dumps(raw_data[0], indent=2)[:500])
+                elif isinstance(raw_data, dict):
+                    print(json.dumps(raw_data, indent=2)[:500])
         else:
-            print("[WARNING] No team data found in response")
-            print("[INFO] Raw data sample:")
-            if isinstance(raw_data, list) and len(raw_data) > 0:
-                print(json.dumps(raw_data[0], indent=2)[:500])
-            elif isinstance(raw_data, dict):
-                print(json.dumps(raw_data, indent=2)[:500])
-    else:
-        print("[ERROR] Could not fetch any data from Apify")
+            print("[ERROR] Could not fetch any data from Apify")
+            
+    except Exception as e:
+        log_error(f"Sofascore Apify scraper failed: {e}")
+        
+    finally:
+        # Log health report
+        monitor = get_health_monitor()
+        log_info(monitor.generate_report())
 
     print("\n[OK] Done!")
 

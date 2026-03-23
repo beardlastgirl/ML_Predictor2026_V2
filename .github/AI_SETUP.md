@@ -13,9 +13,10 @@ The repository is configured for use with multiple AI products, each with specia
 3. **Gemini** (`.gemini/`)
 4. **OpenCode** (`.opencode/`)
 5. **GitHub Copilot CLI** (root `.github/copilot-instructions.md`)
+6. **Qodo Merge / PR-Agent** (`.qodo/` & `.github/workflows/pr_agent.yml`)
 
 All products have access to:
-- **GSD (Get-Shit-Done) Agents** - 16 specialized agents for project planning, execution, and verification
+- **GSD (Get-Shit-Done) Agents** - 17 specialized agents (including Qodo Merge) for project planning, execution, and verification
 - **Project-Specific Agents** - Python development and MCP server expertise
 
 ---
@@ -42,6 +43,7 @@ All products include these get-shit-done agents in their `agents/` directories:
 - **gsd-ui-researcher** - Produces UI design contracts
 - **gsd-user-profiler** - Analyzes developer behavior patterns
 - **gsd-verifier** - Verifies phase goal achievement
+- **qodo-merge** - AI-powered PR reviews and code analysis using Qodo Merge (PR-Agent)
 
 ### Project-Specific Agents
 

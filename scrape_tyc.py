@@ -21,29 +21,21 @@ from bs4 import BeautifulSoup
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from src.data_processing import normalize_team_name, load_glossary
 from src.utils import log_info, log_ok, log_error, log_warning
+from src.scraper_utils import resilient_scraper, CaptchaDetectedException, detect_captcha_in_content, get_health_monitor
 
 
 # ==============================================
 # Logging Utilities
 # ==============================================
 
-def log_info(msg):
-    print(f"[INFO] {msg}")
-
-def log_ok(msg):
-    print(f"[OK] {msg}")
-
-def log_error(msg):
-    print(f"[ERROR] {msg}")
-
-def log_warning(msg):
-    print(f"[WARNING] {msg}")
+# Use imported logging utilities from src.utils
 
 
 # ==============================================
 # Web Scraping Functions
 # ==============================================
 
+@resilient_scraper(max_retries=3, backoff_factor=2, timeout=30)
 def fetch_page(url):
     """Fetch a web page and return its HTML content."""
     try:
@@ -61,9 +53,17 @@ def fetch_page(url):
         response = session.get(url, headers=headers, timeout=30)
         response.raise_for_status()
         
-        log_ok(f"Successfully fetched: {url}")
-        return response.text
+        html_content = response.text
         
+        # CAPTCHA Detection
+        if detect_captcha_in_content(html_content):
+            raise CaptchaDetectedException("CAPTCHA detected on TyC Sports")
+            
+        log_ok(f"Successfully fetched: {url}")
+        return html_content
+        
+    except CaptchaDetectedException:
+        raise
     except Exception as e:
         log_error(f"Failed to fetch URL: {e}")
         log_info("Note: The site may require browser automation (Selenium/Playwright)")
@@ -222,7 +222,12 @@ def main():
     
     except Exception as e:
         log_error(f"Scraping failed: {e}")
-        sys.exit(1)
+        # Not exiting here to allow finally block
+    
+    finally:
+        # Log health report
+        monitor = get_health_monitor()
+        log_info(monitor.generate_report())
     
     log_ok("TyC Sports scraping completed successfully")
 

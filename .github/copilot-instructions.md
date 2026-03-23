@@ -19,6 +19,7 @@ ML_Predictor2026_V2 is a football match prediction system for Liga Profesional A
 - **Poisson distribution** for goal modeling (xG-based outcome probabilities)
 - **Gradient boosting** (CatBoost/LightGBM) for calibrated predictions
 - **Scraped data** from FBref, FootyStats, TyC Sports, Sofascore, and PDF reports
+- **AI-powered PR Management**: Qodo Merge (PR-Agent) for code reviews and PR automation
 
 The system generates weekly predictions in `Resultados_YYYYMMDD.txt` reports.
 

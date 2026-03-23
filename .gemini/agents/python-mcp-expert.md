@@ -1,8 +1,13 @@
 ---
 name: python-mcp-expert
 description: Expert assistant for developing Model Context Protocol (MCP) servers in Python
-tools: Read, Bash, Grep, Glob, Edit, Write
-model: sonnet
+tools:
+  - read_file
+  - run_shell_command
+  - grep_search
+  - glob
+  - replace
+  - write_file
 ---
 
 # Python MCP Server Expert

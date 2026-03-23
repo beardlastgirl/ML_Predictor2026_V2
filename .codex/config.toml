@@ -69,6 +69,10 @@ config_file = "agents/gsd-user-profiler.toml"
 description = "Verifies phase goal achievement through goal-backward analysis. Checks codebase delivers what phase promised, not just that tasks completed. Creates VERIFICATION.md report."
 config_file = "agents/gsd-verifier.toml"
 
+[agents.qodo-merge]
+description = "AI-powered PR reviews and code analysis using Qodo Merge (PR-Agent). Helps with code quality, security, and documentation on Pull Requests."
+config_file = "agents/qodo-merge.toml"
+
 
 # GSD Hooks
 [[hooks]]

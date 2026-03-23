@@ -23,6 +23,7 @@ import pandas as pd
 from bs4 import BeautifulSoup
 from playwright.sync_api import sync_playwright
 
+from src.scraper_utils import resilient_scraper, CaptchaDetectedException, detect_captcha_in_content, get_health_monitor
 from src.utils import log_error, log_info, log_ok, log_warning
 
 # ==============================================
@@ -83,39 +84,43 @@ def clean_dataframe(df):
 
 FOOTYSTATS_URL = "https://footystats.org/argentina/primera-division"
 
+# Global browser instance for decorator cleanup
+_browser = None
 
+
+def close_browser():
+    """Cleanup function for resilient_scraper."""
+    global _browser
+    if _browser:
+        try:
+            log_info("Decorator: Closing browser...")
+            _browser.close()
+        except Exception as e:
+            log_error(f"Decorator: Error closing browser: {e}")
+        _browser = None
+
+
+@resilient_scraper(max_retries=3, backoff_factor=2, timeout=60, fallback_source='fbref', resource_cleanup=close_browser)
 def scrape_footystats(headless=True, output_dir="src/"):
     """
     Scrape football statistics from FootyStats for Argentine Primera Division.
-
-    Args:
-        headless (bool): Whether to run browser in headless mode.
-        output_dir (str): Directory path to save scraped data.
-
-    Returns:
-        None
-
-    Side Effects:
-        Saves one or more cleaned CSV files to output_dir.
-
-    Raises:
-        None
     """
     log_info(f"Starting FootyStats scraper for: {FOOTYSTATS_URL}")
+    global _browser
 
     with sync_playwright() as p:
         # Launch browser with a realistic user agent
-        browser = p.chromium.launch(headless=headless)
-        context = browser.new_context(
-            user_agent=(
-                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-                "AppleWebKit/537.36 (KHTML, like Gecko) "
-                "Chrome/122.0.0.0 Safari/537.36"
-            )
-        )
-        page = context.new_page()
-
+        _browser = p.chromium.launch(headless=headless)
         try:
+            context = _browser.new_context(
+                user_agent=(
+                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+                    "AppleWebKit/537.36 (KHTML, like Gecko) "
+                    "Chrome/122.0.0.0 Safari/537.36"
+                )
+            )
+            page = context.new_page()
+
             log_info("Navigating to FootyStats...")
             # Set a standard desktop viewport
             page.set_viewport_size({"width": 1920, "height": 1080})
@@ -126,7 +131,7 @@ def scrape_footystats(headless=True, output_dir="src/"):
             log_info("Waiting for tables to appear...")
             try:
                 page.wait_for_selector("table", timeout=20000)
-            except TimeoutError:
+            except Exception:
                 log_warning(
                     "Timeout waiting for 'table' selector. Continuing anyway..."
                 )
@@ -140,6 +145,11 @@ def scrape_footystats(headless=True, output_dir="src/"):
                 time.sleep(1)
 
             html = page.content()
+            
+            # CAPTCHA Detection
+            if detect_captcha_in_content(html):
+                raise CaptchaDetectedException("CAPTCHA detected on FootyStats")
+                
             log_ok(f"Retrieved {len(html)} characters of HTML.")
 
             # Use BeautifulSoup to find tables
@@ -184,13 +194,15 @@ def scrape_footystats(headless=True, output_dir="src/"):
 
             if saved_count == 0:
                 log_error("No tables were successfully scraped.")
+                return False
             else:
                 log_ok(f"Successfully scraped {saved_count} tables.")
+                return True
 
-        except (TimeoutError, ConnectionError, ValueError) as e:
-            log_error(f"An error occurred during scraping: {e}")
         finally:
-            browser.close()
+            if _browser:
+                _browser.close()
+                _browser = None
 
 
 # ==============================================
@@ -209,4 +221,11 @@ if __name__ == "__main__":
     )
 
     args = parser.parse_args()
-    scrape_footystats(headless=args.headless, output_dir=args.output_dir)
+    try:
+        scrape_footystats(headless=args.headless, output_dir=args.output_dir)
+    except Exception as e:
+        log_error(f"FootyStats scraper failed: {e}")
+    finally:
+        # Log health report
+        monitor = get_health_monitor()
+        log_info(monitor.generate_report())

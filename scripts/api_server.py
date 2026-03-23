@@ -100,14 +100,14 @@ class PredictionHandler(BaseHTTPRequestHandler):
     def handle_teams(self):
         """List all teams"""
         teams = [
-            "Boca Juniors", "River Plate", "Independiente", "Racing Club",
-            "San Lorenzo", "Huracan", "Velez Sarsfield", "Estudiantes",
-            "Gimnasia", "Talleres", "Belgrano", "Union",
-            "Argentinos Juniors", "Banfield", "Lanús", "Defensa y Justicia",
-            "Newells Old Boys", "Rosario Central", "Central Cordoba",
-            "Instituto", "Tigre", "Platense", "Barracas Central",
-            "Sarmiento", "Deportivo Riestra", "Atletico Tucuman",
-            "Independiente Rivadavia", "Aldosivi", "Gimnasia Mza"
+            "BOCA JUNIORS", "RIVER PLATE", "INDEPENDIENTE", "RACING CLUB",
+            "SAN LORENZO", "HURACAN", "VELEZ SARSFIELD", "ESTUDIANTES LP",
+            "GIMNASIA LP", "TALLERES CORDOBA", "BELGRANO", "UNION DE SANTA FE",
+            "ARGENTINOS JUNIORS", "BANFIELD", "LANUS", "DEFENSA Y JUSTICIA",
+            "NEWELLS OLD BOYS", "ROSARIO CENTRAL", "CENTRAL CORDOBA",
+            "INSTITUTO", "TIGRE", "PLATENSE", "BARRACAS CENTRAL",
+            "SARMIENTO JUNIN", "DEP RIESTRA", "ATL TUCUMAN",
+            "IND RIVADAVIA", "ALDOSIVI", "GIMNASIA MENDOZA"
         ]
         self.send_json({"teams": teams})
 

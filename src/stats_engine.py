@@ -39,12 +39,14 @@ def update_elo(home_elo, away_elo, result):
 def calculate_expected_goals(
     elo_home, elo_away, avg_gf_home, avg_gf_away, avg_ga_home, avg_ga_away
 ):
-    """Calculate expected goals for each team."""
+    """Calculate expected goals for each team. Supports both scalar and array inputs."""
     league_avg = BASE_GOAL_RATE
-    avg_gf_home = avg_gf_home if pd.notna(avg_gf_home) else league_avg
-    avg_gf_away = avg_gf_away if pd.notna(avg_gf_away) else league_avg
-    avg_ga_home = avg_ga_home if pd.notna(avg_ga_home) else league_avg
-    avg_ga_away = avg_ga_away if pd.notna(avg_ga_away) else league_avg
+    
+    # Handle NaNs and defaults
+    avg_gf_home = np.where(pd.isna(avg_gf_home), league_avg, avg_gf_home)
+    avg_gf_away = np.where(pd.isna(avg_gf_away), league_avg, avg_gf_away)
+    avg_ga_home = np.where(pd.isna(avg_ga_home), league_avg, avg_ga_home)
+    avg_ga_away = np.where(pd.isna(avg_ga_away), league_avg, avg_ga_away)
 
     xG_home = (GOAL_WEIGHT_ATTACK * avg_gf_home + GOAL_WEIGHT_DEFENSE * avg_ga_away) * HOME_BOOST
     xG_away = GOAL_WEIGHT_ATTACK * avg_gf_away + GOAL_WEIGHT_DEFENSE * avg_ga_home
@@ -55,8 +57,8 @@ def calculate_expected_goals(
     xG_home = xG_home * elo_factor
     xG_away = xG_away / elo_factor
 
-    xG_home = max(XG_MIN, min(XG_MAX, xG_home))
-    xG_away = max(XG_MIN, min(XG_MAX, xG_away))
+    xG_home = np.clip(xG_home, XG_MIN, XG_MAX)
+    xG_away = np.clip(xG_away, XG_MIN, XG_MAX)
 
     return xG_home, xG_away
 
@@ -169,26 +171,22 @@ def calculate_poisson_features(
     }
 
 def calculate_all_elo_ratings(matches_df, base_elo=BASE_ELO):
-    """Calculate Elo ratings for all teams from match history.
-
-    Args:
-        matches_df: DataFrame with Home, Away, Res columns (Res = 0/1/2)
-        base_elo: Starting Elo for new teams
-
-    Returns:
-        tuple: (elo_ratings dict, elo_history list of dicts)
-    """
+    """Calculate Elo ratings for all teams from match history efficiently."""
     elo_ratings = {}
     elo_history = []
 
-    for _, row in matches_df.iterrows():
-        h, a, r = row["Home"], row["Away"], row["Res"]
+    # Use itertuples for faster iteration than iterrows
+    for row in matches_df.itertuples(index=False):
+        # Access attributes by name. Ensure matches_df has these columns.
+        h, a, r = row.Home, row.Away, row.Res
         elo_h = elo_ratings.get(h, base_elo)
         elo_a = elo_ratings.get(a, base_elo)
+        
         new_h, new_a = update_elo(elo_h, elo_a, r)
         elo_ratings[h], elo_ratings[a] = new_h, new_a
+        
         elo_history.append({
-            "Date": row["Date"],
+            "Date": row.Date,
             "Home": h,
             "Away": a,
             "Home_Elo": elo_h,

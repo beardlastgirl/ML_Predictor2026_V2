@@ -44,18 +44,66 @@ def normalize_team_name(name, glossary=None):
     # Initial cleanup: strip, upper, and basic character replacement
     name = str(name).strip().upper()
     
-    # Apply glossary mapping if available
+    # Common variations mapping (internal glossary)
+    INTERNAL_MAPPING = {
+        "CENTRAL CORDOBA (SGO)": "CENTRAL CORDOBA",
+        "CENTRAL CORDOBA SDE": "CENTRAL CORDOBA",
+        "CENTRAL CBA": "CENTRAL CORDOBA",
+        "ESTUDIANTES": "ESTUDIANTES LP",
+        "ESTUDIANTES DE LA PLATA": "ESTUDIANTES LP",
+        "ESTUDIANTES (LP)": "ESTUDIANTES LP",
+        "GIMNASIA": "GIMNASIA LP",
+        "GIMNASIA Y ESGRIMA": "GIMNASIA LP",
+        "GIMNASIA (LP)": "GIMNASIA LP",
+        "GIMNASIA DE LA PLATA": "GIMNASIA LP",
+        "GIMNASIA MZA": "GIMNASIA MENDOZA",
+        "GIMNASIA (M)": "GIMNASIA MENDOZA",
+        "GIMNASIA Y ESGRIMA (M)": "GIMNASIA MENDOZA",
+        "INSTITUTO ACC": "INSTITUTO",
+        "INSTITUTO (C)": "INSTITUTO",
+        "NEWELLS": "NEWELLS OLD BOYS",
+        "NEWELLS OLD BOYS (ROS)": "NEWELLS OLD BOYS",
+        "NOB": "NEWELLS OLD BOYS",
+        "ROSARIO": "ROSARIO CENTRAL",
+        "R CENTRAL": "ROSARIO CENTRAL",
+        "TALLERES": "TALLERES CORDOBA",
+        "TALLERES (C)": "TALLERES CORDOBA",
+        "TALLERES DE CORDOBA": "TALLERES CORDOBA",
+        "UNION": "UNION DE SANTA FE",
+        "UNION SF": "UNION DE SANTA FE",
+        "DEFENSA": "DEFENSA Y JUSTICIA",
+        "DYJ": "DEFENSA Y JUSTICIA",
+        "ATL": "ATL TUCUMAN",
+        "ATL TUC": "ATL TUCUMAN",
+        "TUCUMAN": "ATL TUCUMAN",
+        "IND RIVADAVIA": "INDEPENDIENTE RIVADAVIA",
+        "IND RIV": "INDEPENDIENTE RIVADAVIA",
+        "DEP RIESTRA": "DEPORTIVO RIESTRA",
+        "RIESTRA": "DEPORTIVO RIESTRA",
+        "BARRACAS": "BARRACAS CENTRAL",
+        "SARMIENTO": "SARMIENTO JUNIN",
+        "SARMIENTO (J)": "SARMIENTO JUNIN",
+    }
+    
+    if name in INTERNAL_MAPPING:
+        name = INTERNAL_MAPPING[name]
+        
+    # Apply user glossary mapping if available (overrides internal)
     if glossary and name in glossary:
         name = glossary[name]
         
     # Consistent character normalization
     name = name.replace(".", "").replace("-", " ").replace("–", " ").replace("—", " ")
     
-    # Remove accents (redundant if glossary is complete, but good for safety)
-    mapping = str.maketrans({"Á": "A", "É": "E", "Í": "I", "Ó": "O", "Ú": "U", "Ü": "U", "Ñ": "N"})
+    # Remove accents
+    mapping = str.maketrans({
+        "Á": "A", "É": "E", "Í": "I", "Ó": "O", "Ú": "U", "Ü": "U", "Ñ": "N",
+        "á": "A", "é": "E", "í": "I", "ó": "O", "ú": "U", "ü": "U", "ñ": "N"
+    })
     name = name.translate(mapping)
     
-    # Remove multiple spaces
+    # Remove multiple spaces and keep only A-Z and spaces
+    name = re.sub(r"[^A-Z ]+", "", name)
     name = re.sub(r"\s+", " ", name).strip()
     
     return name
@@ -203,3 +251,56 @@ def parse_fixtures(filepath, glossary=None):
                 })
                 
     return pd.DataFrame(fixtures_out)
+
+def parse_results_file(filepath):
+    """Parse a results file (Resultados_*.txt) into a dictionary of predictions."""
+    predictions = {}
+    if not os.path.exists(filepath):
+        return predictions
+
+    try:
+        with open(filepath, "r", encoding="utf-8") as f:
+            current_match = None
+            for line in f:
+                line = line.strip()
+                if " - " in line and "=" not in line and "FECHA" not in line.upper():
+                    parts = line.split(" - ")
+                    if len(parts) == 2:
+                        # Use normalized names for keys
+                        home = normalize_team_name(parts[0].strip())
+                        away = normalize_team_name(parts[1].strip())
+                        current_match = (home, away)
+                        predictions[current_match] = {}
+                elif "Resultado:" in line and current_match:
+                    # Extract score and outcome
+                    if "(" in line and ")" in line:
+                        outcome = line[line.index("(") + 1 : line.index(")")]
+                        score_part = line.replace("Resultado:", "").strip().split(" ")[0]
+                        predictions[current_match]["score"] = score_part
+                        predictions[current_match]["outcome"] = outcome
+                elif "xG:" in line and current_match:
+                    xg = line.replace("xG:", "").strip()
+                    predictions[current_match]["xg"] = xg
+                elif "Confianza:" in line and current_match:
+                    conf = line.replace("Confianza:", "").strip()
+                    predictions[current_match]["confidence"] = conf
+    except Exception as e:
+        log_error(f"Error parsing results file {filepath}: {e}")
+    
+    return predictions
+
+def load_data(filepath, glossary=None):
+    """Load and clean main dataset."""
+    if not os.path.exists(filepath):
+        log_error(f"Data file not found: {filepath}")
+        return pd.DataFrame()
+    
+    # Check if file needs cleaning (basic check for non-CSV format or encoding issues)
+    # For ARG.csv, we usually just load it directly
+    try:
+        df = pd.read_csv(filepath)
+        log_ok(f"Loaded {len(df)} rows from {filepath}")
+        return df
+    except Exception as e:
+        log_error(f"Error loading {filepath}: {e}")
+        return pd.DataFrame()

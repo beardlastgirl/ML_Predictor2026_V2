@@ -7,6 +7,8 @@ import argparse
 import json
 import os
 import sys
+import glob
+import time
 from http.server import HTTPServer, BaseHTTPRequestHandler
 from urllib.parse import urlparse, parse_qs
 
@@ -14,7 +16,44 @@ from urllib.parse import urlparse, parse_qs
 PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, PROJECT_DIR)
 
-from src.data_processing import load_glossary, normalize_team_name
+from src.data_processing import load_glossary, normalize_team_name, parse_fixtures, parse_results_file
+
+
+class DataManager:
+    """Handles loading and caching of fixture and prediction data"""
+    def __init__(self, project_dir):
+        self.project_dir = project_dir
+        self.glossary = load_glossary(os.path.join(project_dir, "Glossary.txt"))
+        self._fixtures = None
+        self._predictions = None
+        self._last_load = 0
+        self.cache_ttl = 300  # 5 minutes
+
+    def _should_reload(self):
+        return time.time() - self._last_load > self.cache_ttl
+
+    def get_fixtures(self):
+        if self._fixtures is None or self._should_reload():
+            path = os.path.join(self.project_dir, "partidos.txt")
+            df = parse_fixtures(path, self.glossary)
+            self._fixtures = df.to_dict("records") if not df.empty else []
+            self._last_load = time.time()
+        return self._fixtures
+
+    def get_predictions(self):
+        if self._predictions is None or self._should_reload():
+            files = glob.glob(os.path.join(self.project_dir, "Resultados_*.txt"))
+            if not files:
+                self._predictions = {}
+            else:
+                latest = max(files)
+                self._predictions = parse_results_file(latest)
+            self._last_load = time.time()
+        return self._predictions
+
+
+# Global data manager
+data_manager = DataManager(PROJECT_DIR)
 
 
 class PredictionHandler(BaseHTTPRequestHandler):
@@ -37,81 +76,79 @@ class PredictionHandler(BaseHTTPRequestHandler):
         path = parsed.path
         params = parse_qs(parsed.query)
 
-        if path == "/predictions" or path == "/":
-            self.handle_predictions(params)
-        elif path == "/teams":
-            self.handle_teams()
-        elif path == "/stats":
-            self.handle_stats()
-        elif path == "/health":
-            self.send_json({"status": "ok"})
+        routes = {
+            "/predictions": self.handle_predictions,
+            "/": self.handle_predictions,
+            "/teams": self.handle_teams,
+            "/stats": self.handle_stats,
+            "/health": lambda _: self.send_json({"status": "ok"})
+        }
+
+        handler = routes.get(path)
+        if handler:
+            try:
+                handler(params)
+            except Exception as e:
+                self.send_json({"error": str(e)}, 500)
         else:
             self.send_json({"error": "Not found"}, 404)
 
     def handle_predictions(self, params):
         """Get match predictions"""
-        try:
-            # Load fixtures
-            fixtures = self.load_fixtures()
+        fixtures = data_manager.get_fixtures()
+        predictions = data_manager.get_predictions()
 
-            # Load model results if available
-            predictions = self.load_predictions()
+        # Filter by params
+        home_filter = params.get("home", [None])[0]
+        away_filter = params.get("away", [None])[0]
+        matchweek_filter = params.get("matchweek", [None])[0]
 
-            # Filter by params
-            home_filter = params.get("home", [None])[0]
-            away_filter = params.get("away", [None])[0]
-            matchweek_filter = params.get("matchweek", [None])[0]
+        matches = []
+        for f in fixtures:
+            h_norm = f["Home"]
+            a_norm = f["Away"]
+            
+            if home_filter and home_filter.upper() not in h_norm:
+                continue
+            if away_filter and away_filter.upper() not in a_norm:
+                continue
 
-            if home_filter:
-                fixtures = [f for f in fixtures if home_filter.lower() in f["home"].lower()]
-            if away_filter:
-                fixtures = [f for f in fixtures if away_filter.lower() in f["away"].lower()]
+            # Find prediction
+            pred = predictions.get((h_norm, a_norm), {})
 
-            matches = []
-            for f in fixtures:
-                # Find prediction for this match
-                pred = self.find_prediction(f["home"], f["away"], predictions)
-
-                match = {
-                    "home_team": f["home"],
-                    "away_team": f["away"],
-                    "kickoff": f.get("date", "TBD"),
-                    "predictions": [
-                        {"type": "score", "value": pred.get("score", "TBD")},
-                        {"type": "outcome", "value": pred.get("outcome", "TBD")},
-                        {"type": "xg", "value": pred.get("xg", "TBD")},
-                        {"type": "confidence", "value": pred.get("confidence", "TBD")}
-                    ]
+            match = {
+                "home_team": f["Raw_Home"],
+                "away_team": f["Raw_Away"],
+                "home_normalized": h_norm,
+                "away_normalized": a_norm,
+                "predictions": {
+                    "score": pred.get("score", "TBD"),
+                    "outcome": pred.get("outcome", "TBD"),
+                    "xg": pred.get("xg", "TBD"),
+                    "confidence": pred.get("confidence", "TBD")
                 }
-                matches.append(match)
-
-            response = {
-                "league": "Liga Profesional Argentina",
-                "matchweek": matchweek_filter or "current",
-                "count": len(matches),
-                "matches": matches
             }
+            matches.append(match)
 
-            self.send_json(response)
+        response = {
+            "league": "Liga Profesional Argentina",
+            "matchweek": matchweek_filter or "current",
+            "count": len(matches),
+            "matches": matches
+        }
+        self.send_json(response)
 
-        except Exception as e:
-            self.send_json({"error": str(e)}, 500)
+    def handle_teams(self, _):
+        """List all teams from fixtures"""
+        fixtures = data_manager.get_fixtures()
+        teams = set()
+        for f in fixtures:
+            teams.add(f["Home"])
+            teams.add(f["Away"])
+        
+        self.send_json({"teams": sorted(list(teams))})
 
-    def handle_teams(self):
-        """List all teams"""
-        teams = [
-            "BOCA JUNIORS", "RIVER PLATE", "INDEPENDIENTE", "RACING CLUB",
-            "SAN LORENZO", "HURACAN", "VELEZ SARSFIELD", "ESTUDIANTES LP",
-            "GIMNASIA LP", "TALLERES CORDOBA", "BELGRANO", "UNION DE SANTA FE",
-            "ARGENTINOS JUNIORS", "BANFIELD", "LANUS", "DEFENSA Y JUSTICIA",
-            "NEWELLS OLD BOYS", "ROSARIO CENTRAL", "CENTRAL CORDOBA",
-            "INSTITUTO", "TIGRE", "PLATENSE", "BARRACAS CENTRAL",
-            "SARMIENTO JUNIN", "DEP RIESTRA", "ATL TUCUMAN",
-            "IND RIVADAVIA", "ALDOSIVI", "GIMNASIA MENDOZA"
-        ]
-        self.send_json({"teams": teams})
-
-    def handle_stats(self):
+    def handle_stats(self, _):
         """Get model statistics"""
         self.send_json({
             "model": "CatBoost + Poisson V2",
@@ -122,94 +159,12 @@ class PredictionHandler(BaseHTTPRequestHandler):
             "league": "Liga Profesional Argentina"
         })
 
-    def load_fixtures(self):
-        """Load current fixtures"""
-        glossary = load_glossary(os.path.join(PROJECT_DIR, "Glossary.txt"))
-
-        fixtures_file = os.path.join(PROJECT_DIR, "partidos.txt")
-        if not os.path.exists(fixtures_file):
-            return []
-
-        fixtures = []
-        try:
-            with open(fixtures_file, "r", encoding="utf-8") as f:
-                for line in f:
-                    line = line.strip()
-                    # Skip header lines and non-match lines
-                    if not line or "FECHA" in line or "penales" in line.lower() or "expulsados" in line.lower() or "goles" in line.lower():
-                        continue
-                    if " - " in line:
-                        parts = line.split(" - ")
-                        if len(parts) >= 2:
-                            home = normalize_team_name(parts[0].strip(), glossary)
-                            away = normalize_team_name(parts[1].strip().rstrip(":"), glossary)
-                            fixtures.append({
-                                "home": home,
-                                "away": away,
-                                "date": "TBD"
-                            })
-        except Exception:
-            pass
-
-        return fixtures
-
-    def load_predictions(self):
-        """Load latest predictions from results file"""
-        import glob
-
-        files = glob.glob(os.path.join(PROJECT_DIR, "Resultados_*.txt"))
-        if not files:
-            return []
-
-        latest = max(files)
-        predictions = {}
-
-        try:
-            with open(latest, "r", encoding="utf-8") as f:
-                current_match = None
-                for line in f:
-                    line = line.strip()
-                    if " - " in line and "=" not in line:
-                        parts = line.split(" - ")
-                        if len(parts) == 2:
-                            current_match = (parts[0].strip(), parts[1].strip())
-                            predictions[current_match] = {}
-                    elif "Resultado:" in line and current_match:
-                        # Extract score and outcome
-                        if "(" in line and ")" in line:
-                            outcome = line[line.index("(")+1:line.index(")")]
-                            score = line.replace("Resultado:", "").strip().split(" ")[0]
-                            predictions[current_match]["score"] = score
-                            predictions[current_match]["outcome"] = outcome
-                    elif "xG:" in line and current_match:
-                        xg = line.replace("xG:", "").strip()
-                        predictions[current_match]["xg"] = xg
-                    elif "Confianza:" in line and current_match:
-                        conf = line.replace("Confianza:", "").strip()
-                        predictions[current_match]["confidence"] = conf
-        except Exception:
-            pass
-
-        return predictions
-
-    def find_prediction(self, home, away, predictions):
-        """Find prediction for a specific match"""
-        for (h, a), pred in predictions.items():
-            if h.lower() in home.lower() or home.lower() in h.lower():
-                if a.lower() in away.lower() or away.lower() in a.lower():
-                    return pred
-        return {}
-
 
 def run_server(port=8080):
     """Run the API server"""
     server_address = ("", port)
     httpd = HTTPServer(server_address, PredictionHandler)
     print(f"Server running on http://localhost:{port}")
-    print(f"Endpoints:")
-    print(f"  GET /predictions")
-    print(f"  GET /teams")
-    print(f"  GET /stats")
     httpd.serve_forever()
 
 

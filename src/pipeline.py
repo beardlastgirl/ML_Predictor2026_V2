@@ -169,20 +169,30 @@ def build_features(matches: pd.DataFrame) -> Tuple[pd.DataFrame, Dict]:
     matches = compute_trailing_features(matches, window=TRAILING_WINDOW)
 
     log_info("Calculating Poisson features...")
-    poisson_features = [
-        calculate_poisson_features(
-            r["Home_Elo"],
-            r["Away_Elo"],
-            r["Home_Avg_GF"],
-            r["Away_Avg_GF"],
-            r["Home_Avg_GA"],
-            r["Away_Avg_GA"],
-        )
-        for _, r in matches.iterrows()
-    ]
-    matches = pd.concat(
-        [matches, pd.DataFrame(poisson_features, index=matches.index)], axis=1
+    # Vectorized xG calculation
+    from src.stats_engine import calculate_expected_goals, calculate_outcome_probabilities
+    
+    xG_h, xG_a = calculate_expected_goals(
+        matches["Home_Elo"].values,
+        matches["Away_Elo"].values,
+        matches["Home_Avg_GF"].values,
+        matches["Away_Avg_GF"].values,
+        matches["Home_Avg_GA"].values,
+        matches["Away_Avg_GA"].values,
     )
+    matches["xG_home"] = xG_h
+    matches["xG_away"] = xG_a
+    matches["xG_diff"] = xG_h - xG_a
+
+    # Outcome probabilities (using apply for the complex grid logic)
+    outcomes = matches.apply(lambda r: calculate_outcome_probabilities(r["xG_home"], r["xG_away"]), axis=1)
+    
+    matches["Poisson_Home_Win"] = outcomes.apply(lambda x: x["home_win"])
+    matches["Poisson_Draw"] = outcomes.apply(lambda x: x["draw"])
+    matches["Poisson_Away_Win"] = outcomes.apply(lambda x: x["away_win"])
+    matches["Expected_Home_Goals"] = outcomes.apply(lambda x: x["expected_home_goals"])
+    matches["Expected_Away_Goals"] = outcomes.apply(lambda x: x["expected_away_goals"])
+    matches["Expected_Total_Goals"] = matches["Expected_Home_Goals"] + matches["Expected_Away_Goals"]
 
     matches["Elo_Diff"] = matches["Home_Elo"] - matches["Away_Elo"]
     matches["Attack_Balance"] = matches["Home_Avg_GF"] - matches["Away_Avg_GF"]

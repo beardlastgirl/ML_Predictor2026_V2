@@ -37,42 +37,52 @@ def get_team_trailing_stats(history, window):
     }
 
 def compute_trailing_features(matches_df, window=8):
-    """Compute trailing-average features for each team chronologically."""
-    log_info(f"Computing trailing features with window={window}...")
-    team_history = {}
-    trailing_features = []
-    for idx, row in matches_df.iterrows():
-        home_team = row["Home"]
-        away_team = row["Away"]
-        date = row["Date"]
-        home_stats = get_team_trailing_stats(team_history.get(home_team, []), window)
-        away_stats = get_team_trailing_stats(team_history.get(away_team, []), window)
-        if home_team not in team_history:
-            team_history[home_team] = []
-        if away_team not in team_history:
-            team_history[away_team] = []
-        team_history[home_team].append({"date": date, "gf": row.get("GF", 0), "ga": row.get("GA", 0), "is_home": True})
-        team_history[away_team].append({"date": date, "gf": row.get("GA", 0), "ga": row.get("GF", 0), "is_home": False})
-        trailing_features.append({
-            "idx": idx,
-            "Home_Avg_GF": home_stats["avg_gf"],
-            "Home_Avg_GA": home_stats["avg_ga"],
-            "Home_Avg_GD": home_stats["avg_gd"],
-            "Home_Form": home_stats["form"],
-            "Home_Matches": home_stats["matches"],
-            "Away_Avg_GF": away_stats["avg_gf"],
-            "Away_Avg_GA": away_stats["avg_ga"],
-            "Away_Avg_GD": away_stats["avg_gd"],
-            "Away_Form": away_stats["form"],
-            "Away_Matches": away_stats["matches"],
-        })
-    traildf = pd.DataFrame(trailing_features)
-    traildf = traildf.set_index("idx")
-    result = matches_df.copy()
-    for col in traildf.columns:
-        result[col] = traildf[col]
-    log_ok(f"Trailing features computed for {len(result)} matches")
-    return result
+    """Compute trailing-average features for each team chronologically using vectorization."""
+    log_info(f"Computing trailing features with window={window} (vectorized)...")
+    
+    # Create a long-format dataframe with one row per team per match
+    df = matches_df.copy().sort_values("Date")
+    
+    # Home team entries
+    h_df = df[["Date", "Home", "GF", "GA"]].rename(columns={"Home": "Team", "GF": "Goals_For", "GA": "Goals_Against"})
+    h_df["Is_Home"] = True
+    h_df["Match_ID"] = df.index
+    
+    # Away team entries
+    a_df = df[["Date", "Away", "GA", "GF"]].rename(columns={"Away": "Team", "GA": "Goals_For", "GF": "Goals_Against"})
+    a_df["Is_Home"] = False
+    a_df["Match_ID"] = df.index
+    
+    # Combine and sort
+    long_df = pd.concat([h_df, a_df]).sort_values(["Team", "Date"])
+    
+    # Calculate points
+    long_df["Points"] = 0
+    long_df.loc[long_df["Goals_For"] > long_df["Goals_Against"], "Points"] = 3
+    long_df.loc[long_df["Goals_For"] == long_df["Goals_Against"], "Points"] = 1
+    
+    # Group by team and calculate rolling averages
+    # We shift(1) so the average DOES NOT include the current match
+    gb = long_df.groupby("Team")
+    
+    long_df["Avg_GF"] = gb["Goals_For"].transform(lambda x: x.shift(1).rolling(window, min_periods=1).mean())
+    long_df["Avg_GA"] = gb["Goals_Against"].transform(lambda x: x.shift(1).rolling(window, min_periods=1).mean())
+    long_df["Form"] = gb["Points"].transform(lambda x: x.shift(1).rolling(window, min_periods=1).sum() / window)
+    long_df["Matches"] = gb.cumcount()
+    long_df.loc[long_df["Matches"] > window, "Matches"] = window
+    
+    long_df["Avg_GD"] = long_df["Avg_GF"] - long_df["Avg_GA"]
+    
+    # Split back into home and away and join to original
+    h_features = long_df[long_df["Is_Home"]].set_index("Match_ID")
+    a_features = long_df[~long_df["Is_Home"]].set_index("Match_ID")
+    
+    for col in ["Avg_GF", "Avg_GA", "Avg_GD", "Form", "Matches"]:
+        df[f"Home_{col}"] = h_features[col]
+        df[f"Away_{col}"] = a_features[col]
+        
+    log_ok(f"Trailing features computed for {len(df)} matches")
+    return df
 
 def get_all_teams_latest_stats(matches_df, window=8):
     """Get latest trailing stats for all teams from historical match data."""

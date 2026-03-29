@@ -19,16 +19,12 @@ wheels/
 *.egg-info/
 .installed.cfg
 *.egg
-venv/
-ENV/
-env/
-.venv/
 
 # Virtual environments
+.venv/
 venv/
 ENV/
 env/
-.venv/
 
 # IDE
 .vs/
@@ -46,6 +42,27 @@ htmlcov/
 
 # Project specific
 src/results*.csv
+src/fbref_*.csv
+src/footystats_*.csv
+src/sofascore_stats*.json
 Resultados_*.txt
 feature_importance_*.png
 *.log
+code_analysis_report.json
+tests_output.txt
+Errors.txt
+
+# Archives and old tools
+Archive/
+ML_Predictor2026_V2_ConfigFiles.7z
+ML_PredictorV2.code-workspace
+
+# AI assistant directories
+.ai/
+.claude/
+.gemini/
+.codex/
+.agents/
+.planning/
+.qodo/
+.__playwright-mcp/

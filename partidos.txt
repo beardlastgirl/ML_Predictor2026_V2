@@ -1,22 +1,19 @@
-FECHA 6 - 19 al 22/02/2026
-
-DEFENSA Y JUSTICIA - BELGRANO:
-SAN LORENZO - ESTUDIANTES LA PLATA:
-INDEPENDIENTE RIVADAVIA - INDEPENDIENTE:
-INSTITUTO - ATLETICO TUCUMAN:
-ESTUDIANTES LA PLATA - SARMIENTO JUNIN:
-BOCA JUNIORS - RACING CLUB:
-GIMNASIA - GIMNASIA:
-ROSARIO CENTRAL - TALLERES CORDOBA:
-PLATENSE - BARRACAS CENTRAL:
-BANFIELD - NEWELLS OLD BOYS:
-DEPORTIVO RIESTRA - HURACAN:
-CENTRAL CORDOBA - TIGRE:
-VELEZ - RIVER:
-UNION - ALDOSIVI:
-ARGENTINOS JUNIORS - LANUS:
-
+FECHA 12 - 20 al 25032026
+Argentinos - Platense:
+Velez - Lanus:
+Newells - Gimnasia Mza:
+Estudiantes - Central Cordoba:
+Deportivo Riestra - San Lorenzo:
+Defensa y Justicia - Union:
+Boca - Instituto:
+Independiente - Talleres:
+Banfield - Tigre:
+Independiente Rivadavia Mza - Rosario Central:
+Atletico Tucuman - Gimnasia:
+Huracan - Barracas Central:
+Sarmiento - Aldosivi:
+Estudiantes Rio Cuarto - River:
+Belgrano - Racing:
 Cantidad de penales cobrados:
 Cantidad de expulsados:
 Cantidad de goles convertidos:
-

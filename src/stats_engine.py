@@ -178,7 +178,8 @@ def calculate_all_elo_ratings(matches_df, base_elo=BASE_ELO):
     # Use itertuples for faster iteration than iterrows
     for row in matches_df.itertuples(index=False):
         # Access attributes by name. Ensure matches_df has these columns.
-        h, a, r = row.Home, row.Away, row.Res
+        # Canonical names after mapping: HomeTeam, AwayTeam, FullTimeResult
+        h, a, r = row.HomeTeam, row.AwayTeam, row.FullTimeResult
         elo_h = elo_ratings.get(h, base_elo)
         elo_a = elo_ratings.get(a, base_elo)
         
@@ -187,8 +188,8 @@ def calculate_all_elo_ratings(matches_df, base_elo=BASE_ELO):
         
         elo_history.append({
             "Date": row.Date,
-            "Home": h,
-            "Away": a,
+            "HomeTeam": h,
+            "AwayTeam": a,
             "Home_Elo": elo_h,
             "Away_Elo": elo_a
         })

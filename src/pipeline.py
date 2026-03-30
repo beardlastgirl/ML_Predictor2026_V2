@@ -10,6 +10,7 @@ Application service that orchestrates the prediction workflow:
 """
 
 import os
+import re
 from datetime import datetime
 from typing import Dict, List, Optional, Tuple
 
@@ -24,7 +25,7 @@ from src.config import BASE_ELO, MODEL_TYPE, TRAILING_WINDOW, RESULT_ENCODING
 from src.utils import log_info, log_ok, log_error, log_warning
 from src.data_processing import (
     load_glossary, load_sofascore_data, normalize_team_name,
-    clean_partidos_file, parse_fixtures
+    clean_partidos_file, parse_fixtures, apply_header_mapping
 )
 from src.stats_engine import (
     calculate_all_elo_ratings,
@@ -66,9 +67,9 @@ class PipelineResult:
 def load_data(
     glossary_path: str = "Glossary.txt",
     sofascore_path: str = "src/sofascore_stats.json",
-    fixtures_path: str = "partidos.txt",
+    fixtures_path: str = "Partidos.txt",
     historical_path: str = "data/ARG.csv"
-) -> Tuple[Dict, Dict, pd.DataFrame, Optional[pd.DataFrame]]:
+) -> Tuple[Dict, Dict, pd.DataFrame, Optional[pd.DataFrame], Optional[str], Optional[Dict]]:
     """Load and normalize all input data.
 
     Args:
@@ -78,7 +79,7 @@ def load_data(
         historical_path: Path to historical match data CSV
 
     Returns:
-        Tuple of (glossary, sofascore_data, matches_df, fixtures_df)
+        Tuple of (glossary, sofascore_data, matches_df, fixtures_df, fixtures_header, fixtures_summary)
     """
     log_info("Loading data...")
 
@@ -93,22 +94,25 @@ def load_data(
     try:
         matches = pd.read_csv(historical_path)
         
+        # Apply canonical header mapping
+        matches, mapping_log = apply_header_mapping(matches)
+        
         # Validate required columns exist
-        required_cols = ["Home", "Away", "Res", "Date"]
+        required_cols = ["HomeTeam", "AwayTeam", "FullTimeResult", "Date"]
         missing_cols = [col for col in required_cols if col not in matches.columns]
         if missing_cols:
             raise ValueError(f"Missing required columns: {missing_cols}")
         
-        matches = matches.dropna(subset=["Home", "Away", "Res"])
+        matches = matches.dropna(subset=["HomeTeam", "AwayTeam", "FullTimeResult"])
         matches = matches.dropna(subset=["Date"])
         matches["Date"] = pd.to_datetime(matches["Date"], dayfirst=True, errors="coerce")
-        matches["Home"] = matches["Home"].map(lambda x: normalize_team_name(x, glossary))
-        matches["Away"] = matches["Away"].map(lambda x: normalize_team_name(x, glossary))
-        matches["Res"] = matches["Res"].map(RESULT_ENCODING)
+        matches["HomeTeam"] = matches["HomeTeam"].map(lambda x: normalize_team_name(x, glossary))
+        matches["AwayTeam"] = matches["AwayTeam"].map(lambda x: normalize_team_name(x, glossary))
+        matches["FullTimeResult"] = matches["FullTimeResult"].map(RESULT_ENCODING)
         
         # Validate result encoding - warn if any unmapped results
-        if matches["Res"].isna().any():
-            unmapped_count = matches["Res"].isna().sum()
+        if matches["FullTimeResult"].isna().any():
+            unmapped_count = matches["FullTimeResult"].isna().sum()
             log_warning(f"{unmapped_count} matches have invalid result codes (not H/D/A)")
         
         matches = matches.sort_values("Date").reset_index(drop=True)
@@ -117,14 +121,14 @@ def load_data(
         log_error(f"Error reading historical data: {e}")
         raise
 
-    fixtures = parse_fixtures(fixtures_path, glossary)
-    
+    fixtures, fixtures_header, fixtures_summary = parse_fixtures(fixtures_path, glossary)
+
     # Run validation checks
     is_valid, errors = validate_pipeline_inputs(glossary, matches, fixtures, sofascore_data)
     if not is_valid:
         log_warning("Data validation completed with warnings/errors (see above)")
-    
-    return glossary, sofascore_data, matches, fixtures
+
+    return glossary, sofascore_data, matches, fixtures, fixtures_header, fixtures_summary
 
 
 def build_features(matches: pd.DataFrame) -> Tuple[pd.DataFrame, Dict]:
@@ -143,11 +147,20 @@ def build_features(matches: pd.DataFrame) -> Tuple[pd.DataFrame, Dict]:
 
     def calculate_shin_probs(row):
         """Helper to apply shin_method to a row."""
-        odds_cols = ["B365CH", "B365CD", "B365CA"]
-        if not all(c in row and pd.notna(row[c]) for c in odds_cols):
+        # Use canonical odds headers if available, fallback to B365CH etc if they weren't mapped
+        odds_cols = ["Odds_b365_H", "Odds_b365_D", "Odds_b365_A"]
+        # Fallback if mapping missed them or they are already B365CH
+        if not all(c in row for c in odds_cols):
+            fallback_cols = ["B365CH", "B365CD", "B365CA"]
+            if all(c in row for c in fallback_cols):
+                odds_cols = fallback_cols
+            else:
+                return [np.nan, np.nan, np.nan]
+
+        if not all(pd.notna(row[c]) for c in odds_cols):
             return [np.nan, np.nan, np.nan]
 
-        odds = [row["B365CH"], row["B365CD"], row["B365CA"]]
+        odds = [row[odds_cols[0]], row[odds_cols[1]], row[odds_cols[2]]]
         true_probs, _ = shin_method(odds)
         return true_probs
 
@@ -162,10 +175,11 @@ def build_features(matches: pd.DataFrame) -> Tuple[pd.DataFrame, Dict]:
 
     elo_ratings, elo_history = calculate_all_elo_ratings(matches, BASE_ELO)
     elo_df = pd.DataFrame(elo_history)
-    matches = matches.merge(elo_df, on=["Date", "Home", "Away"], how="left")
+    matches = matches.merge(elo_df, on=["Date", "HomeTeam", "AwayTeam"], how="left")
 
-    matches["GF"] = matches["HG"] if "HG" in matches.columns else 0
-    matches["GA"] = matches["AG"] if "AG" in matches.columns else 0
+    # Map goals to internal processing names for trailing features
+    matches["GF"] = matches["Home_GF"] if "Home_GF" in matches.columns else 0
+    matches["GA"] = matches["Away_GF"] if "Away_GF" in matches.columns else 0
     matches = compute_trailing_features(matches, window=TRAILING_WINDOW)
 
     log_info("Calculating Poisson features...")
@@ -223,7 +237,7 @@ def train_validate(
     """
     log_info(f"Training {model_type} model with {n_splits}-fold CV...")
 
-    X, y = df[features].dropna(), df["Res"].loc[df[features].dropna().index]
+    X, y = df[features].dropna(), df["FullTimeResult"].loc[df[features].dropna().index]
     
     # Validate features before training
     feature_validation = validate_model_features(X, features)
@@ -273,6 +287,8 @@ def predict_fixtures(
     df_mean: Dict,
     historical_matches: pd.DataFrame,
     sofascore_data: Dict,
+    header_line: str = None,
+    summary: Dict = None,
 ) -> pd.DataFrame:
     """Generate predictions for fixtures.
 
@@ -309,7 +325,11 @@ def predict_fixtures(
 
 
 def write_outputs(
-    fixtures: pd.DataFrame, feature_importance: pd.DataFrame, output_dir: str = "."
+    fixtures: pd.DataFrame,
+    feature_importance: pd.DataFrame,
+    output_dir: str = ".",
+    header_line: str = None,
+    summary: Dict = None,
 ) -> str:
     """Save predictions and generate reports.
 
@@ -317,6 +337,8 @@ def write_outputs(
         fixtures: DataFrame with predictions
         feature_importance: DataFrame with feature importances
         output_dir: Directory for output files
+        header_line: Header line from fixtures file (e.g., "FECHA 13 - 01 al 06042026")
+        summary: Dictionary with summary values (penales, expulsados, goles)
 
     Returns:
         Path to results file
@@ -345,23 +367,34 @@ def write_outputs(
             plt.close(fig)
     log_ok(f"Feature importance chart saved: {feature_importance_path}")
 
-    output_file = os.path.join(output_dir, f"Resultados_{today}.txt")
+    # Extract fecha number from header for output filename
+    fecha_num = "XX"
+    if header_line:
+        m = re.search(r"FECHA\s+(\d+)", header_line, re.IGNORECASE)
+        if m:
+            fecha_num = m.group(1)
+
+    output_file = os.path.join(output_dir, f"PrediccionFecha{fecha_num}.txt")
+
     with open(output_file, "w", encoding="utf-8") as f:
-        f.write(
-            "=" * 60 + "\n  PREDICCIONES - LIGA PROFESIONAL ARGENTINA\n" + "=" * 60 + "\n\n"
-        )
+        # Write header
+        if header_line:
+            f.write(header_line + "\n")
+        else:
+            f.write(f"FECHA {fecha_num}\n")
+
+        # Write matches with predicted scores
         total_goals = 0
         for _, row in fixtures.iterrows():
             hg = int(np.clip(row.get("Pred_Home_Goals", 0), 0, 6))
             ag = int(np.clip(row.get("Pred_Away_Goals", 0), 0, 6))
             total_goals += hg + ag
-            f.write(
-                f"{row.get('Raw_Home', row['Home'])} - {row.get('Raw_Away', row['Away'])}\n"
-            )
-            f.write(f"Resultado: {hg}-{ag} ({row['Prediction_Label']})\n")
-            f.write(f"xG: {row.get('xG_home', 0):.2f} - {row.get('xG_away', 0):.2f}\n\n")
-        f.write(f"{'='*60}\nRESUMEN\n{'='*60}\n")
-        f.write(f"Partidos: {len(fixtures)}\nGoles: {total_goals}\n")
+            f.write(f"{row.get('Raw_Home', row['HomeTeam'])} - {row.get('Raw_Away', row['AwayTeam'])}: {hg}-{ag}\n")
+
+        # Write summary section
+        f.write(f"Cantidad de penales cobrados: {summary.get('penales', 0) if summary else 0}\n")
+        f.write(f"Cantidad de expulsados: {summary.get('expulsados', 0) if summary else 0}\n")
+        f.write(f"Cantidad de goles convertidos: {total_goals}\n")
 
     log_ok(f"Results saved to {output_file}")
 
@@ -371,7 +404,7 @@ def write_outputs(
 def run_pipeline(
     glossary_path: str = "Glossary.txt",
     sofascore_path: str = "src/sofascore_stats.json",
-    fixtures_path: str = "partidos.txt",
+    fixtures_path: str = "Partidos.txt",
     historical_path: str = "data/ARG.csv",
     model_type: str = MODEL_TYPE,
     output_dir: str = ".",
@@ -396,7 +429,7 @@ def run_pipeline(
     result = PipelineResult()
 
     try:
-        glossary, sofascore_data, matches, fixtures = load_data(
+        glossary, sofascore_data, matches, fixtures, fixtures_header, fixtures_summary = load_data(
             glossary_path, sofascore_path, fixtures_path, historical_path
         )
 
@@ -430,10 +463,18 @@ def run_pipeline(
                 df_mean,
                 matches_with_features,
                 sofascore_data,
+                header_line=fixtures_header,
+                summary=fixtures_summary,
             )
             result.fixtures = fixtures
 
-            output_file = write_outputs(fixtures, feature_importance, output_dir)
+            output_file = write_outputs(
+                fixtures,
+                feature_importance,
+                output_dir,
+                header_line=fixtures_header,
+                summary=fixtures_summary,
+            )
             result.output_file = output_file
 
         return result

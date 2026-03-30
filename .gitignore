@@ -1,68 +1,45 @@
-# Python
+# Python bytecode
 __pycache__/
 *.py[cod]
 *$py.class
 *.so
-.Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
 
-# Virtual environments
+# Virtual environment
 .venv/
-venv/
-ENV/
 env/
+ENV/
 
-# IDE
-.vs/
+# IDE and editor files
 .vscode/
+.idea/
 *.swp
 *.swo
 *~
 .DS_Store
 
-# Testing
-.pytest_cache/
-.coverage
-htmlcov/
-.tox/
-
-# Project specific
-src/results*.csv
-src/fbref_*.csv
-src/footystats_*.csv
-src/sofascore_stats*.json
+# Project-specific Generated files
+partidos.txt
 Resultados_*.txt
-feature_importance_*.png
-*.log
-code_analysis_report.json
 tests_output.txt
 Errors.txt
 
-# Archives and old tools
-Archive/
-ML_Predictor2026_V2_ConfigFiles.7z
-ML_PredictorV2.code-workspace
+# Generated CSV files from scrapers
+src/fbref_*.csv
+src/footystats_*.csv
+src/results*.csv
 
-# AI assistant directories
-.ai/
-.claude/
-.gemini/
-.codex/
-.agents/
-.planning/
-.qodo/
-.__playwright-mcp/
+# Generated JSON files
+src/sofascore_stats_raw.json
+code_analysis_report.json
+project_paths.json
+
+# Model training artifacts
+catboost_info/
+catboost_model/
+*.model
+
+# Logs
+*.log
+
+# OS files
+Thumbs.db

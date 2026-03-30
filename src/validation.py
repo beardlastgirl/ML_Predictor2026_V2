@@ -102,21 +102,21 @@ def validate_historical_data(matches_df: pd.DataFrame) -> ValidationResult:
     
     log_info("Validating historical data...")
     
-    required_cols = ["Home", "Away", "Res", "Date"]
+    required_cols = ["HomeTeam", "AwayTeam", "FullTimeResult", "Date"]
     missing_cols = [col for col in required_cols if col not in matches_df.columns]
     if missing_cols:
         result.add_error(f"Missing required columns: {missing_cols}")
         return result
     
     # Check for missing values in critical columns
-    for col in ["Home", "Away", "Res"]:
+    for col in ["HomeTeam", "AwayTeam", "FullTimeResult"]:
         missing_count = matches_df[col].isna().sum()
         if missing_count > 0:
             result.add_error(f"Column '{col}' has {missing_count} missing values")
     
     # Validate result codes
     valid_results = {0, 1, 2, "0", "1", "2", "A", "D", "H"}
-    invalid_results = matches_df[~matches_df["Res"].isin(valid_results)]["Res"].unique()
+    invalid_results = matches_df[~matches_df["FullTimeResult"].isin(valid_results)]["FullTimeResult"].unique()
     if len(invalid_results) > 0:
         result.add_error(f"Invalid result codes: {list(invalid_results)}")
     
@@ -127,19 +127,19 @@ def validate_historical_data(matches_df: pd.DataFrame) -> ValidationResult:
         result.add_error(f"Invalid date format: {str(e)}")
     
     # Check for GF/GA columns if present
-    if "GF" in matches_df.columns:
-        gf_invalid = matches_df[matches_df["GF"] < 0]["GF"].count()
+    if "Home_GF" in matches_df.columns:
+        gf_invalid = matches_df[matches_df["Home_GF"] < 0]["Home_GF"].count()
         if gf_invalid > 0:
-            result.add_error(f"{gf_invalid} rows with negative GF (goals for)")
+            result.add_error(f"{gf_invalid} rows with negative Home_GF")
     
-    if "GA" in matches_df.columns:
-        ga_invalid = matches_df[matches_df["GA"] < 0]["GA"].count()
+    if "Away_GF" in matches_df.columns:
+        ga_invalid = matches_df[matches_df["Away_GF"] < 0]["Away_GF"].count()
         if ga_invalid > 0:
-            result.add_error(f"{ga_invalid} rows with negative GA (goals against)")
+            result.add_error(f"{ga_invalid} rows with negative Away_GF")
     
     result.stats["total_matches"] = len(matches_df)
     result.stats["date_range"] = f"{matches_df['Date'].min()} to {matches_df['Date'].max()}"
-    result.stats["teams"] = matches_df[["Home", "Away"]].stack().nunique()
+    result.stats["teams"] = matches_df[["HomeTeam", "AwayTeam"]].stack().nunique()
     
     if result.is_valid:
         log_ok(f"Historical data validated: {len(matches_df)} matches, {result.stats['teams']} teams")
@@ -159,27 +159,27 @@ def validate_fixtures(fixtures_df: pd.DataFrame) -> ValidationResult:
     
     log_info("Validating fixtures...")
     
-    required_cols = ["Home", "Away"]
+    required_cols = ["HomeTeam", "AwayTeam"]
     missing_cols = [col for col in required_cols if col not in fixtures_df.columns]
     if missing_cols:
         result.add_error(f"Missing required columns: {missing_cols}")
         return result
     
     # Check for missing team names
-    missing_home = fixtures_df["Home"].isna().sum()
-    missing_away = fixtures_df["Away"].isna().sum()
+    missing_home = fixtures_df["HomeTeam"].isna().sum()
+    missing_away = fixtures_df["AwayTeam"].isna().sum()
     if missing_home > 0:
         result.add_error(f"{missing_home} fixtures with missing Home team")
     if missing_away > 0:
         result.add_error(f"{missing_away} fixtures with missing Away team")
     
     # Check for identical teams
-    identical = (fixtures_df["Home"].str.upper() == fixtures_df["Away"].str.upper()).sum()
+    identical = (fixtures_df["HomeTeam"].str.upper() == fixtures_df["AwayTeam"].str.upper()).sum()
     if identical > 0:
         result.add_warning(f"{identical} fixtures with identical Home/Away teams")
     
     result.stats["total_fixtures"] = len(fixtures_df)
-    result.stats["unique_teams"] = fixtures_df[["Home", "Away"]].stack().nunique()
+    result.stats["unique_teams"] = fixtures_df[["HomeTeam", "AwayTeam"]].stack().nunique()
     
     if result.is_valid:
         log_ok(f"Fixtures validated: {len(fixtures_df)} matches")

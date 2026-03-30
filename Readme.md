@@ -22,7 +22,7 @@ This version introduces a more sophisticated approach to goal prediction:
 
 ```powershell
 # Navigate to project directory
-cd C:\Scripts\ML_Predictor2026_V2
+cd I:\Scripts\ML_Predictor2026_V2
 
 # Create virtual environment
 python -m venv .venv
@@ -94,23 +94,6 @@ python scrape_sofascore_apify.py
 ```
 
 This uses the Apify API to fetch current tournament standings and saves to `src/sofascore_stats.json`.
-
-This opens an interactive menu:
-
-```
-1 - Parse Reporte PDFs
-2 - Scrape FBref Stats
-3 - Scrape Sofascore (via Apify)
-4 - Scrape TyC Sports
-5 - Run Main Prediction Model
-6 - Run All Data Scrapers + Prediction
-0 - Exit
-```
-
-Or run with option directly:
-```powershell
-.\run_model.ps1 -Option 5  # Run main prediction only
-```
 
 ## How It Works
 

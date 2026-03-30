@@ -1,0 +1,70 @@
+# .claude/config.toml
+# ML_Predictor2026_V2 — Claude Code Orchestrator Config
+# Principle: minimal by default, opt-in by task class.
+
+[orchestrator]
+name        = "claude-code"
+reads_on_start = ["AGENTS.md"]   # Only this. No multi-doc startup ritual.
+max_subagents  = 1               # One bounded subagent per session unless explicitly overridden.
+state_file     = ".ai/state/current.md"
+
+# ---------------------------------------------------------------------------
+# Subagent definitions (loaded lazily — not active until spawned)
+# ---------------------------------------------------------------------------
+[agents.planner]
+file    = ".claude/agents/planner.md"
+trigger = "ambiguous task OR task spanning 3+ files"
+
+[agents.debugger]
+file    = ".claude/agents/debugger.md"
+trigger = "reproducible test failure, crash, or scraper breakage"
+
+[agents.reviewer]
+file    = ".claude/agents/reviewer.md"
+trigger = "post-implementation review only"
+
+# ---------------------------------------------------------------------------
+# Skills (lazy-loaded, one per task)
+# ---------------------------------------------------------------------------
+[skills]
+base_path = ".claude/skills"
+
+[skills.prediction-pipeline]
+path    = "prediction-pipeline/SKILL.md"
+trigger = "model training, evaluation, inference pipeline"
+
+[skills.scraper-maintenance]
+path    = "scraper-maintenance/SKILL.md"
+trigger = "scraper failure, site structure change, parsing error"
+
+[skills.data-normalization]
+path    = "data-normalization/SKILL.md"
+trigger = "data cleaning, schema alignment, normalization"
+
+[skills.release-review]
+path    = "release-review/SKILL.md"
+trigger = "release prep, changelog, version bump"
+
+# ---------------------------------------------------------------------------
+# MCP Servers (opt-in by task, not global)
+# ---------------------------------------------------------------------------
+[mcpServers.python]
+command = "python"
+args    = ["-m", "mcp.server.python"]
+# Always available — core to this repo.
+
+[mcpServers.playwright]
+command = "npx"
+args    = ["@modelcontextprotocol/server-playwright@latest"]
+enabled_for = ["scraper-maintenance"]
+# Enable only for scraper/browser validation tasks.
+
+# REMOVED: colab-mcp   — not justified for local repo work
+# REMOVED: roundtable  — collaboration theater; add back only if multi-agent remote workflows are proven necessary
+
+# ---------------------------------------------------------------------------
+# Hooks (none by default)
+# ---------------------------------------------------------------------------
+# No PostToolUse, no AfterTool, no session-wide context monitors.
+# Add hooks only if a specific, measurable need is identified.
+# [hooks] intentionally empty.

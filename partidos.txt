@@ -1,19 +1,19 @@
-FECHA 12 - 20 al 25032026
-Argentinos - Platense:
-Velez - Lanus:
-Newells - Gimnasia Mza:
-Estudiantes - Central Cordoba:
-Deportivo Riestra - San Lorenzo:
-Defensa y Justicia - Union:
-Boca - Instituto:
-Independiente - Talleres:
-Banfield - Tigre:
-Independiente Rivadavia Mza - Rosario Central:
-Atletico Tucuman - Gimnasia:
-Huracan - Barracas Central:
-Sarmiento - Aldosivi:
-Estudiantes Rio Cuarto - River:
-Belgrano - Racing:
+FECHA 13 - 01 al 06042026
+Independiente - Racing:
+Talleres - Boca:
+Instituto - Defensa y Justicia:
+Union - Deportivo Riestra:
+San Lorenzo - Estudiantes:
+Central Cordoba - Newells:
+Gimnasia Mza - Velez:
+Lanus - Platense:
+River - Belgrano:
+Aldosivi - Estudiantes Rio Cuarto:
+Barracas Central - Sarmiento:
+Gimnasia - Huracan:
+Rosario Central - Atletico Tucuman:
+Tigre - Independiente Rivadavia Mza:
+Argentinos - Banfield:
 Cantidad de penales cobrados:
 Cantidad de expulsados:
 Cantidad de goles convertidos:

@@ -5,6 +5,36 @@ import os
 import re
 import pandas as pd
 from src.utils import log_info, log_ok, log_error, log_warning
+from src.map_headers import map_headers
+
+def apply_header_mapping(df, provider=None):
+    """
+    Apply canonical header mapping to a DataFrame.
+    Returns (mapped_df, mapping_log).
+    """
+    if df.empty:
+        return df, []
+        
+    original_headers = df.columns.tolist()
+    mapped_dict, log_list = map_headers(original_headers, provider=provider)
+    
+    # Create rename map: original -> canonical
+    rename_map = {}
+    unmapped = []
+    
+    for rec in log_list:
+        if rec["canonical"]:
+            rename_map[rec["original"]] = rec["canonical"]
+        else:
+            unmapped.append(rec["original"])
+            
+    if unmapped:
+        log_warning(f"Unmapped headers found: {unmapped}")
+        
+    df = df.rename(columns=rename_map)
+    log_ok(f"Applied header mapping: {len(rename_map)} columns mapped to canonical keys")
+    
+    return df, log_list
 
 def load_glossary(filepath="Glossary.txt"):
     """Load team name mappings from Glossary.txt."""
@@ -207,33 +237,63 @@ def clean_partidos_file(path: str, glossary: dict = None) -> None:
     log_ok("Fixtures file cleaned.")
 
 def parse_fixtures(filepath, glossary=None):
-    """Parse fixture lines into a DataFrame."""
+    """Parse fixture lines into a DataFrame.
+
+    Returns a tuple of (fixtures_df, header_line, summary_dict).
+    """
     fixtures_out = []
+    header_line = None
+    summary = {
+        "penales": 0,
+        "expulsados": 0,
+        "goles": 0,
+    }
+
     if not os.path.exists(filepath):
         log_warning(f"Fixtures file not found: {filepath}")
-        return pd.DataFrame()
+        return pd.DataFrame(), None, summary
 
     with open(filepath, "r", encoding="utf-8") as f:
         for line in f:
             s = line.strip()
             if not s:
                 continue
-                
+
             s_upper = s.upper()
-            if s_upper.startswith("FECHA") or s_upper.startswith("CANTIDAD"):
+
+            # Capture header line (FECHA XX - ...)
+            if s_upper.startswith("FECHA"):
+                header_line = s
                 continue
-                
+
+            # Capture summary values
+            if s_upper.startswith("CANTIDAD DE PENALES"):
+                m = re.search(r"(\d+)", s)
+                if m:
+                    summary["penales"] = int(m.group(1))
+                continue
+            if s_upper.startswith("CANTIDAD DE EXPULSADOS"):
+                m = re.search(r"(\d+)", s)
+                if m:
+                    summary["expulsados"] = int(m.group(1))
+                continue
+            if s_upper.startswith("CANTIDAD DE GOLES"):
+                m = re.search(r"(\d+)", s)
+                if m:
+                    summary["goles"] = int(m.group(1))
+                continue
+
             # Try to extract score if present
             m = re.search(r"(\d+)\s*[-:]\s*(\d+)", s)
             home_score, away_score = None, None
             if m:
                 home_score, away_score = int(m.group(1)), int(m.group(2))
                 s = re.sub(r"(\d+)\s*[-:]\s*(\d+)", "", s).strip()
-            
+
             # Identify teams separated by hyphen
             if "-" not in s and "–" not in s:
                 continue
-                
+
             s = s.rstrip(": ").strip()
             parts = re.split(r"[-–]", s)
             if len(parts) == 2:
@@ -244,13 +304,13 @@ def parse_fixtures(filepath, glossary=None):
                 fixtures_out.append({
                     "Raw_Home": raw_home,
                     "Raw_Away": raw_away,
-                    "Home": home,
-                    "Away": away,
+                    "HomeTeam": home,
+                    "AwayTeam": away,
                     "Home_Score": home_score,
                     "Away_Score": away_score,
                 })
-                
-    return pd.DataFrame(fixtures_out)
+
+    return pd.DataFrame(fixtures_out), header_line, summary
 
 def parse_results_file(filepath):
     """Parse a results file (Resultados_*.txt) into a dictionary of predictions."""

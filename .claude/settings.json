@@ -25,20 +25,35 @@
     "type": "command",
     "command": "node .claude/hooks/gsd-statusline.js"
   },
+  "extraKnownMarketplaces": {
+    "nyldn-plugins": {
+      "source": {
+        "source": "github",
+        "repo": "nyldn/claude-octopus"
+      }
+    }
+  },
   "mcpServers": {
     "playwright": {
       "command": "npx",
-      "args": ["@modelcontextprotocol/server-playwright@latest"],
+      "args": [
+        "@modelcontextprotocol/server-playwright@latest"
+      ],
       "description": "Playwright browser automation MCP server for web scraping, testing, and debugging"
     },
     "python": {
       "command": "python",
-      "args": ["-m", "mcp.server.python"],
+      "args": [
+        "-m",
+        "mcp.server.python"
+      ],
       "description": "Python MCP server for code analysis, refactoring, and Python execution"
     },
     "colab-mcp": {
       "command": "uvx",
-      "args": ["git+https://github.com/googlecolab/colab-mcp"],
+      "args": [
+        "git+https://github.com/googlecolab/colab-mcp"
+      ],
       "timeout": 30000,
       "description": "Google Colab integration for collaborative development"
     },
@@ -47,5 +62,8 @@
       "url": "https://mcp.roundtable.now/mcp",
       "description": "Real-time collaboration platform for AI agents"
     }
+  },
+  "enabledPlugins": {
+    "octo@nyldn-plugins": true
   }
 }

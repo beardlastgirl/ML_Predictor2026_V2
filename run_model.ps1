@@ -64,12 +64,18 @@ function Invoke-Script {
         return $false
     }
 
+    # Set working directory to project root so relative paths work
+    Push-Location -Path $PSScriptRoot
+
     if ($ScriptArgs) {
         Invoke-Expression "python `"$scriptPath`" $ScriptArgs"
     }
     else {
         & python "$scriptPath"
     }
+
+    # Restore previous location
+    Pop-Location
 
     $exitCode = $LASTEXITCODE
 

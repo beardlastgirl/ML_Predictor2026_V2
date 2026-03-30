@@ -93,14 +93,14 @@ def predict_gameweek(fixtures_df, elo_ratings, model, features, df_mean=None, hi
 
     if sofascore_data:
         for side in ["Home", "Away"]:
-            fixtures_df[f"{side}_Sofa_Position"] = fixtures_df[side].apply(lambda x: sofascore_data.get(str(x).upper(), {}).get("position", 28))
-            fixtures_df[f"{side}_Sofa_Points"] = fixtures_df[side].apply(lambda x: sofascore_data.get(str(x).upper(), {}).get("points", 0))
-            fixtures_df[f"{side}_Sofa_GF"] = fixtures_df[side].apply(lambda x: sofascore_data.get(str(x).upper(), {}).get("goals_for", 0))
-            fixtures_df[f"{side}_Sofa_GA"] = fixtures_df[side].apply(lambda x: sofascore_data.get(str(x).upper(), {}).get("goals_against", 0))
+            fixtures_df[f"{side}_Sofa_Position"] = fixtures_df[f"{side}Team"].apply(lambda x: sofascore_data.get(str(x).upper(), {}).get("position", 28))
+            fixtures_df[f"{side}_Sofa_Points"] = fixtures_df[f"{side}Team"].apply(lambda x: sofascore_data.get(str(x).upper(), {}).get("points", 0))
+            fixtures_df[f"{side}_Sofa_GF"] = fixtures_df[f"{side}Team"].apply(lambda x: sofascore_data.get(str(x).upper(), {}).get("goals_for", 0))
+            fixtures_df[f"{side}_Sofa_GA"] = fixtures_df[f"{side}Team"].apply(lambda x: sofascore_data.get(str(x).upper(), {}).get("goals_against", 0))
     
     # Map Elo and features in a more vectorized way if possible
-    fixtures_df["Home_Elo"] = fixtures_df["Home"].map(elo_ratings).fillna(BASE_ELO)
-    fixtures_df["Away_Elo"] = fixtures_df["Away"].map(elo_ratings).fillna(BASE_ELO)
+    fixtures_df["Home_Elo"] = fixtures_df["HomeTeam"].map(elo_ratings).fillna(BASE_ELO)
+    fixtures_df["Away_Elo"] = fixtures_df["AwayTeam"].map(elo_ratings).fillna(BASE_ELO)
     
     # Build team stats efficiently
     stats_cols = ["Avg_GF", "Avg_GA", "Form"]
@@ -109,7 +109,7 @@ def predict_gameweek(fixtures_df, elo_ratings, model, features, df_mean=None, hi
             full_col = f"{side}_{col}"
             default_val = df_mean.get(full_col, 1.0 if "Avg" in col else 0.5) if df_mean else (1.0 if "Avg" in col else 0.5)
             key = col.lower().replace("avg_", "")
-            fixtures_df[full_col] = fixtures_df[side].apply(lambda x: latest_stats.get(x, {}).get(key, default_val))
+            fixtures_df[full_col] = fixtures_df[f"{side}Team"].apply(lambda x: latest_stats.get(x, {}).get(key, default_val))
 
     # Vectorized Poisson calculation (requires stats_engine refactor but let's do it row-wise for now and optimize later if needed)
     poisson_features = fixtures_df.apply(

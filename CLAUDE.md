@@ -30,6 +30,7 @@ I:\Scripts\ML_Predictor2026_V2\
 │   ├── utils.py                    # Logging and helpers
 │   └── sofascore_stats.json        # Standings from Sofascore
 ├── tests/                          # Automated test suite
+├── scripts/                        # API and utility scripts
 ├── main.py                         # Orchestration script (Main Entry Point)
 ├── scrape_stats_enhanced.py        # FBref statistics scraper (Selenium)
 ├── scrape_footystats.py            # FootyStats scraper (Playwright)

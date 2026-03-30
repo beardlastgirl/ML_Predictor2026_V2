@@ -44,12 +44,12 @@ def compute_trailing_features(matches_df, window=8):
     df = matches_df.copy().sort_values("Date")
     
     # Home team entries
-    h_df = df[["Date", "Home", "GF", "GA"]].rename(columns={"Home": "Team", "GF": "Goals_For", "GA": "Goals_Against"})
+    h_df = df[["Date", "HomeTeam", "GF", "GA"]].rename(columns={"HomeTeam": "Team", "GF": "Goals_For", "GA": "Goals_Against"})
     h_df["Is_Home"] = True
     h_df["Match_ID"] = df.index
     
     # Away team entries
-    a_df = df[["Date", "Away", "GA", "GF"]].rename(columns={"Away": "Team", "GA": "Goals_For", "GF": "Goals_Against"})
+    a_df = df[["Date", "AwayTeam", "GA", "GF"]].rename(columns={"AwayTeam": "Team", "GA": "Goals_For", "GF": "Goals_Against"})
     a_df["Is_Home"] = False
     a_df["Match_ID"] = df.index
     
@@ -94,8 +94,8 @@ def get_all_teams_latest_stats(matches_df, window=8):
     df = matches_df.sort_values("Date")
     
     for _, row in df.iterrows():
-        home_team = row["Home"]
-        away_team = row["Away"]
+        home_team = row["HomeTeam"]
+        away_team = row["AwayTeam"]
         
         if home_team not in team_history:
             team_history[home_team] = []
@@ -117,13 +117,13 @@ def get_team_stats_from_history(matches_df, team_name, window=8):
         return {"avg_gf": np.nan, "avg_ga": np.nan, "avg_gd": np.nan, "form": np.nan, "matches": 0}
     
     # This is still here for backward compatibility but using get_all_teams_latest_stats is preferred
-    team_matches = matches_df[(matches_df["Home"] == team_name) | (matches_df["Away"] == team_name)].sort_values("Date")
+    team_matches = matches_df[(matches_df["HomeTeam"] == team_name) | (matches_df["AwayTeam"] == team_name)].sort_values("Date")
     if team_matches.empty:
         return {"avg_gf": np.nan, "avg_ga": np.nan, "avg_gd": np.nan, "form": np.nan, "matches": 0}
         
     history = []
     for _, row in team_matches.iterrows():
-        if row["Home"] == team_name:
+        if row["HomeTeam"] == team_name:
             history.append({"gf": row.get("GF", 0), "ga": row.get("GA", 0)})
         else:
             history.append({"gf": row.get("GA", 0), "ga": row.get("GF", 0)})

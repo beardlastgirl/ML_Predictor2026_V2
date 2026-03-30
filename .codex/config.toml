@@ -94,3 +94,4 @@ playwright = { command = "npx", args = ["@modelcontextprotocol/server-playwright
 python = { command = "python", args = ["-m", "mcp.server.python"], description = "Python MCP server for code analysis and execution" }
 colab-mcp = { command = "uvx", args = ["git+https://github.com/googlecolab/colab-mcp"], timeout = 30000, description = "Google Colab integration for collaborative development" }
 roundtable = { type = "http", url = "https://mcp.roundtable.now/mcp", description = "Real-time collaboration platform for AI agents" }
+contextvault = { command = "npx", args = ["-y", "contextvault-mcp"], description = "ContextVault MCP server" }

@@ -364,7 +364,7 @@ def setup_driver(headless=False):
             log_info(
                 "Using webdriver-manager for automatic ChromeDriver installation..."
             )
-            service = ChromeService(ChromeDriverManager().install())
+            service = Service(ChromeDriverManager().install())
             driver = webdriver.Chrome(service=service, options=options)
         else:
             log_warning("webdriver-manager not available, using system ChromeDriver...")

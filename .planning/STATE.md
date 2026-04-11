@@ -3,10 +3,10 @@
 ## Current Position
 
 **Milestone:** v2.0 — Initialization & Alignment  
-**Phase:** Not started (defining requirements)  
+**Phase:** Not started (roadmap created)  
 **Plan:** —  
-**Status:** Defining requirements and roadmap structure  
-**Last activity:** 2026-03-21 — Milestone v2.0 requirements phase started
+**Status:** Roadmap ready — awaiting Phase 1 planning  
+**Last activity:** 2026-04-10 — Roadmap created for v2.0
 
 ## Accumulated Context
 
@@ -63,4 +63,13 @@
 
 ## Blockers
 
-None currently. System is production-ready and fully tested.
+None — roadmap ready for planning
+
+## Roadmap Summary
+
+| Phase | Goal | Requirements |
+|-------|------|--------------|
+| 1. Data Foundation | Clean pipeline with odds | DATA-01, DATA-02 |
+| 2. Model Baselines | Naive + bookie comparison | MODEL-01 |
+| 3. Poisson Calibration | Realistic scorelines | POISS-01 |
+| 4. Agent Architecture | Coordinator-Worker pattern | AGENT-01 |

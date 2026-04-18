@@ -19,11 +19,11 @@ Routes to the update workflow which handles:
 </objective>
 
 <execution_context>
-@C:/Scripts/ML_Predictor2026_V2/.claude/get-shit-done/workflows/update.md
+@I:/Scripts/ML_Predictor2026_V2/.claude/get-shit-done/workflows/update.md
 </execution_context>
 
 <process>
-**Follow the update workflow** from `@C:/Scripts/ML_Predictor2026_V2/.claude/get-shit-done/workflows/update.md`.
+**Follow the update workflow** from `@I:/Scripts/ML_Predictor2026_V2/.claude/get-shit-done/workflows/update.md`.
 
 The workflow handles all logic including:
 1. Installed version detection (local/global)

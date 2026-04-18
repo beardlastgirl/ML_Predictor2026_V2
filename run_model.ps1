@@ -205,6 +205,11 @@ switch ($Option) {
             Write-Host "========================================" -ForegroundColor Cyan
             Get-Content $results.FullName | Select-Object -First 35
         }
+
+        Write-Host ""
+        Write-Host "Undocumented final Analysis..." -ForegroundColor Yellow
+        Invoke-Script -ScriptName "RayHudson.py" -Description "Run Main Prediction Model"
+		
     }
     0 {
         Write-Host "[INFO] Exiting." -ForegroundColor Yellow

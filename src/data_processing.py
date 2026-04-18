@@ -7,6 +7,29 @@ import pandas as pd
 from src.utils import log_info, log_ok, log_error, log_warning
 from src.map_headers import map_headers
 
+def _canonicalize_name(name):
+    """Applies a consistent set of normalization steps to a team name."""
+    if not name or pd.isna(name):
+        return ""
+    name = str(name).strip().upper()
+    
+    # Consistent character normalization: replace delimiters with space
+    name = name.replace(".", " ").replace("-", " ").replace("–", " ").replace("—", " ")
+    
+    # Remove accents
+    mapping = str.maketrans({
+        "Á": "A", "É": "E", "Í": "I", "Ó": "O", "Ú": "U", "Ü": "U", "Ñ": "N",
+        "á": "A", "é": "E", "í": "I", "ó": "O", "ú": "U", "ü": "U", "ñ": "N"
+    })
+    name = name.translate(mapping)
+    
+    # Remove any remaining non-alphanumeric characters (excluding spaces)
+    name = re.sub(r"[^A-Z0-9\s]+", "", name)
+    
+    # Normalize multiple spaces to single space and strip
+    name = re.sub(r"\s+", " ", name).strip()
+    return name
+
 def apply_header_mapping(df, provider=None):
     """
     Apply canonical header mapping to a DataFrame.
@@ -37,7 +60,9 @@ def apply_header_mapping(df, provider=None):
     return df, log_list
 
 def load_glossary(filepath="Glossary.txt"):
-    """Load team name mappings from Glossary.txt."""
+    """Load team name mappings from Glossary.txt.
+    Keys and values in the glossary are stored in their canonical form.
+    """
     glossary = {}
     if not os.path.exists(filepath):
         log_warning(f"Glossary file not found: {filepath}")
@@ -58,85 +83,80 @@ def load_glossary(filepath="Glossary.txt"):
                         break
                 
                 if parts and len(parts) == 2:
-                    source = parts[0].strip().upper()
-                    target = parts[1].strip().upper()
-                    glossary[source] = target
+                    source_raw = parts[0].strip()
+                    target_raw = parts[1].strip()
+                    
+                    # Canonicalize both source and target for storage
+                    source_canonical = _canonicalize_name(source_raw)
+                    target_canonical = _canonicalize_name(target_raw)
+
+                    if source_canonical and target_canonical:
+                        glossary[source_canonical] = target_canonical
         log_ok(f"Loaded {len(glossary)} team name mappings from glossary")
     except Exception as e:
         log_error(f"Error reading glossary: {e}")
     return glossary
 
+# Raw internal mapping for teams with common variations not necessarily in glossary
+_internal_mapping_raw = {
+    "CENTRAL CORDOBA (SGO)": "CENTRAL CORDOBA",
+    "CENTRAL CORDOBA SDE": "CENTRAL CORDOBA",
+    "CENTRAL CBA": "CENTRAL CORDOBA",
+    "ESTUDIANTES": "ESTUDIANTES LP",
+    "ESTUDIANTES DE LA PLATA": "ESTUDIANTES LP",
+    "ESTUDIANTES (LP)": "ESTUDIANTES LP",
+    "GIMNASIA": "GIMNASIA LP",
+    "GIMNASIA Y ESGRIMA": "GIMNASIA LP",
+    "GIMNASIA (LP)": "GIMNASIA LP",
+    "GIMNASIA DE LA PLATA": "GIMNASIA LP",
+    "GIMNASIA MZA": "GIMNASIA MENDOZA",
+    "GIMNASIA (M)": "GIMNASIA MENDOZA",
+    "GIMNASIA Y ESGRIMA (M)": "GIMNASIA MENDOZA",
+    "INSTITUTO ACC": "INSTITUTO",
+    "INSTITUTO (C)": "INSTITUTO",
+    "NEWELLS": "NEWELLS OLD BOYS",
+    "NEWELLS OLD BOYS (ROS)": "NEWELLS OLD BOYS",
+    "NOB": "NEWELLS OLD BOYS",
+    "ROSARIO": "ROSARIO CENTRAL",
+    "R CENTRAL": "ROSARIO CENTRAL",
+    "TALLERES": "TALLERES CORDOBA",
+    "TALLERES (C)": "TALLERES CORDOBA",
+    "TALLERES DE CORDOBA": "TALLERES CORDOBA",
+    "UNION": "UNION DE SANTA FE",
+    "UNION SF": "UNION DE SANTA FE",
+    "DEFENSA": "DEFENSA Y JUSTICIA",
+    "DYJ": "DEFENSA Y JUSTICIA",
+    "ATL": "ATL TUCUMAN",
+    "ATL TUC": "ATL TUCUMAN",
+    "TUCUMAN": "ATL TUCUMAN",
+    "IND RIVADAVIA": "INDEPENDIENTE RIVADAVIA",
+    "IND RIV": "INDEPENDIENTE RIVADAVIA",
+    "DEP RIESTRA": "DEPORTIVO RIESTRA",
+    "RIESTRA": "DEPORTIVO RIESTRA",
+    "BARRACAS": "BARRACAS CENTRAL",
+    "SARMIENTO": "SARMIENTO JUNIN",
+    "SARMIENTO (J)": "SARMIENTO JUNIN",
+}
+
+# Pre-canonicalize internal mapping keys for efficiency
+INTERNAL_MAPPING = {
+    _canonicalize_name(k): v for k, v in _internal_mapping_raw.items()
+}
+
 def normalize_team_name(name, glossary=None):
     """Normalize team names for consistent merging."""
-    if not name or pd.isna(name):
-        return ""
-        
-    # Initial cleanup: strip, upper, and basic character replacement
-    name = str(name).strip().upper()
+    canonical_name = _canonicalize_name(name)
+
+    # Apply user glossary mapping if available (highest precedence)
+    if glossary and canonical_name in glossary:
+        return glossary[canonical_name]
     
-    # Common variations mapping (internal glossary)
-    INTERNAL_MAPPING = {
-        "CENTRAL CORDOBA (SGO)": "CENTRAL CORDOBA",
-        "CENTRAL CORDOBA SDE": "CENTRAL CORDOBA",
-        "CENTRAL CBA": "CENTRAL CORDOBA",
-        "ESTUDIANTES": "ESTUDIANTES LP",
-        "ESTUDIANTES DE LA PLATA": "ESTUDIANTES LP",
-        "ESTUDIANTES (LP)": "ESTUDIANTES LP",
-        "GIMNASIA": "GIMNASIA LP",
-        "GIMNASIA Y ESGRIMA": "GIMNASIA LP",
-        "GIMNASIA (LP)": "GIMNASIA LP",
-        "GIMNASIA DE LA PLATA": "GIMNASIA LP",
-        "GIMNASIA MZA": "GIMNASIA MENDOZA",
-        "GIMNASIA (M)": "GIMNASIA MENDOZA",
-        "GIMNASIA Y ESGRIMA (M)": "GIMNASIA MENDOZA",
-        "INSTITUTO ACC": "INSTITUTO",
-        "INSTITUTO (C)": "INSTITUTO",
-        "NEWELLS": "NEWELLS OLD BOYS",
-        "NEWELLS OLD BOYS (ROS)": "NEWELLS OLD BOYS",
-        "NOB": "NEWELLS OLD BOYS",
-        "ROSARIO": "ROSARIO CENTRAL",
-        "R CENTRAL": "ROSARIO CENTRAL",
-        "TALLERES": "TALLERES CORDOBA",
-        "TALLERES (C)": "TALLERES CORDOBA",
-        "TALLERES DE CORDOBA": "TALLERES CORDOBA",
-        "UNION": "UNION DE SANTA FE",
-        "UNION SF": "UNION DE SANTA FE",
-        "DEFENSA": "DEFENSA Y JUSTICIA",
-        "DYJ": "DEFENSA Y JUSTICIA",
-        "ATL": "ATL TUCUMAN",
-        "ATL TUC": "ATL TUCUMAN",
-        "TUCUMAN": "ATL TUCUMAN",
-        "IND RIVADAVIA": "INDEPENDIENTE RIVADAVIA",
-        "IND RIV": "INDEPENDIENTE RIVADAVIA",
-        "DEP RIESTRA": "DEPORTIVO RIESTRA",
-        "RIESTRA": "DEPORTIVO RIESTRA",
-        "BARRACAS": "BARRACAS CENTRAL",
-        "SARMIENTO": "SARMIENTO JUNIN",
-        "SARMIENTO (J)": "SARMIENTO JUNIN",
-    }
-    
-    if name in INTERNAL_MAPPING:
-        name = INTERNAL_MAPPING[name]
-        
-    # Apply user glossary mapping if available (overrides internal)
-    if glossary and name in glossary:
-        name = glossary[name]
-        
-    # Consistent character normalization
-    name = name.replace(".", "").replace("-", " ").replace("–", " ").replace("—", " ")
-    
-    # Remove accents
-    mapping = str.maketrans({
-        "Á": "A", "É": "E", "Í": "I", "Ó": "O", "Ú": "U", "Ü": "U", "Ñ": "N",
-        "á": "A", "é": "E", "í": "I", "ó": "O", "ú": "U", "ü": "U", "ñ": "N"
-    })
-    name = name.translate(mapping)
-    
-    # Remove multiple spaces and keep only A-Z and spaces
-    name = re.sub(r"[^A-Z ]+", "", name)
-    name = re.sub(r"\s+", " ", name).strip()
-    
-    return name
+    # Apply internal mapping if no user glossary match
+    if canonical_name in INTERNAL_MAPPING:
+        return INTERNAL_MAPPING[canonical_name]
+            
+    return canonical_name
+
 
 def load_sofascore_data(filepath="src/sofascore_stats.json", glossary=None):
     """Load Sofascore standings data from JSON file."""
@@ -200,7 +220,7 @@ def _extract_sofa_stats(row, position):
         "lost": row.get("losses", row.get("lost", 0)),
         "goals_for": row.get("goalsFor", 0),
         "goals_against": row.get("goalsAgainst", 0),
-        "goal_difference": row.get("goalDifference", 0),
+        "goal_difference": row.get("goal_difference", row.get("goalDifference", 0)),
         "rating": None,
     }
 
@@ -219,7 +239,7 @@ def clean_partidos_file(path: str, glossary: dict = None) -> None:
             continue
             
         # Basic character cleanup
-        s = line.replace("\t", " ")
+        s = line.replace("	", " ")
         # Handle Spanish accents
         mapping = str.maketrans({"á": "a", "Á": "A", "é": "e", "É": "E", "í": "i", "Í": "I", "ó": "o", "Ó": "O", "ú": "u", "Ú": "U", "ü": "u", "Ü": "U"})
         s = s.translate(mapping)

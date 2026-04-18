@@ -10,9 +10,9 @@ Display comprehensive project statistics including phase progress, plan executio
 </objective>
 
 <execution_context>
-@C:/Scripts/ML_Predictor2026_V2/.claude/get-shit-done/workflows/stats.md
+@I:/Scripts/ML_Predictor2026_V2/.claude/get-shit-done/workflows/stats.md
 </execution_context>
 
 <process>
-Execute the stats workflow from @C:/Scripts/ML_Predictor2026_V2/.claude/get-shit-done/workflows/stats.md end-to-end.
+Execute the stats workflow from @I:/Scripts/ML_Predictor2026_V2/.claude/get-shit-done/workflows/stats.md end-to-end.
 </process>

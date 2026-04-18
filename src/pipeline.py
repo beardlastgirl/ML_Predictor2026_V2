@@ -23,6 +23,7 @@ from sklearn.model_selection import TimeSeriesSplit
 
 from src.config import BASE_ELO, MODEL_TYPE, TRAILING_WINDOW, RESULT_ENCODING
 from src.utils import log_info, log_ok, log_error, log_warning
+from src.data_ingestion import DataIngestor
 from src.data_processing import (
     load_glossary, load_sofascore_data, normalize_team_name,
     clean_partidos_file, parse_fixtures, apply_header_mapping
@@ -324,6 +325,8 @@ def predict_fixtures(
     return fixtures
 
 
+from src.summary_validator import validate_and_fix_summary
+
 def write_outputs(
     fixtures: pd.DataFrame,
     feature_importance: pd.DataFrame,
@@ -376,6 +379,15 @@ def write_outputs(
 
     output_file = os.path.join(output_dir, f"PrediccionFecha{fecha_num}.txt")
 
+    # Validate and fix summary stats (PDF Fallback)
+    penales = summary.get('penales', 0) if summary else 0
+    expulsados = summary.get('expulsados', 0) if summary else 0
+    total_model_goals = 0
+    for _, row in fixtures.iterrows():
+        total_model_goals += int(np.clip(row.get("Pred_Home_Goals", 0), 0, 6)) + int(np.clip(row.get("Pred_Away_Goals", 0), 0, 6))
+
+    penales, expulsados, _ = validate_and_fix_summary(penales, expulsados, total_model_goals)
+
     with open(output_file, "w", encoding="utf-8") as f:
         # Write header
         if header_line:
@@ -384,17 +396,15 @@ def write_outputs(
             f.write(f"FECHA {fecha_num}\n")
 
         # Write matches with predicted scores
-        total_goals = 0
         for _, row in fixtures.iterrows():
             hg = int(np.clip(row.get("Pred_Home_Goals", 0), 0, 6))
             ag = int(np.clip(row.get("Pred_Away_Goals", 0), 0, 6))
-            total_goals += hg + ag
             f.write(f"{row.get('Raw_Home', row['HomeTeam'])} - {row.get('Raw_Away', row['AwayTeam'])}: {hg}-{ag}\n")
 
         # Write summary section
-        f.write(f"Cantidad de penales cobrados: {summary.get('penales', 0) if summary else 0}\n")
-        f.write(f"Cantidad de expulsados: {summary.get('expulsados', 0) if summary else 0}\n")
-        f.write(f"Cantidad de goles convertidos: {total_goals}\n")
+        f.write(f"Cantidad de penales cobrados: {penales}\n")
+        f.write(f"Cantidad de expulsados: {expulsados}\n")
+        f.write(f"Cantidad de goles convertidos: {total_model_goals}\n")
 
     log_ok(f"Results saved to {output_file}")
 
@@ -408,6 +418,7 @@ def run_pipeline(
     historical_path: str = "data/ARG.csv",
     model_type: str = MODEL_TYPE,
     output_dir: str = ".",
+    auto_update: bool = True
 ) -> PipelineResult:
     """Execute the full prediction pipeline.
 
@@ -418,6 +429,7 @@ def run_pipeline(
         historical_path: Path to historical match data CSV
         model_type: Type of model to use
         output_dir: Directory for output files
+        auto_update: Whether to automatically check for and apply data updates
 
     Returns:
         PipelineResult with all outputs
@@ -425,6 +437,17 @@ def run_pipeline(
     log_info("=" * 60)
     log_info("ML_Predictor2026_V2 - Poisson Distribution Enhanced")
     log_info("=" * 60)
+
+    # --- Step 0: Data Ingestion/Update ---
+    if auto_update:
+        try:
+            ingestor = DataIngestor(data_path=historical_path)
+            if ingestor.update_base_data():
+                log_ok("Base historical data updated from football-data.co.uk")
+            ingestor.enrich_with_api_stats()
+        except Exception as e:
+            log_warning(f"Data update failed (skipping): {e}")
+    # --- End Step 0 ---
 
     result = PipelineResult()
 

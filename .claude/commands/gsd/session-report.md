@@ -11,9 +11,9 @@ Generate a structured SESSION_REPORT.md document capturing session outcomes, wor
 </objective>
 
 <execution_context>
-@C:/Scripts/ML_Predictor2026_V2/.claude/get-shit-done/workflows/session-report.md
+@I:/Scripts/ML_Predictor2026_V2/.claude/get-shit-done/workflows/session-report.md
 </execution_context>
 
 <process>
-Execute the session-report workflow from @C:/Scripts/ML_Predictor2026_V2/.claude/get-shit-done/workflows/session-report.md end-to-end.
+Execute the session-report workflow from @I:/Scripts/ML_Predictor2026_V2/.claude/get-shit-done/workflows/session-report.md end-to-end.
 </process>

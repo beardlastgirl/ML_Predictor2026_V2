@@ -20,16 +20,16 @@
             "command": "context-mode hook gemini-cli sessionstart"
           }
         ]
-      }
-    ],
-    "AfterTool": [
+      },
       {
         "hooks": [
           {
             "type": "command",
-            "command": "node .gemini/hooks/gsd-context-monitor.js"
+            "command": "node .gemini/hooks/gsd-context-monitor.js",
+            "timeout": 10
           }
-        ]
+        ],
+        "matcher": "Bash|Edit|Write|MultiEdit|Agent|Task"
       },
       {
         "matcher": "",
@@ -37,6 +37,16 @@
           {
             "type": "command",
             "command": "context-mode hook gemini-cli aftertool"
+          }
+        ]
+      },
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .gemini/hooks/gsd-phase-boundary.sh",
+            "timeout": 5
           }
         ]
       }
@@ -48,6 +58,36 @@
           {
             "type": "command",
             "command": "context-mode hook gemini-cli beforetool"
+          }
+        ]
+      },
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node .gemini/hooks/gsd-prompt-guard.js",
+            "timeout": 5
+          }
+        ]
+      },
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node .gemini/hooks/gsd-read-guard.js",
+            "timeout": 5
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .gemini/hooks/gsd-validate-commit.sh",
+            "timeout": 5
           }
         ]
       }
@@ -72,26 +112,20 @@
       "command": "context-mode",
       "description": "Context sandbox — keeps raw tool output out of the context window"
     },
-    "colab-mcp": {
-      "command": "uvx",
-      "args": ["git+https://github.com/googlecolab/colab-mcp"],
-      "timeout": 30000,
-      "description": "Google Colab integration for notebook collaboration and cloud execution"
-    },
     "playwright": {
       "command": "npx",
-      "args": ["@modelcontextprotocol/server-playwright@latest"],
+      "args": [
+        "@modelcontextprotocol/server-playwright@latest"
+      ],
       "description": "Playwright browser automation for web scraping, testing, and debugging"
     },
     "python": {
       "command": "python",
-      "args": ["-m", "mcp.server.python"],
+      "args": [
+        "-m",
+        "mcp.server.python"
+      ],
       "description": "Python MCP server for code analysis, refactoring, and execution"
-    },
-    "roundtable": {
-      "type": "http",
-      "url": "https://mcp.roundtable.now/mcp",
-      "description": "Real-time cross-AI collaboration platform"
     }
   }
 }

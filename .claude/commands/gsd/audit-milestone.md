@@ -17,7 +17,7 @@ Verify milestone achieved its definition of done. Check requirements coverage, c
 </objective>
 
 <execution_context>
-@C:/Scripts/ML_Predictor2026_V2/.claude/get-shit-done/workflows/audit-milestone.md
+@I:/Scripts/ML_Predictor2026_V2/.claude/get-shit-done/workflows/audit-milestone.md
 </execution_context>
 
 <context>
@@ -31,6 +31,6 @@ Glob: .planning/phases/*/*-VERIFICATION.md
 </context>
 
 <process>
-Execute the audit-milestone workflow from @C:/Scripts/ML_Predictor2026_V2/.claude/get-shit-done/workflows/audit-milestone.md end-to-end.
+Execute the audit-milestone workflow from @I:/Scripts/ML_Predictor2026_V2/.claude/get-shit-done/workflows/audit-milestone.md end-to-end.
 Preserve all workflow gates (scope determination, verification reading, integration check, requirements coverage, routing).
 </process>

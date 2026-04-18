@@ -20,11 +20,11 @@ Routes to the settings workflow which handles:
 </objective>
 
 <execution_context>
-@C:/Scripts/ML_Predictor2026_V2/.claude/get-shit-done/workflows/settings.md
+@I:/Scripts/ML_Predictor2026_V2/.claude/get-shit-done/workflows/settings.md
 </execution_context>
 
 <process>
-**Follow the settings workflow** from `@C:/Scripts/ML_Predictor2026_V2/.claude/get-shit-done/workflows/settings.md`.
+**Follow the settings workflow** from `@I:/Scripts/ML_Predictor2026_V2/.claude/get-shit-done/workflows/settings.md`.
 
 The workflow handles all logic including:
 1. Config file creation with defaults if missing

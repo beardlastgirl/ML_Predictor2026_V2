@@ -15,10 +15,10 @@ Provides situational awareness before continuing work.
 </objective>
 
 <execution_context>
-@C:/Scripts/ML_Predictor2026_V2/.claude/get-shit-done/workflows/progress.md
+@I:/Scripts/ML_Predictor2026_V2/.claude/get-shit-done/workflows/progress.md
 </execution_context>
 
 <process>
-Execute the progress workflow from @C:/Scripts/ML_Predictor2026_V2/.claude/get-shit-done/workflows/progress.md end-to-end.
+Execute the progress workflow from @I:/Scripts/ML_Predictor2026_V2/.claude/get-shit-done/workflows/progress.md end-to-end.
 Preserve all routing logic (Routes A through F) and edge case handling.
 </process>

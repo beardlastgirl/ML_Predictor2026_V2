@@ -22,11 +22,11 @@ Routes to the resume-project workflow which handles:
   </objective>
 
 <execution_context>
-@C:/Scripts/ML_Predictor2026_V2/.claude/get-shit-done/workflows/resume-project.md
+@I:/Scripts/ML_Predictor2026_V2/.claude/get-shit-done/workflows/resume-project.md
 </execution_context>
 
 <process>
-**Follow the resume-project workflow** from `@C:/Scripts/ML_Predictor2026_V2/.claude/get-shit-done/workflows/resume-project.md`.
+**Follow the resume-project workflow** from `@I:/Scripts/ML_Predictor2026_V2/.claude/get-shit-done/workflows/resume-project.md`.
 
 The workflow handles all resumption logic including:
 

@@ -35,6 +35,14 @@ if (Test-Path $Requirements) {
     python -m pip install --upgrade pip
     pip install -r $Requirements
     Write-Output "[OK] Dependencies installed."
+
+    Write-Host "Installing DataRobot Agent Skills..."
+    npx ai-agent-skills install datarobot-oss/datarobot-agent-skills
+    if ($LASTEXITCODE -ne 0) {
+        Write-Error "Failed to install DataRobot Agent Skills."
+        exit 1
+    }
+    Write-Host "DataRobot Agent Skills installed successfully."
 } else {
     Write-Output "[WARN] requirements.txt not found."
 }

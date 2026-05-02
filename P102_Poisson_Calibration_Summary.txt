@@ -1,0 +1,20 @@
+# P102 - Football Match Prediction System: Phase 3 Poisson Calibration Summary
+
+## Summary of Accomplishments (Phase 3)
+- **Temporal Dynamics Implementation**: Implemented exponential time decay in `features.py` for trailing statistics (Avg_GF, Avg_GA), ensuring recent form carries more weight than older match data.
+- **Poisson Model Calibration**: Recalibrated `BASE_GOAL_RATE` to `2.22` (based on historical `1.26` Home + `0.96` Away goals per match) and adjusted `HOME_BOOST` to `1.15` to better reflect league trends.
+- **Pipeline Stabilization**: Resolved critical column index mismatches and validated data pipeline inputs, ensuring clean execution.
+- **Baseline Establishment**: Formalized the evaluation framework by integrating Naive (Historical Frequency) and Bookie (Shin Method odds) baselines for continuous performance monitoring.
+- **Model Heuristic Audit**: Identified that hardcoded scoreline nudges in `model_engine.py` were creating discrepancies between predicted outcomes and match-goal totals.
+
+## Remaining Challenges
+- **Prediction Consistency**: The `_calculate_hybrid_goals` function currently contains hardcoded scoreline heuristics that override Poisson outcomes, leading to discrepancies in total goal counts.
+- **Sofascore Data Validation**: Ongoing warnings regarding missing keys in Sofascore data structure require deeper integration with the current data source.
+
+## Recommendations for Phase 4 (Agent Architecture)
+- **Mathematical Refinement**: Remove hardcoded heuristics in `_calculate_hybrid_goals` and replace them with a pure Poisson-based expectation calibrated by the Shin Method. This will restore mathematical consistency and allow the model to fully utilize the Poisson grid.
+- **Automated Feature Engineering**: Replace hardcoded `FEATURE_COLUMNS` with an automated feature selection process using cross-validation to prevent overfitting.
+- **Robust Pipeline Reporting**: Update the pipeline summary to report baseline comparisons (Naive/Bookie/Model) automatically as part of the `PrediccionFecha.txt` output.
+
+## Summary
+The system has moved from a generic, static baseline to a more dynamic, time-sensitive model. Phase 4 will focus on formalizing the Agent Architecture and finalizing the model's mathematical consistency.

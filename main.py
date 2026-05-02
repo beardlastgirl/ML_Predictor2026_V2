@@ -7,6 +7,7 @@ It delegates to the pipeline service for all major operations.
 
 from src.pipeline import run_pipeline
 from src.utils import log_info, log_ok
+from src.config import MODEL_TYPE
 
 
 def main():
@@ -18,7 +19,8 @@ def main():
     log_info("=" * 60)
     log_info("Pipeline Summary")
     log_info("=" * 60)
-    log_info("Model: CatBoost")
+    model_name = type(result.model).__name__ if result.model else MODEL_TYPE
+    log_info(f"Model: {model_name}")
     log_info(f"CV Accuracy: {sum(result.cv_accuracies)/len(result.cv_accuracies):.3f} (+/- {__import__('numpy').std(result.cv_accuracies):.3f})")
     log_info(f"Features: {len(result.features)}")
     if result.fixtures is not None:

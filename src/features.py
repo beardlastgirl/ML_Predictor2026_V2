@@ -65,8 +65,17 @@ def compute_trailing_features(matches_df, window=8):
     # We shift(1) so the average DOES NOT include the current match
     gb = long_df.groupby("Team")
     
-    long_df["Avg_GF"] = gb["Goals_For"].transform(lambda x: x.shift(1).rolling(window, min_periods=1).mean())
-    long_df["Avg_GA"] = gb["Goals_Against"].transform(lambda x: x.shift(1).rolling(window, min_periods=1).mean())
+    # Define decay function
+    def exponential_decay(x, window):
+        # x is a pandas Series
+        weights = pd.Series(np.exp(np.linspace(-1, 0, len(x))), index=x.index)
+        return x.multiply(weights).rolling(window, min_periods=1).sum() / weights.rolling(window, min_periods=1).sum()
+
+    # Apply exponential decay to GF/GA
+    long_df["Avg_GF"] = gb["Goals_For"].transform(lambda x: x.shift(1).pipe(lambda s: exponential_decay(s, window)))
+    long_df["Avg_GA"] = gb["Goals_Against"].transform(lambda x: x.shift(1).pipe(lambda s: exponential_decay(s, window)))
+    
+    # Form remains standard sum/window
     long_df["Form"] = gb["Points"].transform(lambda x: x.shift(1).rolling(window, min_periods=1).sum() / window)
     long_df["Matches"] = gb.cumcount()
     long_df.loc[long_df["Matches"] > window, "Matches"] = window
@@ -90,20 +99,30 @@ def get_all_teams_latest_stats(matches_df, window=8):
         return {}
     
     team_history = {}
-    # Sort by date to ensure chronological order
     df = matches_df.sort_values("Date")
     
     for _, row in df.iterrows():
         home_team = row["HomeTeam"]
         away_team = row["AwayTeam"]
         
+        # Resolve goal columns: prefer GF/GA, fall back to Home_GF/Away_GF
+        if "GF" in row and "GA" in row and (row.get("GF", 0) != 0 or row.get("GA", 0) != 0):
+            home_gf = row.get("GF", 0)
+            away_gf = row.get("GA", 0)
+        elif "Home_GF" in row and "Away_GF" in row:
+            home_gf = row.get("Home_GF", 0)
+            away_gf = row.get("Away_GF", 0)
+        else:
+            home_gf = 0
+            away_gf = 0
+        
         if home_team not in team_history:
             team_history[home_team] = []
         if away_team not in team_history:
             team_history[away_team] = []
             
-        team_history[home_team].append({"gf": row.get("GF", 0), "ga": row.get("GA", 0)})
-        team_history[away_team].append({"gf": row.get("GA", 0), "ga": row.get("GF", 0)})
+        team_history[home_team].append({"gf": home_gf, "ga": away_gf})
+        team_history[away_team].append({"gf": away_gf, "ga": home_gf})
     
     latest_stats = {}
     for team, history in team_history.items():

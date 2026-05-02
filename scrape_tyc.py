@@ -71,124 +71,117 @@ def fetch_page(url):
 
 
 def parse_fixtures(html_content, glossary):
-    """Parse fixtures and results from HTML content."""
+    """Parse fixtures and results from HTML content.
+    
+    NOTE: TyC Sports HTML structure changes frequently. This parser attempts
+    to extract match data but may fail if the site structure changes.
+    If scraping fails, manually update Partidos.txt with fixture data.
+    """
     soup = BeautifulSoup(html_content, 'html.parser')
     
     completed = []
     upcoming = []
     
-    # Find all text elements that contain score patterns
-    import re
-    score_pattern = re.compile(r'\d+\s*-\s*\d+')
+    # Strategy: Look for common fixture/result patterns in the HTML
+    # Pattern 1: Match containers with team names and scores
+    match_containers = soup.find_all(['div', 'article', 'section'], class_=re.compile(r'(match|partido|fixture|result)', re.I))
     
-    # Collect all text elements with scores
-    match_elements = []
-    for element in soup.find_all(string=True):
-        if score_pattern.search(element):
-            match_elements.append(element.strip())
+    if match_containers:
+        log_info(f"Found {len(match_containers)} potential match containers")
+        for container in match_containers:
+            text = container.get_text(separator=' ', strip=True)
+            # Look for score pattern: "Team A 2 - 1 Team B"
+            score_match = re.search(r'(.+?)\s+(\d+)\s*[-:]\s*(\d+)\s+(.+)', text)
+            if score_match:
+                home_name = score_match.group(1).strip()
+                home_score = int(score_match.group(2))
+                away_score = int(score_match.group(3))
+                away_name = score_match.group(4).strip()
+                
+                # Clean team names
+                home_name = re.sub(r"\s*\(.*?\)\s*$", "", home_name)
+                away_name = re.sub(r"\s*\(.*?\)\s*$", "", away_name)
+                
+                if len(home_name) >= 3 and len(away_name) >= 3:
+                    home_team = normalize_team_name(home_name, glossary)
+                    away_team = normalize_team_name(away_name, glossary)
+                    completed.append({
+                        'Home': home_team,
+                        'Away': away_team,
+                        'Home_Score': home_score,
+                        'Away_Score': away_score,
+                        'Date': 'TBD'
+                    })
     
-    log_info(f"Found {len(match_elements)} potential match elements")
+    # Fallback: Parse all text for score patterns (less reliable)
+    if not completed:
+        log_warning("No match containers found, falling back to text search")
+        score_pattern = re.compile(r'(.+?)\s+(\d+)\s*[-:]\s*(\d+)\s+(.+)')
+        for element in soup.find_all(string=True):
+            match = score_pattern.search(element)
+            if match:
+                home_name = match.group(1).strip()
+                home_score = int(match.group(2))
+                away_score = int(match.group(3))
+                away_name = match.group(4).strip()
+                
+                # Skip common false positives
+                skip_words = ['fecha', 'hora', 'estadio', 'canal', 'tv', 'ver', 'vivo', 'fixture', 'resultados', 'tyc sports']
+                if any(word in home_name.lower() or word in away_name.lower() for word in skip_words):
+                    continue
+                
+                if len(home_name) >= 3 and len(away_name) >= 3:
+                    home_team = normalize_team_name(home_name, glossary)
+                    away_team = normalize_team_name(away_name, glossary)
+                    completed.append({
+                        'Home': home_team,
+                        'Away': away_team,
+                        'Home_Score': home_score,
+                        'Away_Score': away_score,
+                        'Date': 'TBD'
+                    })
     
-    current_date = None
-    
-    for element in match_elements:
-        # Pattern 1: "Team A 2 - 1 Team B" (with scores)
-        match1 = re.match(r'^(.+?)\s+(\d+)\s*-\s*(\d+)\s+(.+)$', element)
-        if match1:
-            home_name = match1.group(1).strip()
-            home_score = int(match1.group(2))
-            away_score = int(match1.group(3))
-            away_name = match1.group(4).strip()
-            
-            # Clean trailing parenthetical info from team names
-            home_name = re.sub(r"\s*\(.*?\)\s*$", "", home_name)
-            away_name = re.sub(r"\s*\(.*?\)\s*$", "", away_name)
-
-            # Skip if team names are too short (likely false positive)
-            if len(home_name) < 3 or len(away_name) < 3:
-                continue
-            
-            # Skip common false positives
-            skip_words = ['fecha', 'hora', 'estadio', 'canal', 'tv', 'ver', 'vivo', 'fixture', 'resultados', 'tyc sports']
-            if any(word in home_name.lower() or word in away_name.lower() for word in skip_words):
-                continue
-            
-            home_team = normalize_team_name(home_name, glossary)
-            away_team = normalize_team_name(away_name, glossary)
-            
-            completed.append({
-                'Home': home_team,
-                'Away': away_team,
-                'Home_Score': home_score,
-                'Away_Score': away_score,
-                'Date': current_date or 'TBD'
-            })
-    
-    log_info(f"Found {len(completed)} completed matches and {len(upcoming)} upcoming fixtures")
+    log_info(f"Parsed {len(completed)} completed matches and {len(upcoming)} upcoming fixtures")
     return completed, upcoming
 
 
-def write_partidos_txt(completed, upcoming):
-    """Write fixtures and results to partidos.txt file."""
-    filepath = "partidos.txt"
+def write_partidos_txt(completed, upcoming, fecha_label=None):
+    """Write fixtures and results to Partidos.txt file.
     
-    # Define the specific Fecha 6 matchups from the original file
-    fecha6_teams = [
-        ('DEFENSA Y JUSTICIA', 'BELGRANO'),
-        ('SAN LORENZO', 'ESTUDIANTES LA PLATA'),
-        ('INDEPENDIENTE RIVADAVIA', 'INDEPENDIENTE'),
-        ('INSTITUTO', 'ATLETICO TUCUMAN'),
-        ('ESTUDIANTES LA PLATA', 'SARMIENTO JUNIN'),
-        ('BOCA JUNIORS', 'RACING CLUB'),
-        ('GIMNASIA', 'GIMNASIA'),
-        ('ROSARIO CENTRAL', 'TALLERES CORDOBA'),
-        ('PLATENSE', 'BARRACAS CENTRAL'),
-        ('BANFIELD', 'NEWELLS OLD BOYS'),
-        ('DEPORTIVO RIESTRA', 'HURACAN'),
-        ('CENTRAL CORDOBA', 'TIGRE'),
-        ('VELEZ', 'RIVER'),
-        ('UNION', 'ALDOSIVI'),
-        ('ARGENTINOS JUNIORS', 'LANUS')
-    ]
+    Args:
+        completed: List of completed match dicts with Home/Away/scores
+        upcoming: List of upcoming fixture dicts with Home/Away
+        fecha_label: Optional header string e.g. "FECHA 10 - 05 al 08/05/2026"
+                     If None, uses today's date as fallback.
+    """
+    filepath = "Partidos.txt"
+    all_matches = completed + upcoming
+    
+    if not all_matches:
+        log_warning("No matches to write to Partidos.txt")
+        return
+    
+    if fecha_label is None:
+        fecha_label = f"FECHA XX - {datetime.now().strftime('%d/%m/%Y')}"
     
     try:
         with open(filepath, 'w', encoding='utf-8') as f:
-            # Write header
-            f.write("FECHA 6 - 19 al 22/02/2026\n\n")
+            f.write(f"{fecha_label}\n\n")
             
-            # Filter and write only Fecha 6 matches
-            fecha6_found = 0
-            for home_team, away_team in fecha6_teams:
-                # Check if this matchup exists in our scraped data
-                match_found = False
-                for match in completed + upcoming:
-                    scraped_home = match['Home'].upper().replace(' ', '').replace('Á', 'A').replace('É', 'E').replace('Í', 'I').replace('Ó', 'O').replace('Ú', 'U')
-                    scraped_away = match['Away'].upper().replace(' ', '').replace('Á', 'A').replace('É', 'E').replace('Í', 'I').replace('Ó', 'O').replace('Ú', 'U')
-                    
-                    target_home = home_team.upper().replace(' ', '')
-                    target_away = away_team.upper().replace(' ', '')
-                    
-                    if (scraped_home == target_home and scraped_away == target_away) or \
-                       (scraped_home == target_away and scraped_away == target_home):
-                        f.write(f"{match['Home']} - {match['Away']}:\n")
-                        fecha6_found += 1
-                        match_found = True
-                        break
-                
-                if not match_found:
-                    # Write the expected matchup even if not found in scraped data
-                    f.write(f"{home_team} - {away_team}:\n")
-                    fecha6_found += 1
+            for match in all_matches:
+                home = match.get('Home', '')
+                away = match.get('Away', '')
+                if home and away:
+                    f.write(f"{home} - {away}:\n")
             
-            # Add footer
             f.write("\nCantidad de penales cobrados:\n")
             f.write("Cantidad de expulsados:\n")
-            f.write("Cantidad de goles convertidos:\n\n")
+            f.write("Cantidad de goles convertidos:\n")
         
-        log_ok(f"Successfully wrote {fecha6_found} Fecha 6 matches to {filepath}")
+        log_ok(f"Wrote {len(all_matches)} matches to {filepath}")
         
     except Exception as e:
-        log_error(f"Failed to write partidos.txt: {e}")
+        log_error(f"Failed to write Partidos.txt: {e}")
 
 
 # ==============================================
@@ -196,40 +189,53 @@ def write_partidos_txt(completed, upcoming):
 # ==============================================
 
 def main():
-    """Main function to scrape TyC Sports and update data files."""
-    # Fixed URL
-    url = 'https://www.tycsports.com/liga-profesional-de-futbol/fixture-clausura-2025-calendario-partidos-y-resultados--id672603.html'
+    """Main function to scrape TyC Sports and update data files.
+    
+    Usage:
+        python scrape_tyc.py
+        python scrape_tyc.py --url "https://www.tycsports.com/..." --fecha "FECHA 10 - 05 al 08/05/2026"
+    
+    If no URL is provided, you will be prompted to enter one.
+    The URL should point to the current season's fixture/results page on TyC Sports.
+    """
+    import argparse
+    parser = argparse.ArgumentParser(description="Scrape TyC Sports fixtures")
+    parser.add_argument("--url", type=str, default=None, help="TyC Sports fixture page URL")
+    parser.add_argument("--fecha", type=str, default=None, help='Fecha label e.g. "FECHA 10 - 05 al 08/05/2026"')
+    args = parser.parse_args()
+    
+    url = args.url
+    if not url:
+        print("[INFO] No URL provided.")
+        print("[INFO] Find the current season fixture page at: https://www.tycsports.com/liga-profesional")
+        url = input("Enter TyC Sports fixture URL (or press Enter to skip scraping): ").strip()
+        if not url:
+            log_warning("No URL provided. Skipping scrape. Update Partidos.txt manually.")
+            return
     
     log_info("Starting TyC Sports scraper...")
-    
-    # Load team name glossary
     glossary = load_glossary()
     
     try:
-        # Fetch the webpage
         html_content = fetch_page(url)
-        
-        # Parse fixtures and results
         completed, upcoming = parse_fixtures(html_content, glossary)
-        
-        # Write to partidos.txt
-        write_partidos_txt(completed, upcoming)
+        write_partidos_txt(completed, upcoming, fecha_label=args.fecha)
         
         if not completed and not upcoming:
             log_warning("No matches found. The website structure may have changed.")
+            log_warning("Update Partidos.txt manually with the current fixture list.")
         else:
-            log_ok(f"Successfully processed {len(completed)} completed and {len(upcoming)} upcoming matches")
+            log_ok(f"Processed {len(completed)} completed and {len(upcoming)} upcoming matches")
     
     except Exception as e:
         log_error(f"Scraping failed: {e}")
-        # Not exiting here to allow finally block
+        log_warning("Update Partidos.txt manually with the current fixture list.")
     
     finally:
-        # Log health report
         monitor = get_health_monitor()
         log_info(monitor.generate_report())
     
-    log_ok("TyC Sports scraping completed successfully")
+    log_ok("TyC Sports scraping completed")
 
 
 if __name__ == '__main__':

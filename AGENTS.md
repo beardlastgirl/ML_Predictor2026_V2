@@ -1,13 +1,13 @@
 # AGENTS.md
 # ML_Predictor2026_V2 — Agent Operating Manual
 
-## Orchestrator: Gemini CLI
+## Orchestrator: Claude Code
 
 Default behavior: **solve directly with minimal context.**
-- Reads only AGENTS.md and task-relevant files on startup.
+- Reads CLAUDE.md and task-relevant files on startup.
 - Use one skill only when the task class matches.
 - Spawn a subagent only for `planner`, `debugger`, or `reviewer` roles.
-- Persist only decisions, next step, and blockers to `.ai/state/current.md`.
+- Persist only decisions, next step, and blockers to ContextVault.
 - Never require reading large docs before writing code.
 
 ---
@@ -20,39 +20,34 @@ Default behavior: **solve directly with minimal context.**
 | debugger   | Failing test, crash, or scraper breakage is reproducible | Root cause, minimal patch plan, verify cmd |
 | code-reviewer   | After implementation only — read-only              | Findings list, no code changes                  |
 
-**Adhere to the 3 specialist roles only.**
-
 ---
 
-## Skill Loading (lazy, from global `.agents/skills/` or project-specific `.gemini/skills/`)
+## Skill Loading (lazy, from .claude/skills/)
 
 Load at most **one skill per task**. Match by task class:
 
 | Task class            | Skill                    |
 |-----------------------|--------------------------|
-| Model training / eval | `prediction-pipeline`    |
-| Scraper failures      | `scraper-maintenance`    |
-| Data cleaning         | `data-normalization`     |
-| Release / changelog   | `release-review`         |
+| Model training / eval | `footballbin-predictions`|
+| Scraper failures      | `browser-automation`     |
+| Data cleaning         | `liga-argentina-predictions-api` |
 | Code Review           | `code-reviewer`          |
 
 ---
 
-## State Layer (single source of truth)
+## State Layer
 
 ```
+.claude/
+  settings.json           ← MCP + hook config
+  skills/                 ← lazy-loaded skill files
+  agents/                ← subagent definitions
+  vault/                 ← ContextVault documentation
+
 .ai/
   state/
-    current.md    ← active task, next step, blockers
-    backlog.md    ← queued work items
-    decisions.md  ← architecture decisions with rationale
-AGENTS.md         ← this file (agent config)
-ARCHITECTURE.md   ← system overview
-.gemini/
-  config.toml     ← MCP servers, skill/agent config
-  agents/         ← subagent definitions
-  skills/         ← lazy-loaded skill files
+    current.md           ← active task, next step, blockers
+    decisions.md         ← architecture decisions with rationale
 ```
 
 Store **conclusions**, not transcripts.
-DEV_CONTEXT and CONTEXT_SUMMARY.md are retired — use `.ai/state/` only.

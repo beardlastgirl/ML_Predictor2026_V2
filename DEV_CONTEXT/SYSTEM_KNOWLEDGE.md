@@ -1,126 +1,137 @@
 # SYSTEM_KNOWLEDGE.md
 
-## Technical Details
+**Last Updated:** 2026-05-02
 
-### Poisson Distribution Implementation
+## Mathematical Foundations
 
-**BASE_GOAL_RATE = 1.89**: Calibrated for Liga Profesional Argentina (~1.89 avg goals/match)
-
-**xG Calculation Formula**:
+### Elo Rating System
 ```
-xG_home = BASE_GOAL_RATE * home_advantage * attack_factor * defense_factor
-xG_away = BASE_GOAL_RATE * attack_factor * defense_factor
-```
+E_team = 1 / (1 + 10^((opp_elo - team_elo) / 400))
+new_elo = old_elo + K * (result - E_team)
 
-**Attack/Defense Factors**:
-- Derived from trailing 8-match averages
-- Normalized against league average
-- Clamped to 0.3-2.5 range to prevent extreme values
-
-**Poisson Probability**:
-```
-P(goals = k) = (xG^k * e^(-xG)) / k!
+K = 30, Home Advantage = +65 Elo, Bounds = [800, 2800]
+Result encoding: H=2 (home win), D=1 (draw), A=0 (away win)
 ```
 
-**Outcome Probabilities**:
-- Home Win: sum of P(home_goals > away_goals)
-- Draw: sum of P(home_goals = away_goals)
-- Away Win: sum of P(home_goals < away_goals)
+### Expected Goals (xG)
+```
+xG_home = (0.55 * avg_gf_home + 0.45 * avg_ga_away) * HOME_BOOST * elo_factor
+xG_away = (0.55 * avg_gf_away + 0.45 * avg_ga_home) / elo_factor
 
-### Apify Integration
+HOME_BOOST = 1.15
+elo_factor = 1 + (elo_diff / 5000)
+Bounds: [0.3, 2.5]
 
-**API Token**: set via `APIFY_API_TOKEN` environment variable (do not commit)
+NaN fallback: BASE_GOAL_RATE = 2.22 (used when team has no trailing stats,
+e.g. promoted teams at season start). NOT a scaling factor in the formula.
+```
 
-**Actor**: azzouzana/sofascore-scraper-pro
+### Poisson Goal Modeling
+```
+P(X = k) = (λ^k * e^-λ) / k!   where λ = xG
 
-**Target URL**:
-https://www.sofascore.com/football/tournament/argentina/liga-profesional-de-futbol/155#tab:standings
+grid[h,a] = P(home=h) * P(away=a)   (9x9, up to MAX_GOALS=8)
+normalize grid to sum=1.0
 
-**Dataset Storage**: Results saved to src/sofascore_stats.json
+p_home_win = sum(grid[h>a])
+p_draw     = sum(grid[h==a]) * POISSON_DRAW_ADJUSTMENT (0.85)
+p_away_win = sum(grid[h<a])
+p_home_win += HOME_ADVANTAGE_BOOST (0.08)
+re-normalize to sum=1.0
+```
 
-### File Formats
+### Shin Method (Odds → True Probabilities)
+```
+π_i = 1/odds_i   (implied probability)
+p_i = ((√(z² + 4(1-z)π_i) - z) / (2(1-z)))²
+Solve: Σp_i = 1 for z ∈ [0,1)
 
-#### sofascore_stats.json - Apify Format
+z = estimated proportion of insider traders
+Output: Shin_Prob_H, Shin_Prob_D, Shin_Prob_A (used as ML features)
+```
+
+### Ensemble Prediction
+```
+blended = 0.6 * ML_proba + 0.4 * Poisson_proba
+prediction = argmax(blended)
+```
+
+### Scoreline Generation
+```
+base: m_h = floor(xG_home), m_a = floor(xG_away)   ← Poisson mode, not round()
+
+if max(p_h, p_d, p_a) >= 0.35:
+  ml_pred==2 (home win): ensure m_h > m_a; if p_h >= 0.50, bump m_h += 1
+  ml_pred==0 (away win): symmetric
+  ml_pred==1 (draw):     m_h = m_a = max(m_h, m_a)
+
+clamp to [0, 6]
+```
+
+Note: `round()` was the previous approach and caused all scores to be 1-1 because
+Liga Profesional xG values (0.8–1.6) all round to 1. `floor()` gives 0 for weak
+teams and 1 for average teams, producing realistic spread.
+
+## Trailing Stats (Exponential Decay)
+
+`compute_trailing_features()` uses exponential decay weighting over the last 8 matches:
+- Recent matches weighted more than older ones
+- `shift(1)` ensures no data leakage (current match excluded from its own stats)
+- `get_all_teams_latest_stats()` reads `GF`/`GA` columns with fallback to `Home_GF`/`Away_GF`
+
+## Calibration
+
+Run `calibrate_poisson_params(matches_df)` from `src/stats_engine.py` to compare
+predicted vs actual outcome frequencies and get a suggested `POISSON_DRAW_ADJUSTMENT`.
+Do this at the start of each new season.
+
+## Sofascore JSON Formats
+
+Both formats are supported by `load_sofascore_data()`:
+
+**Apify format:**
 ```json
 {
   "teams": [{
     "standings": [{
-      "rows": [{
-        "team": {"name": "Team Name"},
-        "points": 15,
-        "matches": 7,
-        "wins": 4,
-        "draws": 3,
-        "losses": 0,
-        "goalsFor": 7,
-        "goalsAgainst": 2,
-        "goalDifference": 5
-      }]
+      "rows": [{"team": {"name": "..."}, "points": 15, "goalsFor": 7, ...}]
     }]
   }]
 }
 ```
 
-#### sofascore_stats.json - Manual Format
+**Manual format:**
 ```json
 {
-  "teams": [{
-    "normalized": "ESTUDIANTES LP",
-    "position": 1,
-    "points": 15,
-    "played": 7,
-    "won": 4,
-    "drawn": 3,
-    "lost": 0,
-    "goals_for": 7,
-    "goals_against": 2,
-    "goal_difference": 5
-  }]
+  "teams": [{"normalized": "TEAM NAME", "position": 1, "points": 15, ...}]
 }
 ```
 
-### Key Functions & Modules
+## ARG.csv Column Mapping
 
-#### src/stats_engine.py
-- `expected_result()` / `update_elo()`: Dynamic Elo rating management.
-- `calculate_expected_goals()`: Computes xG from Elo and trailing stats.
-- `calculate_outcome_probabilities()`: Derives H/D/A probabilities from Poisson distributions.
-- `calculate_poisson_features()`: Orchestrates all Poisson-derived feature generation.
+`apply_header_mapping()` normalizes football-data.co.uk headers to canonical names:
 
-#### src/data_processing.py
-- `load_sofascore_data()`: Loads and parses Sofascore JSON (supports Apify and Manual formats).
-- `load_glossary()`: Loads team name mappings.
-- `normalize_team_name()` / `replace_spanish_vowel_accents()`: Text normalization.
-- `clean_partidos_file()` / `parse_fixtures()`: Fixture data ingestion.
+| Original | Canonical |
+|----------|-----------|
+| HomeTeam | HomeTeam |
+| AwayTeam | AwayTeam |
+| FTR | FullTimeResult |
+| FTHG | Home_GF |
+| FTAG | Away_GF |
+| B365H | Odds_b365_H |
+| B365D | Odds_b365_D |
+| B365A | Odds_b365_A |
 
-#### src/features.py
-- `compute_trailing_features()`: High-level feature generation for historical data.
-- `get_team_trailing_stats()`: Lower-level stat computation from a team's history.
-- `get_team_stats_from_history()`: Retrieves stats for specific teams at prediction time.
+## Apify Integration
 
-#### src/model_engine.py
-- `create_model()`: Factory for LightGBM or CatBoost models.
-- `predict_gameweek()`: Main prediction loop using ML model and Poisson adjustment.
+- Actor: `azzouzana/sofascore-scraper-pro`
+- API token: `APIFY_API_TOKEN` environment variable
+- Target: `https://www.sofascore.com/football/tournament/argentina/liga-profesional-de-futbol/155#tab:standings`
+- Output: `src/sofascore_stats.json`
 
-#### main.py (Orchestration)
-- High-level script that imports from `src/` modules to run the full pipeline.
+## Known Issues / Limitations
 
-### Configuration
-
-**Elo Parameters**:
-- BASE_ELO = 1500
-- K_FACTOR = 30
-- HOME_ADVANTAGE = 65
-
-**Model Parameters**:
-- Trailing window: 8 matches
-- Max goals in Poisson: 6
-- Base goal rate: 1.89
-
-### Dependencies
-
-Core: pandas, numpy, scipy, lightgbm, catboost, scikit-learn
-Scraping: requests, beautifulsoup4, lxml, playwright, selenium
-API: apify-client
-PDF: pdfplumber
-Testing: pytest
+- `enrich_with_api_stats()` in `data_ingestion.py` is a documented no-op. API-Football team name fuzzy matching not implemented.
+- TyC Sports scraper requires current-season URL via `--url`. HTML structure changes frequently.
+- ML model accuracy (~35%) is near-random for a 3-class problem. Poisson component is more reliable for scoreline spread.
+- Playoffs: model trained on regular season data only. Knockout dynamics not captured.

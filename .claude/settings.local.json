@@ -28,11 +28,12 @@
       "Bash(Select-Object -First 20)",
       "Bash(.gitignore:*)",
       "Bash(git clone:*)",
-      "Bash(dir /b /a-d)"
+      "Bash(dir /b /a-d)",
+      "Skill(gsd:settings)",
+      "mcp__plugin_context-mode_context-mode__ctx_execute_file"
     ]
   },
   "enabledPlugins": {
-    "skill-security-auditor@claude-code-skills": true,
-    "self-improving-agent@claude-code-skills": true
+    "skill-security-auditor@claude-code-skills": true
   }
 }

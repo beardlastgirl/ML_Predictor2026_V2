@@ -1,105 +1,43 @@
 # ROADMAP.md
 
-## Planned Features & Improvements
+**Last Updated:** 2026-05-02
 
-### High Priority
+## Completed
 
-1. **Enhanced Sofascore Features**
-   - Use team ratings from Sofascore (currently partially available)
-   - Implement form-based features from recent standings
-   - Add home/away specific standings if available
+- [x] Modular architecture (`src/` package)
+- [x] Poisson distribution goal modeling
+- [x] CatBoost/LightGBM with time-series CV
+- [x] Shin method odds extraction
+- [x] Sofascore Apify integration
+- [x] FootyStats Playwright scraper
+- [x] Pre-flight data validation (`src/validation.py`)
+- [x] Scraper resilience (`@resilient_scraper`, CAPTCHA detection)
+- [x] Baseline comparison (naive + bookie log-loss in output)
+- [x] Scoreline bug fix — `floor(xG)` + ML directional adjustment
+- [x] Season-start new-team detection (`[SEASON CHECK]` warning)
+- [x] `calibrate_poisson_params()` utility
+- [x] `scrape_tyc.py` — removed hardcoded season data, `--url`/`--fecha` args
+- [x] 34 tests passing
 
-2. **Model Performance Optimization**
-   - Hyperparameter tuning for CatBoost
-   - Feature selection to reduce overfitting
-   - Ensemble methods (combine LightGBM + CatBoost)
+## Pending
 
-3. **Data Pipeline Automation**
-   - Concurrent execution of scrapers
-   - Caching mechanism for scraped data
-   - Automated data validation
+### High Value
+- [x] **Run Poisson calibration** — calibrated 2026-05-02 against 6,171 matches
+  - `POISSON_DRAW_ADJUSTMENT = 1.11` (was 0.85 — wrong direction)
+  - `HOME_ADVANTAGE_BOOST = 0.02` (was 0.08 — double-counting home advantage)
+  - Result: predicted home=43.0%, draw=30.3%, away=26.6% vs actual 43.1/30.3/26.6
+- [x] **`enrich_with_api_stats`** — implemented API-Football team name fuzzy matching
+  - Curated map for 10 known mismatches + fuzzy fallback (cutoff=0.75)
+  - Adds `HxG`, `AxG`, `HPoss`, `APoss` columns to ARG.csv
+  - Free plan limitation: only covers seasons up to 2024; 2025/2026 data unavailable
+  - Rate limit: 100 req/day; 0.5s delay between requests; stops at 80 to leave buffer
 
-### Medium Priority
+### Medium Value
+- [ ] **Playoff mode** — option to increase Poisson blend ratio (e.g. 0.5/0.5) for knockout rounds where ML signal is weaker
+- [ ] **Accuracy tracking** — SQLite log of predictions vs actual results per round
+- [ ] **Hyperparameter tuning** — grid search on CatBoost depth/iterations/learning_rate
 
-4. **Improved Team Name Matching**
-   - Fuzzy matching for new teams
-   - Auto-detection of team name changes
-   - Historical team name mapping
-
-5. **Advanced Poisson Modeling**
-   - Double Poisson (separate variance for home/away)
-   - Dynamic base rate based on current league avg
-   - 3-way odds comparison with bookmakers
-
-6. **Prediction Confidence Enhancement**
-   - Model uncertainty quantification
-   - Historical accuracy by prediction type
-   - Automated edge detection
-
-### Lower Priority
-
-7. **User Interface**
-   - Web dashboard for predictions
-   - Historical prediction accuracy tracking
-   - Mobile notifications
-
-8. **Extended Coverage**
-   - Argentine Primera Nacional
-   - Copa Libertadores fixtures
-   - International friendlies
-
-## Completed Items (March 2026)
-
-- [x] Code modularization and refactoring: `main.py` split into `src/` sub-modules.
-- [x] Centralized configuration in `src/config.py`.
-- [x] Standardized logging and utility functions.
-- [x] FootyStats Scraper: Added `scrape_footystats.py` using Playwright.
-- [x] Enhanced Manual Scraper: Updated `scrape_stats_manual.py` with multi-site CDP support.
-- [x] Integrated FootyStats into the automated pipeline (`run_model.ps1`).
-
-## Completed Items (March 2026 - Enhanced Evaluation)
-
-- [x] **AI Configuration Analysis**: Deep review of 5 AI products (Claude, Codex, Gemini, OpenCode, Agent)
-- [x] **Configuration Harmonization**: Fixed 13 compatibility issues, achieved 97% parity
-- [x] **Code Review**: Identified 29 issues (3 critical, 5 high, 12 medium, 9 low)
-- [x] **Comprehensive Enhancement Evaluation**: Generated 11 agent recommendations
-- [x] **Free-Tier Validation**: Confirmed all recommendations use free tier only ($0 cost)
-- [x] **8-Week Implementation Roadmap**: Created detailed week-by-week plan with code examples
-- [x] **Documentation**: Created 9 comprehensive documents with navigation guides
-- [x] **Quality Assurance**: All changes verified with completion checklist (30+ checkpoints, all passed)
-
-## Completed Items (March 2026)
-
-- [x] Code modularization and refactoring: `main.py` split into `src/` sub-modules.
-- [x] Centralized configuration in `src/config.py`.
-- [x] Standardized logging and utility functions.
-- [x] FootyStats Scraper: Added `scrape_footystats.py` using Playwright.
-- [x] Enhanced Manual Scraper: Updated `scrape_stats_manual.py` with multi-site CDP support.
-- [x] Integrated FootyStats into the automated pipeline (`run_model.ps1`).
-
-## Next Steps (Updated 2026-03-22)
-
-### Priority 1: Fix Critical Bugs (Week 1) - 8 Hours
-1. Fix 3 critical bugs in features.py, pipeline.py, stats_engine.py
-2. Add data validation layer
-3. Improve scraper resilience
-→ See ENHANCEMENT_RECOMMENDATIONS.md Week 1 for details
-
-### Priority 2: Add Testing & Automation (Week 2-4) - 8 Hours
-4. Generate integration tests (increase coverage 35% → 65%)
-5. Set up GitHub Actions for automated weekly runs
-6. Profile and parallelize scrapers (5x speedup)
-7. Optimize hyperparameters (+1-2% accuracy)
-→ See ENHANCEMENT_RECOMMENDATIONS.md Week 2-4 for details
-
-### Priority 3: Add Monitoring & Polish (Month 2) - 8 Hours
-8. Implement accuracy trend tracking (SQLite MCP)
-9. Auto-generate documentation
-10. Add fuzzy team name matching
-11. Feature importance analysis
-→ See ENHANCEMENT_RECOMMENDATIONS.md Month 2 for details
-
-### Reference
-- Complete 8-week roadmap: ENHANCEMENT_RECOMMENDATIONS.md
-- Quick comparison: QUICK_REFERENCE.md
-- Executive summary: EVALUATION_SUMMARY.md
+### Low Value / Future
+- [ ] Ensemble LightGBM + CatBoost voting
+- [ ] Copa Libertadores / Copa Argentina fixture support
+- [ ] Web dashboard for predictions

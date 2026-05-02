@@ -60,6 +60,8 @@ class PipelineResult:
         self.features: List[str] = []
         self.cv_accuracies: List[float] = []
         self.cv_log_losses: List[float] = []
+        self.naive_log_loss: Optional[float] = None
+        self.bookie_log_loss: Optional[float] = None
         self.fixtures: Optional[pd.DataFrame] = None
         self.output_file: Optional[str] = None
         self.feature_importance: Optional[pd.DataFrame] = None
@@ -129,6 +131,21 @@ def load_data(
     if not is_valid:
         log_warning("Data validation completed with warnings/errors (see above)")
 
+    # Warn about teams in fixtures with no historical data (new/promoted teams)
+    if fixtures is not None and not fixtures.empty:
+        known_teams = set(matches["HomeTeam"].unique()) | set(matches["AwayTeam"].unique())
+        fixture_teams = set(fixtures["HomeTeam"].unique()) | set(fixtures["AwayTeam"].unique())
+        unknown_teams = fixture_teams - known_teams
+        if unknown_teams:
+            log_warning(
+                f"[SEASON CHECK] {len(unknown_teams)} team(s) in fixtures have NO historical data "
+                f"(likely promoted/new): {sorted(unknown_teams)}"
+            )
+            log_warning(
+                "[SEASON CHECK] These teams will use default Elo (1500) and zero trailing stats. "
+                "Add them to Glossary.txt if they appear under a different name in ARG.csv."
+            )
+
     return glossary, sofascore_data, matches, fixtures, fixtures_header, fixtures_summary
 
 
@@ -179,8 +196,19 @@ def build_features(matches: pd.DataFrame) -> Tuple[pd.DataFrame, Dict]:
     matches = matches.merge(elo_df, on=["Date", "HomeTeam", "AwayTeam"], how="left")
 
     # Map goals to internal processing names for trailing features
-    matches["GF"] = matches["Home_GF"] if "Home_GF" in matches.columns else 0
-    matches["GA"] = matches["Away_GF"] if "Away_GF" in matches.columns else 0
+    # Home_GF = goals scored by home team, Away_GF = goals scored by away team
+    # GF = goals scored by home team (from home perspective)
+    # GA = goals conceded by home team = goals scored by away team
+    if "Home_GF" in matches.columns and "Away_GF" in matches.columns:
+        matches["GF"] = matches["Home_GF"]
+        matches["GA"] = matches["Away_GF"]
+    elif "FTHG" in matches.columns and "FTAG" in matches.columns:
+        matches["GF"] = matches["FTHG"]
+        matches["GA"] = matches["FTAG"]
+    else:
+        log_warning("Goal columns not found; trailing stats will use zeros")
+        matches["GF"] = 0
+        matches["GA"] = 0
     matches = compute_trailing_features(matches, window=TRAILING_WINDOW)
 
     log_info("Calculating Poisson features...")
@@ -224,7 +252,7 @@ def train_validate(
     features: List[str],
     model_type: str = MODEL_TYPE,
     n_splits: int = 5,
-) -> Tuple[any, List[float], List[float]]:
+) -> Tuple[any, List[float], List[float], pd.DataFrame, Optional[float], Optional[float]]:
     """Train model with time-series cross-validation.
 
     Args:
@@ -234,7 +262,7 @@ def train_validate(
         n_splits: Number of CV splits
 
     Returns:
-        Tuple of (trained_model, cv_accuracies, cv_log_losses)
+        Tuple of (trained_model, cv_accuracies, cv_log_losses, submodel_training_data, naive_ll, bookie_ll)
     """
     log_info(f"Training {model_type} model with {n_splits}-fold CV...")
 
@@ -262,6 +290,7 @@ def train_validate(
     model = create_model(model_type)
     tscv = TimeSeriesSplit(n_splits=n_splits)
     cv_acc, cv_ll = [], []
+    submodel_data_collection = [] # Initialize collection list
 
     for fold, (t_idx, v_idx) in enumerate(tscv.split(X), 1):
         f_model = create_model(model_type)
@@ -269,15 +298,53 @@ def train_validate(
         y_p = f_model.predict(X.iloc[v_idx])
         y_prob = f_model.predict_proba(X.iloc[v_idx])
         acc = accuracy_score(y.iloc[v_idx], y_p)
-        ll = log_loss(y.iloc[v_idx], y_prob)
+        ll = log_loss(y.iloc[v_idx], y_prob, labels=[0, 1, 2])
         cv_acc.append(acc)
         cv_ll.append(ll)
         log_info(f"Fold {fold} -> Acc: {acc:.3f}, LL: {ll:.3f}")
 
+        # Collect data for sub-model training
+        fold_data = df.loc[df.index[v_idx]].copy() # Use df.index[v_idx] to get original indices
+        fold_data['ml_pred'] = y_p
+        fold_data['p_h'] = y_prob[:, 2] # Home Win probability
+        fold_data['p_d'] = y_prob[:, 1] # Draw probability
+        fold_data['p_a'] = y_prob[:, 0] # Away Win probability
+        
+        # Ensure 'Expected_Home_Goals' and 'Expected_Away_Goals' are in the collected data
+        # and map them to 'exp_h' and 'exp_a'
+        fold_data['exp_h'] = fold_data['Expected_Home_Goals']
+        fold_data['exp_a'] = fold_data['Expected_Away_Goals']
+
+        # Select relevant columns for the sub-model
+        # Home_GF/Away_GF may not exist in all DataFrames (e.g. test fixtures)
+        goal_cols = [c for c in ['Home_GF', 'Away_GF'] if c in fold_data.columns]
+        base_cols = ['exp_h', 'exp_a', 'ml_pred', 'p_h', 'p_d', 'p_a']
+        submodel_data_collection.append(fold_data[base_cols + goal_cols])
+
+    # Concatenate all collected data
+    submodel_training_data_df = pd.concat(submodel_data_collection, ignore_index=True) if submodel_data_collection else pd.DataFrame()
+
+
+    # Baseline comparison (naive & bookie)
+    naive_ll = 1.077  # Historical baseline log loss
+    bookie_ll = None
+    # Bookie: naive odds-to-prob conversion (approximate for comparison)
+    # Using last fold validation indices for a quick comparative snapshot
+    if len(v_idx) > 0:
+        val_data = df.iloc[v_idx]
+        # Check if odds exist
+        odds_cols = ['Odds_b365_A', 'Odds_b365_D', 'Odds_b365_H']
+        if all(c in val_data.columns for c in odds_cols):
+             bookie_probs = 1 / val_data[odds_cols].values
+             bookie_probs /= bookie_probs.sum(axis=1, keepdims=True)
+             bookie_ll = log_loss(y.iloc[v_idx], bookie_probs, labels=[0, 1, 2])
+             log_info(f"Bookie Baseline Log Loss: {bookie_ll:.3f}")
+
+    log_info(f"Naive Baseline Log Loss: {naive_ll:.3f}")
     model.fit(X, y, sample_weight=sample_weights)
     log_ok(f"Model trained. Mean Acc: {np.mean(cv_acc):.3f} (+/- {np.std(cv_acc):.3f})")
 
-    return model, cv_acc, cv_ll
+    return model, cv_acc, cv_ll, submodel_training_data_df, naive_ll, bookie_ll
 
 
 def predict_fixtures(
@@ -333,6 +400,7 @@ def write_outputs(
     output_dir: str = ".",
     header_line: str = None,
     summary: Dict = None,
+    baseline_results: Dict = None,
 ) -> str:
     """Save predictions and generate reports.
 
@@ -376,6 +444,11 @@ def write_outputs(
         m = re.search(r"FECHA\s+(\d+)", header_line, re.IGNORECASE)
         if m:
             fecha_num = m.group(1)
+    
+    # Fallback: use today's date so the file is always uniquely named
+    if fecha_num == "XX":
+        fecha_num = datetime.now().strftime("%Y%m%d")
+        log_warning(f"No FECHA number found in header; using date-based filename suffix: {fecha_num}")
 
     output_file = os.path.join(output_dir, f"PrediccionFecha{fecha_num}.txt")
 
@@ -400,6 +473,17 @@ def write_outputs(
             hg = int(np.clip(row.get("Pred_Home_Goals", 0), 0, 6))
             ag = int(np.clip(row.get("Pred_Away_Goals", 0), 0, 6))
             f.write(f"{row.get('Raw_Home', row['HomeTeam'])} - {row.get('Raw_Away', row['AwayTeam'])}: {hg}-{ag}\n")
+
+        # Write baseline comparison section
+        if baseline_results:
+            f.write("\n--- METRICS COMPARISON ---\n")
+            if baseline_results.get("naive_ll"):
+                f.write(f"Naive Baseline Log Loss: {baseline_results['naive_ll']:.3f}\n")
+            if baseline_results.get("bookie_ll") is not None:
+                f.write(f"Bookie Baseline Log Loss: {baseline_results['bookie_ll']:.3f}\n")
+            if baseline_results.get("model_ll"):
+                f.write(f"Model Log Loss: {baseline_results['model_ll']:.3f}\n")
+            f.write("--------------------------\n")
 
         # Write summary section
         f.write(f"Cantidad de penales cobrados: {penales}\n")
@@ -460,10 +544,12 @@ def run_pipeline(
 
         df = matches_with_features.dropna(subset=FEATURE_COLUMNS).copy()
 
-        model, cv_acc, cv_ll = train_validate(df, FEATURE_COLUMNS, model_type)
+        model, cv_acc, cv_ll, submodel_data, naive_ll, bookie_ll = train_validate(df, FEATURE_COLUMNS, model_type)
         result.model = model
         result.cv_accuracies = cv_acc
         result.cv_log_losses = cv_ll
+        result.naive_log_loss = naive_ll
+        result.bookie_log_loss = bookie_ll
         result.elo_ratings = elo_ratings
         result.features = FEATURE_COLUMNS
 
@@ -491,12 +577,20 @@ def run_pipeline(
             )
             result.fixtures = fixtures
 
+            # Build baseline results for output
+            baseline_results = {
+                "naive_ll": result.naive_log_loss,
+                "bookie_ll": result.bookie_log_loss,
+                "model_ll": np.mean(result.cv_log_losses) if result.cv_log_losses else None,
+            }
+
             output_file = write_outputs(
                 fixtures,
                 feature_importance,
                 output_dir,
                 header_line=fixtures_header,
                 summary=fixtures_summary,
+                baseline_results=baseline_results,
             )
             result.output_file = output_file
 

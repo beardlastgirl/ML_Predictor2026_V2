@@ -1,0 +1,25 @@
+FECHA 9 - 2 al 4052026
+Estudiantes Rio Cuarto - Instituto: 2-0
+Union - Talleres: 1-2
+San Lorenzo - Independiente: 1-0
+Central Cordoba - Boca: 1-1
+Gimnasia Mza - Defensa y Justicia: 1-0
+Lanus - Deportivo Riestra: 1-0
+Platense - Estudiantes: 1-2
+Velez - Newells: 1-0
+Belgrano - Sarmiento: 1-0
+Racing - Huracan: 1-2
+River - Atletico Tucuman: 1-2
+Aldosivi - Independiente Rivadavia Mza: 1-1
+Barracas Central - Banfield: 1-0
+Gimnasia - Argentinos: 1-2
+Rosario Central - Tigre: 1-2
+
+--- METRICS COMPARISON ---
+Naive Baseline Log Loss: 1.077
+Bookie Baseline Log Loss: 1.005
+Model Log Loss: 1.201
+--------------------------
+Cantidad de penales cobrados: 4
+Cantidad de expulsados: 3
+Cantidad de goles convertidos: 30

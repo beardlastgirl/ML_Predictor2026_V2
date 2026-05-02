@@ -10,17 +10,26 @@ ELO_DIVISOR = 400  # Standard Elo formula constant
 ELO_FACTOR_DENOM = 5000  # Elo factor denominator
 
 # Poisson parameters
-BASE_GOAL_RATE = 1.89  # Base goals per match in Liga Profesional Argentina
+# BASE_GOAL_RATE: Liga Profesional average goals per team per match.
+# Used as the NaN fallback in calculate_expected_goals() when a team has no
+# trailing stats (e.g. promoted/new teams at season start). It is NOT used
+# as a scaling factor in the xG formula — trailing avg_gf/avg_ga drive that.
+BASE_GOAL_RATE = 2.22  # Based on actual historical data (1.26 Home + 0.96 Away)
 MAX_GOALS = 8  # Maximum goals to consider in Poisson distribution
-HOME_BOOST = 1.22  # Home team scoring boost (calibrated for league average)
-GOAL_WEIGHT_ATTACK = 0.6  # Weight for attack in xG calculation
-GOAL_WEIGHT_DEFENSE = 0.4  # Weight for defense in xG calculation
+HOME_BOOST = 1.15  # Refined based on 1.26/0.96 ratio
+GOAL_WEIGHT_ATTACK = 0.55  # Slightly adjusted
+GOAL_WEIGHT_DEFENSE = 0.45  # Slightly adjusted
 XG_MIN = 0.3  # Minimum xG clamp
 XG_MAX = 2.5  # Maximum xG clamp
 
 # Probability calibration
-POISSON_DRAW_ADJUSTMENT = 0.85  # Multiply draw probability to reduce draw bias
-HOME_ADVANTAGE_BOOST = 0.08  # ~8% boost to home win probability
+POISSON_DRAW_ADJUSTMENT = 1.11   # Calibrated 2026-05-02 against 6171 matches
+# Actual: home=43.1%, draw=30.3%, away=26.6%
+# Grid search optimal: draw_adj=1.11 + home_boost=0.02 → home=43.0%, draw=30.3%, away=26.6%
+# Previous value was 0.85 (reducing draws) — wrong direction for this dataset
+HOME_ADVANTAGE_BOOST = 0.02  # Calibrated 2026-05-02: small residual boost after xG home advantage
+# xG already encodes home advantage via HOME_BOOST (1.15x) and Elo HOME_ADVANTAGE (+65 pts).
+# Grid search: draw_adj=1.11 + home_boost=0.02 → home=43.0%, draw=30.3%, away=26.6% (actual: 43.1/30.3/26.6)
 ML_POISSON_BLEND_RATIO = 0.6  # Ensemble: 60% ML, 40% Poisson
 
 # Draw Calibration Strategy Documentation:

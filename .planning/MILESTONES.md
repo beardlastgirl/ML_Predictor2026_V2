@@ -1,45 +1,32 @@
 # Milestone History
 
-## v2.0 — Initialization & Alignment (Current)
+## Apertura 2026 — Season Complete (Current)
 
-**Started:** 2026-03-21  
-**Last Phase:** TBD (phases not yet created)  
-**Status:** Requirements gathering
+**Status:** Regular season done (Fecha 9). Playoffs pending.
 
-### Goals
-- Integrate betting odds for calibration and features
-- Improve data alignment and prevent time-series leakage
-- Calibrate Poisson model for realistic scoreline distributions
-- Implement baseline performance comparisons
-- Evolve to Coordinator-Worker agent architecture
-
-### Requirements
-- [ ] **DATA-01**: Integrate betting odds as features and calibration baselines
-- [ ] **DATA-02**: Improve data alignment and leakage prevention (time-series)
-- [ ] **POISS-01**: Calibrate Poisson model for realistic scoreline distributions
-- [ ] **MODEL-01**: Implement baseline performance comparisons (naive, bookie)
-- [ ] **AGENT-01**: Evolve to Coordinator-Worker agent architecture
+**Delivered this season:**
+- ✅ Scoreline bug fixed (all-1-1 → varied realistic scores)
+- ✅ GF/GA column mapping corrected
+- ✅ Season-start new-team detection
+- ✅ Poisson calibration utility (`calibrate_poisson_params`)
+- ✅ `scrape_tyc.py` generalized (no hardcoded season data)
+- ✅ Glossary updated (Boca, Independiente Rivadavia Mza variants)
+- ✅ 34 tests passing
+- ✅ Documentation updated, 7 obsolete files deleted
 
 ---
 
-## Previous Versions
+## v2.0 — Initialization & Alignment (Completed 2026-04-24)
 
-### v1.0 — Production Quality & Fixes (Completed)
+- ✅ DATA-01: Betting odds integrated as Shin method features
+- ✅ DATA-02: Time-series CV prevents data leakage
+- ✅ MODEL-01: Naive + bookie baseline comparison in output
 
-**Completed:** 2026-03-21  
-**Phases:** 0 (integrated fixes, no formal phases)
+---
 
-#### Accomplishments
-- ✅ Identified and fixed 10 priority bugs (3 critical, 5 high, 2 medium)
-- ✅ Fixed division by zero, probability normalization, DataFrame alignment
-- ✅ Fixed memory leaks (matplotlib), resource cleanup (browsers)
-- ✅ Added CSV validation and string safety checks
-- ✅ Consolidated draw calibration documentation
-- ✅ End-to-end pipeline verification passed
-- ✅ 26/26 tests pass, zero regressions
-- ✅ Production deployment guide created
+## v1.0 — Production Quality & Fixes (Completed 2026-03-21)
 
-#### Impact
-- System now handles all edge cases safely
-- Production-ready with monitoring and rollback procedures
-- Documentation comprehensive for team handoff
+- ✅ 10 priority bugs fixed (3 critical, 5 high, 2 medium)
+- ✅ Data validation layer (`src/validation.py`)
+- ✅ Scraper resilience (`src/scraper_utils.py`)
+- ✅ 26/26 tests passing at release

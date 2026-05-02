@@ -1,55 +1,39 @@
-# ML_Predictor2026_V2 - Enhanced Prediction System
+# ML_Predictor2026_V2 — Project
 
-## What This Is
+## What It Is
 
-A modular, agent-based football prediction system for Argentine leagues (Liga Profesional Argentina). It combines statistical modeling (Poisson distribution for goal counts) with machine learning (CatBoost/LightGBM) to predict match outcomes and scorelines. The system is built for accuracy, leveraging Elo ratings, advanced features, and a clean data pipeline.
+Football match prediction system for Liga Profesional Argentina (2 championships/year). Combines Poisson distribution goal modeling with CatBoost/LightGBM gradient boosting to predict match outcomes (1X2) and scorelines.
+
+## Current Status
+
+Operational. Apertura 2026 regular season complete. Playoffs pending (format TBD).
 
 ## Core Value
 
-Deliver match outcome (1X2) and scoreline predictions that outperform naive baselines with realistic probability distributions and data-driven insights.
+Weekly scoreline predictions for Liga Profesional Argentina fixtures, for entertainment purposes.
 
-## Current Milestone: v2.0 — Initialization & Alignment
+## Architecture
 
-**Goal:** Complete engine calibration, data quality improvements, and lay groundwork for agent architecture expansion.
-
-**Target features:**
-- **DATA-01**: Betting odds integration (closing odds for calibration)
-- **DATA-02**: Time-series validation (preventing data leakage)
-- **POISS-01**: Poisson calibration (realistic scoreline spread)
-- **MODEL-01**: Baseline performance comparisons (naive, bookie models)
-- **AGENT-01**: Coordinator-Worker agent architecture
-
-## Requirements
-
-### Validated
-
-- ✓ Modular Architecture (`src/` with clear layering) — existing
-- ✓ Statistical Engine (Elo, Poisson implementations) — existing
-- ✓ Multi-source Scraping (FBref, Sofascore, TyC, etc.) — existing
-- ✓ Orchestrated Pipeline (`src/pipeline.py`) — existing
-
-### Active
-
-- [ ] **DATA-01**: Integrate betting odds as features and calibration baselines
-- [ ] **DATA-02**: Improve data alignment and leakage prevention (time-series)
-- [ ] **POISS-01**: Calibrate Poisson model for realistic scoreline distributions
-- [ ] **MODEL-01**: Implement baseline performance comparisons (naive, bookie)
-- [ ] **AGENT-01**: Evolve to Coordinator-Worker agent architecture
-
-### Out of Scope
-
-- Real-time betting integration (focus on batch prediction)
-- Multi-league expansion (focused on Argentina)
-- Deep learning models (maintaining tree-based + Poisson)
+```
+Scrapers → Local files (CSV/JSON/TXT)
+         ↓
+   src/pipeline.py
+         ↓
+Features → Train/Validate → Predict → PrediccionFechaXX.txt
+```
 
 ## Key Decisions
 
-| Decision | Rationale | Outcome |
-|----------|-----------|---------|
-| Modular Pipeline | Separation of concerns, testability, and easier maintenance | — Existing |
-| Poisson Modeling | Better scoreline probability estimation than direct classification | — Existing |
-| CatBoost/LightGBM | Superior performance on tabular data with categorical features | — Existing |
-| Time-series Validation | Crucial for avoiding look-ahead bias in sports data | — Planned |
+| Decision | Rationale |
+|----------|-----------|
+| Poisson + ML ensemble | Poisson for calibrated baseline; ML for pattern recognition |
+| CatBoost/LightGBM | Best performance on tabular data with categorical features |
+| floor(xG) for scorelines | round() collapses Liga Profesional xG values to 1 |
+| Time-series CV | Prevents look-ahead bias in sports data |
+| 60% ML + 40% Poisson | ML captures nuance; Poisson prevents extreme predictions |
 
----
-*Last updated: 2026-03-21 — Milestone v2.0 requirements phase started*
+## Out of Scope
+
+- Real-time betting integration
+- Multi-league expansion
+- Deep learning models

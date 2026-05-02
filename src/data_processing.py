@@ -9,8 +9,13 @@ from src.map_headers import map_headers
 
 def _canonicalize_name(name):
     """Applies a consistent set of normalization steps to a team name."""
-    if not name or pd.isna(name):
+    if name is None:
         return ""
+    try:
+        if pd.isna(name):
+            return ""
+    except (TypeError, ValueError):
+        pass  # pd.isna raises on some types; treat as non-null
     name = str(name).strip().upper()
     
     # Consistent character normalization: replace delimiters with space
@@ -174,9 +179,27 @@ def load_sofascore_data(filepath="src/sofascore_stats.json", glossary=None):
             log_warning("No teams found in Sofascore data")
             return sofascore_data
 
+        # Process root standings
+        if "standings" in data and isinstance(data["standings"], list):
+            for standing in data["standings"]:
+                name = standing.get("normalized")
+                if name:
+                    normalized = normalize_team_name(name, glossary)
+                    sofascore_data[normalized] = {
+                        "position": standing.get("position", 0),
+                        "points": standing.get("points", 0),
+                        "played": standing.get("played", 0),
+                        "won": standing.get("won", 0),
+                        "drawn": standing.get("drawn", 0),
+                        "lost": standing.get("lost", 0),
+                        "goals_for": standing.get("goals_for", 0),
+                        "goals_against": standing.get("goals_against", 0),
+                        "goal_difference": standing.get("goal_difference", 0),
+                        "rating": None
+                    }
+
         # Handle different possible JSON structures
-        for team in teams_list:
-            # Structure 1: Nested standings rows
+        for team in teams_list:            # Structure 1: Nested standings rows
             if "standings" in team:
                 for standing_type in team.get("standings", []):
                     for idx, row in enumerate(standing_type.get("rows", [])):

@@ -1,165 +1,84 @@
 # PROJECT_STATUS.md
 
-## Overview
+**Last Updated:** 2026-05-02
 
-**ML_Predictor2026_V2** is an enhanced football prediction system for Liga Profesional Argentina. The V2 version introduces Poisson distribution for goal modeling combined with machine learning (LightGBM/CatBoost) to improve prediction accuracy.
+## Current State
+
+- **Season:** Liga Profesional Argentina — Apertura 2026, Fecha 9 (last regular round)
+- **Next:** Playoffs (structure TBD — Argentine football schedules are flexible)
+- **Pipeline:** Operational, producing varied scoreline predictions
+- **Tests:** 34/34 passing
+
+## Current Metrics
+
+| Metric | Value |
+|--------|-------|
+| Model | CatBoost (default) |
+| CV Accuracy | ~35% (+/- 6%) |
+| Log-Loss (model) | ~1.20 |
+| Log-Loss (naive baseline) | 1.077 |
+| Log-Loss (bookie baseline) | ~1.005 |
+| Features | 24 |
+| Training samples | ~6,200 matches |
+
+## Feature Importance (Top 5, Apertura 2026)
+
+1. Away_Elo
+2. Elo_Diff
+3. Home_Elo
+4. Form_Balance
+5. Home_Avg_GA
 
 ## Core Components
-- **Orchestration Script**: `main.py` (Now a lightweight script that imports modules from `src/`).
-- **Core Modules** (`src/`):
-  - `config.py`: Centralized configuration.
-  - `stats_engine.py`: Elo & Poisson logic.
-  - `model_engine.py`: ML model and prediction engine.
-  - `features.py`: Chronological feature engineering.
-  - `data_processing.py`: Data loading and normalization.
-  - `utils.py`: Logging and helpers.
-- **Execution Wrapper**: `run_model.ps1` (PowerShell menu-driven script for running individual or all tasks).
 
-## Major Updates
+| Component | File | Status |
+|-----------|------|--------|
+| Pipeline orchestration | `src/pipeline.py` | OK |
+| Elo + Poisson math | `src/stats_engine.py` | OK |
+| ML model + scorelines | `src/model_engine.py` | OK — uses `floor(xG)` + ML adjustment |
+| Trailing stats | `src/features.py` | OK — exponential decay, `Home_GF`/`Away_GF` fallback |
+| Data normalization | `src/data_processing.py` | OK |
+| Pre-flight validation | `src/validation.py` | OK — includes `[SEASON CHECK]` for new teams |
+| Scraper resilience | `src/scraper_utils.py` | OK — `@resilient_scraper`, CAPTCHA detection |
+| Auto data update | `src/data_ingestion.py` | OK — `enrich_with_api_stats` is a documented no-op |
 
-### Modularization (March 2026)
-- **Code Separation**: Refactored the monolith `main.py` into a modular package structure in `src/`.
-- **Maintainability**: Reduced `main.py` from 1450 lines to ~120 lines, focusing only on orchestration.
-- **Improved Imports**: Standardized third-party and local imports across the project.
-- **Config Centralization**: Moved all parameters (Elo, Poisson, Model) into `src/config.py`.
+## Known Limitations
 
-### Poisson Distribution Integration (V2 Key Feature - Feb 2026)
-- **Expected Goals (xG)**: Calculated from Elo ratings and attack/defense metrics
-- **Poisson Probability**: Goal scores modeled using Poisson distribution
-- **Proper Calibration**: Match outcome probabilities derived from goal probability distributions
-- **Enhanced Features**: Poisson-derived probabilities added as ML model features
-- **BASE_GOAL_RATE = 1.89**: Calibrated for low-scoring Argentine league (~1.89 goals/match)
+- **ML accuracy is near-random (~35%)** on a 3-class problem. Poisson component is more reliable for scoreline spread. Treat predictions as informed starting points.
+- **Playoffs:** Model was trained on regular season data. Knockout dynamics (leg management, rotation) are not captured. Poisson weight may be more reliable than ML for playoff predictions.
+- **`enrich_with_api_stats`** in `data_ingestion.py` is a no-op — API-Football team name fuzzy matching not yet implemented.
+- **TyC scraper** requires a current-season URL passed via `--url`. TyC changes HTML structure frequently; manual `Partidos.txt` update is the reliable fallback.
 
-### Enhanced Scraping Strategy (March 2026)
-- **FootyStats Integration**: Added `scrape_footystats.py` using Playwright to extract advanced metrics (xG, PPG) from FootyStats.
-- **Multi-Site Manual Scraper**: Updated `scrape_stats_manual.py` to support both FBref and FootyStats via Chrome Remote Debugging (CDP).
-- **Robustness**: Implemented a multi-source strategy (FBref, FootyStats, Sofascore) to ensure data availability even if one source is blocked.
+## Recent Changes (May 2026)
 
-### Menu-Driven Execution
-- **Interactive Menu**: `run_model.ps1` now provides a menu to run scripts independently:
-  - 1: Parse Reporte PDFs
-  - 2: Scrape FBref Stats
-  - 3: Scrape FootyStats (Playwright)
-  - 4: Scrape Sofascore (via Apify)
-  - 5: Scrape TyC Sports
-  - 6: Manual Scraper (CDP Connection)
-  - 7: Run Main Prediction Model
-  - 8: Run All Data Scrapers + Prediction
+### Scoreline Bug Fix
+- **Problem:** All scores were 1-1 (14/15 matches)
+- **Root cause 1:** `_calculate_hybrid_goals` used `round(xG)` — Liga Profesional xG values (0.8–1.6) all round to 1
+- **Root cause 2:** ML adjustment threshold `ml_weight > 0.3` was unreachable (scaled weight always 0.21–0.27)
+- **Root cause 3:** `get_all_teams_latest_stats` read `GF`/`GA` as zeros when `Home_GF`/`Away_GF` columns were present instead
+- **Fix:** `floor(xG)` as base; `max_prob >= 0.35` direct threshold; `Home_GF`/`Away_GF` fallback in stats lookup
 
-### Sofascore Integration
-- **Apify Scraper**: Added `scrape_sofascore_apify.py` using Apify API
-- **Dual Format Support**: `load_sofascore_data()` handles both:
-  - Apify format (30 teams from standings)
-  - Manual format (15 teams with normalized names)
-- **Current Data**: Sofascore standings now integrated into prediction features
+### Glossary Additions
+- `Boca -> BOCA JUNIORS`
+- `Independiente Rivadavia Mza -> IND RIVADAVIA` (and variants)
 
-### Bug Fixes
-- **Identical xG for all fixtures**: Fixed by adding team-specific trailing stats from historical data
-- **Elo Diff Bug**: Fixed `elo_diff = elo_home - elo_home` to `elo_home - elo_away`
-- **Draw Prediction Mismatch**: Added handling for draw predictions (ml_pred == 1)
-- **All scores 2-1/1-2**: Rewrote score generation to use Poisson most-likely scoreline with confidence threshold
-- **Score/Label Mismatch**: Fixed to derive Prediction_Label from actual predicted goals
+### Scraper Fix
+- `scrape_tyc.py` hardcoded URL and Fecha 6 team list removed; now accepts `--url` and `--fecha` CLI args
 
-## Current Metrics (as of 27/02/2026)
-- **Model**: CatBoost (default)
-- **Time-Series CV Accuracy**: 0.421 (+/- 0.014)
-- **Log-Loss**: 1.090
-- **Features Used**: 21 (including 10 Poisson-derived features)
-- **Training Samples**: 6049 matches
+### Other Fixes Applied
+- `GF`/`GA` column mapping bug in `pipeline.py` (was assigning `Away_GF` to `GA` via wrong variable)
+- `enrich_with_api_stats` stub replaced with explicit no-op log message
+- Season-start new-team detection added to `load_data()`
+- `BASE_GOAL_RATE` clarified as NaN fallback only (not a scaling factor)
+- `calibrate_poisson_params()` added to `stats_engine.py`
+- Output filename fallback to date-based when no FECHA number in header
+- Model name in summary reads from `type(result.model).__name__`
+- Test suite updated: column names fixed (`HomeTeam`/`AwayTeam`), 5 new tests added
 
-## Feature Importance (Top 5)
-1. Away_Elo: 10.4%
-2. Elo_Diff: 9.5%
-3. Home_Elo: 8.0%
-4. Form_Balance: 5.5%
-5. Home_Avg_GA: 5.2%
+## Roadmap
 
-## System Architecture
-- **Virtual Environment**: `.venv` at project root
-- **Data Sources**: ARG.csv, FBref, FootyStats, TyC, Sofascore (Apify), PDF Reports
-- **Model Selection**: Environment variable controlled (LightGBM/CatBoost)
-- **Testing**: pytest-based validation
-
-## Known Challenges
-- **Scraper Fragility**: Web scrapers sensitive to DOM changes - mitigated with triple scraper strategy (FBref, FootyStats, Sofascore)
-- **Manual Mapping**: New teams require manual entries in Glossary.txt
-- **Browser Dependencies**: CDP scraper requires Chrome with DevTools protocol
-
-## Operational Status
-- **Weekly Predictions**: Running successfully with menu-driven execution
-- **Data Sources**: All scrapers functional (FBref, FootyStats, TyC, Sofascore via Apify)
-- **Model Performance**: Stable with ~42% accuracy on 3-class problem
-- **Documentation**: Up-to-date with March 2026 scraping enhancements
-
-## Major Evaluation & Enhancement Assessment (2026-03-22)
-
-### AI Configuration Harmonization
-- **Status**: ✅ COMPLETE
-- **Date Completed**: 2026-03-22T04:15:04Z
-- **Compatibility Achievement**: 97% (up from 66%)
-- **Files Modified**: 6 (.claude/settings.json, .codex/config.toml, .gemini/settings.json, .agent/settings.json, .opencode/settings.json, .github/mcp-servers.json)
-- **Issues Fixed**: 13 compatibility gaps resolved
-- **Documentation**: Complete with before/after analysis and verification checklist
-
-### Comprehensive Enhancement Evaluation
-- **Status**: ✅ COMPLETE
-- **Date Completed**: 2026-03-22T04:48:43Z
-- **Agents Recommended**: 11 (free-tier only, $0 cost)
-- **MCP Servers Recommended**: 4 (2 critical, 2 optional)
-- **Implementation Timeline**: 8 weeks, 35-40 hours total
-- **Expected ROI**: 6-8x payback in first month
-- **Monthly Savings**: 20+ hours
-
-### Critical Issues Identified
-- **Critical Bugs**: 3 (division by zero in features.py, bounds checking in pipeline.py, probability normalization)
-- **Code Quality Issues**: 29 total (3 critical, 5 high, 12 medium, 9 low, 2 security)
-- **Recommended Actions**: See ENHANCEMENT_RECOMMENDATIONS.md for Week 1-4 roadmap
-
-### 🎯 Tier 1 Enhancements - IMPLEMENTATION COMPLETE ✅ (2026-03-22)
-
-**All 3 Critical Enhancements Successfully Implemented:**
-
-1. **✅ Bug Fixes** (All 3 critical bugs verified and tested)
-   - CR-2026-03-21-001: Division by zero in features.py - VERIFIED SAFE
-   - CR-2026-03-21-002: Integer conversion bounds in pipeline.py - VERIFIED PROTECTED
-   - CR-2026-03-21-003: Probability normalization in stats_engine.py - VERIFIED SAFE
-   - Tests Added: 3 (all PASSED)
-   - Implementation: Edge-case tests added, no code changes needed
-
-2. **✅ Data Validation Layer** (Production-ready validation infrastructure)
-   - New File: src/validation.py (356 lines)
-   - Integration: src/pipeline.py load_data() and train_validate()
-   - Functions: 6 validation functions + orchestrator
-   - Coverage: Glossary, historical data, fixtures, sofascore, model features
-   - Result: Pre-flight validation prevents silent data corruption
-
-3. **✅ Scraper Resilience** (Automatic retry + CAPTCHA detection + health monitoring)
-   - New File: src/scraper_utils.py (281 lines)
-   - New Tests: tests/test_scraper_utils.py (15 tests, all PASSED)
-   - Decorator: @resilient_scraper with exponential backoff
-   - CAPTCHA: Detection with common indicators
-   - Health: ScraperHealthMonitor for performance tracking
-   - Ready for: Application to production scrapers
-
-**Test Results: 44/44 PASSING ✅**
-- Original tests: 26
-- Critical bug fix tests: 3
-- Scraper utility tests: 15
-
-**Files Created/Modified:**
-- Created: src/validation.py, src/scraper_utils.py, tests/test_scraper_utils.py
-- Modified: src/pipeline.py, tests/test_main.py
-- Documentation: TIER1_ENHANCEMENTS_2026_03_22.md (new comprehensive summary)
-
-**Next Phase (Tier 2): Ready to Apply Scraper Resilience to Production**
-- Apply @resilient_scraper to: scrape_stats_enhanced.py, scrape_footystats.py, scrape_sofascore_apify.py, scrape_tyc.py
-- Expected timeline: 1-2 hours
-- Expected impact: Eliminate manual CAPTCHA recovery, improve scraper uptime to 7+ days
-
-## Documentation Updates (2026-03-22)
-- **New Documents Created**: 10 comprehensive documents (including Tier 1 implementation)
-- **Location**: `DEV_CONTEXT/`
-- **New Document**: TIER1_ENHANCEMENTS_2026_03_22.md (implementation details)
-- **Updated Documents**: BUG_TRACKING.md, ENHANCEMENT_RECOMMENDATIONS.md
-- **Primary Entry Point**: START_HERE.md
-- **Manifest Created**: DOCUMENTATION_MANIFEST.md (tracks all docs with timestamps)
+| Phase | Goal | Status |
+|-------|------|--------|
+| Poisson Calibration | Run `calibrate_poisson_params()` and tune `POISSON_DRAW_ADJUSTMENT` | Pending |
+| Playoff Support | Consider increasing Poisson blend ratio for knockout rounds | Pending |
+| `enrich_with_api_stats` | Implement API-Football team name mapping | Pending |

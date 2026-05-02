@@ -1,15 +1,19 @@
-# .ai/state/current.md
 # Current Task State
 
-## Status
-idle — awaiting first task under Claude Code orchestrator
+**Last Updated:** 2026-05-02
 
-## Last Action
-Migrated orchestrator from Codex → Claude Code.
-Archived: .agent/, .claude/ (old), .gemini/, .opencode/, .github/get-shit-done/, CONTEXT_SUMMARY.md
+## Status
+idle — Apertura 2026 regular season complete (Fecha 9). Playoffs pending (structure TBD).
+
+## Last Actions
+- Fixed all-1-1 scoreline bug (floor(xG), ML threshold, GF/GA fallback)
+- Fixed scrape_tyc.py hardcoded season data
+- Added Boca / Independiente Rivadavia Mza to Glossary.txt
+- Updated all MD documentation, deleted 7 obsolete files
 
 ## Next Step
-Begin first development task. Read AGENTS.md only on start.
+When playoff fixtures are known: update Partidos.txt and run `python main.py`.
+Consider running `calibrate_poisson_params()` before next season.
 
 ## Blockers
-None.
+None. Waiting on Argentine football to decide playoff format.

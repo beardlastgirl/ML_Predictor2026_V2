@@ -37,48 +37,42 @@ def create_model(model_type, class_weights=None):
 
 def _calculate_hybrid_goals(exp_h, exp_a, ml_pred, p_h, p_d, p_a):
     """
-    Calculate realistic scorelines by blending xG and ML probabilities.
-    Adjusts goals based on win/draw/loss predictions and confidence.
+    Calculate realistic scorelines using the Poisson distribution's most-likely
+    scoreline, adjusted by the ML outcome prediction.
+
+    Uses the mode of the Poisson distribution (most probable integer) rather than
+    rounding the mean, which avoids collapsing all xG values in [0.5, 1.5] to 1.
     """
-    # Start with rounded expected goals
-    m_h, m_a = int(round(exp_h)), int(round(exp_a))
+    from scipy.stats import poisson as _poisson
+    from src.config import MAX_PREDICTED_GOALS as MAX_GOALS
 
-    # xG difference for away win detection
-    xG_diff = exp_a - exp_h
+    # Most likely goals = mode of Poisson = floor(xG) for xG >= 1, else 0
+    # This gives more spread than round() for low-xG matches
+    m_h = int(np.floor(max(0.0, exp_h)))
+    m_a = int(np.floor(max(0.0, exp_a)))
 
-    # Heuristic adjustments
-    if xG_diff > 0.20:
-        ml_pred = 0
-        if m_a <= m_h: m_a = m_h + 1
-    elif xG_diff > 0.10 and p_a > p_d:
-        ml_pred = 0
-        if m_a <= m_h: m_a = m_h + 1
-    elif ml_pred == 2 and p_h >= WIN_PROBABILITY_THRESHOLD:  # Home Win
-        if m_h <= m_a: m_h = m_a + 1
-    elif ml_pred == 0 and p_a >= WIN_PROBABILITY_THRESHOLD:  # Away Win
-        if m_a <= m_h: m_a = m_h + 1
-    elif ml_pred == 1 and p_d >= DRAW_PROBABILITY_THRESHOLD:  # Draw
-        total_xg = exp_h + exp_a
-        if total_xg < 1.0:
-            m_h = m_a = 0 if total_xg < 0.6 else 1
-        elif total_xg < 2.5:
-            m_h = m_a = 1
-        elif total_xg < 3.5:
-            m_h = m_a = 2
-        else:
-            m_h = m_a = min(3, max(2, round(total_xg / 2)))
+    # ML adjustment: apply when the model has a clear directional prediction.
+    # Threshold is on the raw probability, not a scaled weight.
+    max_prob = max(p_h, p_d, p_a)
 
-        # Nudge if xG differs significantly but still a draw
-        xG_diff_internal = exp_h - exp_a
-        if abs(xG_diff_internal) > 0.4:
-            if xG_diff_internal > 0.4 and m_h >= 1:
-                m_h = min(m_h + 1, MAX_PREDICTED_GOALS)
-                m_a = max(1, m_a)
-            elif xG_diff_internal < -0.4 and m_a >= 1:
-                m_a = min(m_a + 1, MAX_PREDICTED_GOALS)
-                m_h = max(1, m_h)
+    if max_prob >= 0.35:  # model has some confidence
+        if ml_pred == 2 and p_h >= p_d and p_h >= p_a:  # home win predicted
+            # Ensure home > away; if already so, optionally bump by 1 for strong predictions
+            if m_h <= m_a:
+                m_h = m_a + 1
+            elif p_h >= 0.50:  # strong home win — add a goal
+                m_h = min(MAX_GOALS, m_h + 1)
+        elif ml_pred == 0 and p_a >= p_h and p_a >= p_d:  # away win predicted
+            if m_a <= m_h:
+                m_a = m_h + 1
+            elif p_a >= 0.50:
+                m_a = min(MAX_GOALS, m_a + 1)
+        elif ml_pred == 1 and p_d >= p_h and p_d >= p_a:  # draw predicted
+            # Equalise scores at the higher of the two floor values
+            score = max(m_h, m_a)
+            m_h = m_a = score
 
-    return max(0, min(MAX_PREDICTED_GOALS, m_h)), max(0, min(MAX_PREDICTED_GOALS, m_a))
+    return max(0, min(MAX_GOALS, m_h)), max(0, min(MAX_GOALS, m_a))
 
 def predict_gameweek(fixtures_df, elo_ratings, model, features, df_mean=None, historical_matches=None, sofascore_data=None):
     """Generate predictions with Poisson-enhanced modeling."""

@@ -19,6 +19,7 @@ Boca Jr -> BOCA JUNIORS
 Boca Jrs -> BOCA JUNIORS
 Boca Jrs -> BOCA JUNIORS
 Boca Juniors -> BOCA JUNIORS
+Boca -> BOCA JUNIORS
 CA Boca Juniors -> BOCA JUNIORS
 Club Atletico Boca Juniors -> BOCA JUNIORS
 
@@ -220,6 +221,9 @@ Independ Rivadavia -> IND RIVADAVIA
 Independiente Rivadavia -> IND RIVADAVIA
 Ind Rivadavia -> IND RIVADAVIA
 Ind. Rivadavia -> IND RIVADAVIA
+Independiente Rivadavia Mza -> IND RIVADAVIA
+Independiente Rivadavia Mza. -> IND RIVADAVIA
+Ind Rivadavia Mza -> IND RIVADAVIA
 
 Riestra -> DEP RIESTRA
 Deportivo Riestra -> DEP RIESTRA

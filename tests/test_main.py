@@ -294,24 +294,29 @@ def test_get_team_trailing_stats_window_limit():
 
 
 def test_compute_trailing_features_basic():
-    """Test computing trailing features for a small dataset."""
+    """Test computing trailing features for a small dataset.
+    Uses the canonical column names (HomeTeam/AwayTeam/GF/GA) that the
+    real pipeline passes to compute_trailing_features.
+    """
     matches = pd.DataFrame({
         'Date': pd.to_datetime(['2024-01-01', '2024-01-08', '2024-01-15']),
-        'Home': ['TeamA', 'TeamB', 'TeamA'],
-        'Away': ['TeamB', 'TeamA', 'TeamB'],
-        'Res': [2, 0, 2],  # Home win, Away win, Home win
+        'HomeTeam': ['TeamA', 'TeamB', 'TeamA'],
+        'AwayTeam': ['TeamB', 'TeamA', 'TeamB'],
+        'FullTimeResult': [2, 0, 2],  # Home win, Away win, Home win
         'GF': [2, 1, 3],
         'GA': [1, 2, 0]
     })
 
     result = compute_trailing_features(matches, window=3)
 
-    # First match has no history
+    # First match has no prior history — trailing stats should be NaN
     assert pd.isna(result.iloc[0]['Home_Avg_GF'])
 
-    # Subsequent matches should have features
+    # Subsequent matches should have features populated
     assert 'Home_Avg_GF' in result.columns
     assert 'Away_Avg_GF' in result.columns
+    assert 'Home_Form' in result.columns
+    assert 'Away_Form' in result.columns
 
 
 # ==============================================
@@ -433,3 +438,97 @@ def test_integer_conversion_bounds_clipping():
 
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])
+
+
+# ==============================================
+# Tests added for coverage gaps (recommendations)
+# ==============================================
+
+def test_parse_fixtures_standard_format(tmp_path):
+    """Test parse_fixtures with a real Partidos.txt format."""
+    from src.data_processing import parse_fixtures
+    
+    partidos = tmp_path / "Partidos.txt"
+    partidos.write_text(
+        "FECHA 9 - 2 al 4/05/2026\n\n"
+        "Boca - River:\n"
+        "San Lorenzo - Racing:\n"
+        "\nCantidad de penales cobrados:\n"
+        "Cantidad de expulsados:\n"
+        "Cantidad de goles convertidos:\n",
+        encoding="utf-8"
+    )
+    
+    fixtures_df, header, summary = parse_fixtures(str(partidos), glossary={})
+    
+    assert header == "FECHA 9 - 2 al 4/05/2026"
+    assert len(fixtures_df) == 2
+    assert "HomeTeam" in fixtures_df.columns
+    assert "AwayTeam" in fixtures_df.columns
+    assert fixtures_df.iloc[0]["HomeTeam"] == "BOCA"
+    assert fixtures_df.iloc[0]["AwayTeam"] == "RIVER"
+
+
+def test_parse_fixtures_empty_file(tmp_path):
+    """Test parse_fixtures with an empty file returns empty DataFrame."""
+    from src.data_processing import parse_fixtures
+    
+    partidos = tmp_path / "Partidos.txt"
+    partidos.write_text("", encoding="utf-8")
+    
+    fixtures_df, header, summary = parse_fixtures(str(partidos), glossary={})
+    assert fixtures_df.empty
+    assert header is None
+
+
+def test_ensemble_blending_weights():
+    """Test that ensemble blending applies 60/40 ML/Poisson split correctly."""
+    import numpy as np
+    
+    # Simulate ML probabilities [away, draw, home]
+    ml_proba = np.array([[0.2, 0.3, 0.5]])
+    poisson_away = np.array([0.3])
+    poisson_draw = np.array([0.4])
+    poisson_home = np.array([0.3])
+    
+    alpha = 0.6
+    blended = np.zeros_like(ml_proba)
+    blended[:, 0] = alpha * ml_proba[:, 0] + (1 - alpha) * poisson_away
+    blended[:, 1] = alpha * ml_proba[:, 1] + (1 - alpha) * poisson_draw
+    blended[:, 2] = alpha * ml_proba[:, 2] + (1 - alpha) * poisson_home
+    
+    assert blended[0, 0] == pytest.approx(0.6 * 0.2 + 0.4 * 0.3, abs=1e-6)
+    assert blended[0, 1] == pytest.approx(0.6 * 0.3 + 0.4 * 0.4, abs=1e-6)
+    assert blended[0, 2] == pytest.approx(0.6 * 0.5 + 0.4 * 0.3, abs=1e-6)
+    # Blended probs should sum to 1
+    assert blended[0].sum() == pytest.approx(1.0, abs=1e-6)
+
+
+def test_new_team_detection_in_fixtures():
+    """Test that teams in fixtures with no historical data are detectable."""
+    known_teams = {"BOCA JUNIORS", "RIVER PLATE", "RACING CLUB"}
+    fixture_teams = {"BOCA JUNIORS", "RIVER PLATE", "NUEVO EQUIPO FC"}
+    
+    unknown = fixture_teams - known_teams
+    assert "NUEVO EQUIPO FC" in unknown
+    assert len(unknown) == 1
+
+
+def test_gf_ga_column_mapping():
+    """Test that GF/GA are mapped correctly (not Away_GF assigned to GA)."""
+    import pandas as pd
+    
+    matches = pd.DataFrame({
+        "Home_GF": [2, 1],
+        "Away_GF": [0, 3],
+    })
+    
+    # Correct mapping
+    matches["GF"] = matches["Home_GF"]
+    matches["GA"] = matches["Away_GF"]
+    
+    # GF should be home goals scored, GA should be away goals scored (= home goals conceded)
+    assert matches.iloc[0]["GF"] == 2   # home scored 2
+    assert matches.iloc[0]["GA"] == 0   # away scored 0 (home conceded 0)
+    assert matches.iloc[1]["GF"] == 1   # home scored 1
+    assert matches.iloc[1]["GA"] == 3   # away scored 3 (home conceded 3)

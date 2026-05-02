@@ -1,66 +1,73 @@
-# ARCHITECTURE.md
 # ML_Predictor2026_V2 — System Architecture
 
-## Orchestration Model
+## Pipeline Flow
 
 ```
-User request
-  └─> Claude Code (Orchestrator)
-        ├─ classify: code / debug / review / docs / scraper
-        ├─ load 1 skill max (lazy from .claude/skills/)
-        ├─ do work directly unless blocked
-        ├─ spawn one bounded subagent only if task is parallelizable
-        ├─ verify output
-        └─ write minimal state snapshot to .ai/state/current.md
+Partidos.txt (fixtures)
+data/ARG.csv (history)          ─┐
+src/sofascore_stats.json         ├─> pipeline.py ─> PrediccionFechaXX.txt
+Glossary.txt                    ─┘               ─> feature_importance_*.png
+
+pipeline.py stages:
+  load_data()        → normalize teams, validate inputs, [SEASON CHECK]
+  build_features()   → Elo ratings, trailing stats, Poisson xG, Shin odds
+  train_validate()   → 5-fold time-series CV, CatBoost/LightGBM
+  predict_fixtures() → ensemble blend (60% ML + 40% Poisson), scorelines
+  write_outputs()    → PrediccionFechaXX.txt, feature importance chart
 ```
 
-**Default: single-agent.** Multi-agent only when a task is genuinely parallelizable.
+## Module Responsibilities
 
----
+| Module | Responsibility |
+|--------|---------------|
+| `src/config.py` | Single source of truth for all hyperparameters |
+| `src/pipeline.py` | Orchestration, data loading, feature assembly, output writing |
+| `src/stats_engine.py` | Elo system, Poisson xG, outcome probabilities, Shin method, `calibrate_poisson_params()` |
+| `src/model_engine.py` | Model factory, `predict_gameweek()`, `_calculate_hybrid_goals()` |
+| `src/features.py` | Exponential-decay trailing stats, `get_all_teams_latest_stats()` |
+| `src/data_processing.py` | Team name normalization, glossary, fixture parsing, header mapping |
+| `src/data_ingestion.py` | Auto-download ARG.csv from football-data.co.uk |
+| `src/validation.py` | Pre-flight validation (glossary, history, fixtures, features) |
+| `src/scraper_utils.py` | `@resilient_scraper` decorator, CAPTCHA detection, health monitor |
+| `src/map_headers.py` | Canonical header mapping for ARG.csv columns |
+
+## Key Design Decisions
+
+| Decision | Rationale |
+|----------|-----------|
+| `floor(xG)` for scorelines | `round()` collapses Liga Profesional xG values (0.8–1.6) to 1; floor gives spread |
+| 60% ML + 40% Poisson blend | ML captures patterns; Poisson provides calibrated baseline |
+| `max_prob >= 0.35` ML adjustment threshold | Scaled weight (old approach) never fired; direct probability check works |
+| Exponential decay trailing stats | Recent matches weighted more than older ones |
+| `Home_GF`/`Away_GF` fallback in `get_all_teams_latest_stats` | `GF`/`GA` columns may not exist in all DataFrames passed to this function |
+| `BASE_GOAL_RATE` as NaN fallback only | Not a scaling factor in xG formula; used when team has no trailing stats |
+| Season check warning | Promoted/new teams get default Elo (1500) and zero stats; explicit warning prevents silent bad predictions |
+
+## Orchestrator
+
+Claude Code is the single orchestrator. Three specialist roles only:
+
+| Role | Trigger |
+|------|---------|
+| planner | Ambiguous task spanning 3+ files |
+| debugger | Reproducible test failure or scraper breakage |
+| code-reviewer | Post-implementation review (read-only) |
+
+State lives in `,ai/state/current.md` (active task) and `,ai/state/decisions.md` (ADRs).
 
 ## Directory Layout
 
 ```
-I:\Scripts\ML_Predictor2026_V2\
-├── AGENTS.md                  ← agent roster and operating rules
-├── ARCHITECTURE.md            ← this file
-├── .ai\
-│   └── state\
-│       ├── current.md         ← active task, next step, blockers
-│       ├── backlog.md         ← queued items
-│       └── decisions.md       ← ADRs (architecture decision records)
-└── .claude\
-    ├── config.toml            ← MCP + hook config (no absolute paths)
-    ├── agents\
-    │   ├── planner.md
-    │   ├── debugger.md
-    │   └── reviewer.md
-    └── skills\
-        ├── prediction-pipeline\SKILL.md
-        ├── scraper-maintenance\SKILL.md
-        ├── data-normalization\SKILL.md
-        └── release-review\SKILL.md
+ML_Predictor2026_V2\
+├── main.py                  ← entry point
+├── Partidos.txt             ← current fixtures (edit weekly)
+├── Glossary.txt             ← team name mappings
+├── data\ARG.csv             ← historical match data
+├── src\                     ← core source code
+├── tests\                   ← pytest suite (34 tests)
+├── Reporte\                 ← PDF match reports
+├── DEV_CONTEXT\             ← technical documentation
+├── .planning\               ← roadmap and requirements
+├── ,ai\state\               ← agent state (current task, ADRs)
+└── .venv\                   ← Python virtual environment
 ```
-
-### Retired / Archived
-
-The following directories should be archived (not deleted) and removed from active agent context:
-
-- `.agent/`
-- `.gemini/`
-- `.opencode/`
-- `.github/get-shit-done/`
-- `.github/agents/`
-- `.github/skills/`
-- `CONTEXT_SUMMARY.md`
-- `.planning/` (most of it)
-
----
-
-## Design Principles
-
-1. **Single source of truth.** Config lives in `.claude/config.toml` and `AGENTS.md` only.
-2. **Store conclusions, not transcripts.** `.ai/state/` holds decisions and next steps — not conversation logs.
-3. **No startup ritual.** Claude Code reads `AGENTS.md` and the task-relevant file(s). Nothing else on cold start.
-4. **Opt-in MCP.** Servers are enabled per task class, not globally.
-5. **No session-wide hooks.** No `PostToolUse` or `AfterTool` context monitors.

@@ -2,12 +2,13 @@
 
 import numpy as np
 import pandas as pd
+from scipy.stats import poisson as _poisson
 from catboost import CatBoostClassifier
 from lightgbm import LGBMClassifier
 from src.config import (
     MODEL_PARAMS, BASE_ELO, TRAILING_WINDOW,
     WIN_PROBABILITY_THRESHOLD, DRAW_PROBABILITY_THRESHOLD,
-    DEFAULT_EXPECTED_GOALS, MAX_PREDICTED_GOALS
+    DEFAULT_EXPECTED_GOALS, MAX_PREDICTED_GOALS, ML_POISSON_BLEND_RATIO
 )
 from src.utils import log_info
 from src.stats_engine import calculate_poisson_features
@@ -43,9 +44,6 @@ def _calculate_hybrid_goals(exp_h, exp_a, ml_pred, p_h, p_d, p_a):
     Uses the mode of the Poisson distribution (most probable integer) rather than
     rounding the mean, which avoids collapsing all xG values in [0.5, 1.5] to 1.
     """
-    from scipy.stats import poisson as _poisson
-    from src.config import MAX_PREDICTED_GOALS as MAX_GOALS
-
     # Most likely goals = mode of Poisson = floor(xG) for xG >= 1, else 0
     # This gives more spread than round() for low-xG matches
     m_h = int(np.floor(max(0.0, exp_h)))
@@ -128,7 +126,7 @@ def predict_gameweek(fixtures_df, elo_ratings, model, features, df_mean=None, hi
     proba = model.predict_proba(fixtures_df[features])
 
     # Ensemble blending
-    ensemble_alpha = 0.6
+    ensemble_alpha = ML_POISSON_BLEND_RATIO
     blended_proba = np.zeros_like(proba)
     blended_proba[:, 0] = ensemble_alpha * proba[:, 0] + (1 - ensemble_alpha) * fixtures_df["Poisson_Away_Win"].values
     blended_proba[:, 1] = ensemble_alpha * proba[:, 1] + (1 - ensemble_alpha) * fixtures_df["Poisson_Draw"].values

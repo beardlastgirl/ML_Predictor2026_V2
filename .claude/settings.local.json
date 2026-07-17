@@ -21,7 +21,6 @@
       "Bash(start:*)",
       "Bash(cd:*)",
       "WebFetch(domain:footystats.org)",
-      "Skill(gsd:map-codebase)",
       "Bash(git add:*)",
       "Bash(node:*)",
       "mcp__plugin_context-mode_context-mode__ctx_batch_execute",
@@ -29,8 +28,8 @@
       "Bash(.gitignore:*)",
       "Bash(git clone:*)",
       "Bash(dir /b /a-d)",
-      "Skill(gsd:settings)",
-      "mcp__plugin_context-mode_context-mode__ctx_execute_file"
+      "mcp__plugin_context-mode_context-mode__ctx_execute_file",
+      "mcp__plugin_context-mode_context-mode__ctx_execute"
     ]
   },
   "enabledPlugins": {

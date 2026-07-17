@@ -16,6 +16,10 @@ import requests
 # Curated API-Football → canonical team name map
 # Covers known mismatches that fuzzy matching gets wrong.
 # Add new entries here when a team name changes or a new team is promoted.
+# NOTE: This is separate from data_processing.py's INTERNAL_MAPPING because:
+# - This maps API-Football names → canonical (ARG.csv) names
+# - That maps internal variations (nicknames, abbreviations) → canonical
+# Both serve different purposes and should NOT be merged.
 # ---------------------------------------------------------------------------
 _API_NAME_MAP_RAW = {
     "Argentinos JRS":              "ARGENTINOS JUNIORS",
@@ -32,10 +36,23 @@ _API_NAME_MAP_RAW = {
 
 
 def _normalize_for_match(name: str) -> str:
-    """Normalize a team name for fuzzy comparison."""
+    """Normalize a team name for fuzzy comparison. Matches _canonicalize_name in data_processing.py."""
+    if name is None:
+        return ""
+    try:
+        if pd.isna(name):
+            return ""
+    except (TypeError, ValueError):
+        pass
     s = str(name).upper().strip()
-    s = s.replace(".", " ").replace("-", " ")
-    s = re.sub(r"[^A-Z0-9 ]", "", s)
+    s = s.replace(".", " ").replace("-", " ").replace("–", " ").replace("—", " ")
+    # Remove accents
+    mapping = str.maketrans({
+        "Á": "A", "É": "E", "Í": "I", "Ó": "O", "Ú": "U", "Ü": "U", "Ñ": "N",
+        "á": "A", "é": "E", "í": "I", "ó": "O", "ú": "U", "ü": "U", "ñ": "N"
+    })
+    s = s.translate(mapping)
+    s = re.sub(r"[^A-Z0-9\s]+", "", s)
     return re.sub(r"\s+", " ", s).strip()
 
 
@@ -207,6 +224,10 @@ class DataIngestor:
 
         log_info(f"enrich_with_api_stats: {len(api_fixtures)} API fixtures to process")
 
+        # Pre-compute normalized columns once before loop (efficiency)
+        home_norm_all = df[home_col].apply(_normalize_for_match)
+        away_norm_all = df[away_col].apply(_normalize_for_match)
+
         enriched = 0
         api_requests_used = 0
         MAX_REQUESTS = 80  # Leave buffer from 100/day quota
@@ -238,11 +259,10 @@ class DataIngestor:
 
             # Find matching row in ARG.csv (match on date ±1 day and team names)
             # Normalize both sides for comparison since raw ARG.csv names differ from canonical
+            # NOTE: home_norm/away_norm pre-computed once before loop (efficiency)
             date_mask = (df["Date"] - api_date).abs() <= timedelta(days=1)
-            home_norm = df[home_col].apply(_normalize_for_match)
-            away_norm = df[away_col].apply(_normalize_for_match)
-            home_mask = home_norm == _normalize_for_match(canonical_home)
-            away_mask = away_norm == _normalize_for_match(canonical_away)
+            home_mask = home_norm_all == _normalize_for_match(canonical_home)
+            away_mask = away_norm_all == _normalize_for_match(canonical_away)
             row_mask = date_mask & home_mask & away_mask
 
             if not row_mask.any():

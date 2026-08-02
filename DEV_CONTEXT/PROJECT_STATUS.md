@@ -1,13 +1,19 @@
 # PROJECT_STATUS.md
 
-**Last Updated:** 2026-05-02
+**Last Updated:** 2026-07-31
 
 ## Current State
 
-- **Season:** Liga Profesional Argentina — Apertura 2026, Fecha 9 (last regular round)
-- **Next:** Playoffs (structure TBD — Argentine football schedules are flexible)
+- **Season:** Liga Profesional Argentina — Clausura 2026, Fecha 3 (upcoming: 01-03/08/2026)
+- **Previous rounds:** Jornada 1 (23-26 Jul) ✅ complete | Jornada 2 (28-30 Jul) ⏳ 3 matches pending (5-6 Aug)
 - **Pipeline:** Operational, producing varied scoreline predictions
 - **Tests:** 34/34 passing
+
+## Season Format Change (Clausura 2026)
+- **30 teams** split into **2 zones of 15** (Grupo A and Grupo B)
+- Each team plays 14 intra-zone matches + 1 interzone classics date + 1 extra interzone date
+- Top 8 from each zone → playoffs (single-leg until final, which is neutral venue)
+- Source: https://futboltotal.futbol/league/liga-profesional-argentina/round/clausura-1
 
 ## Current Metrics
 

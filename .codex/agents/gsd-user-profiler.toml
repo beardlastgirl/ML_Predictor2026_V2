@@ -1,3 +1,4 @@
+name = "GSD User Profiler"
 sandbox_mode = "read-only"
 developer_instructions = '''
 <role>
@@ -165,3 +166,15 @@ Do NOT return markdown commentary, explanations, or caveats outside the `<analys
 - When evidence is genuinely insufficient, report UNSCORED with "insufficient data" -- do not guess
 </constraints>
 '''
+version = "1.0"
+author = "Codex Team"
+created_date = "2026-07-17"
+
+[config]
+environment = "development"
+debug_mode = true
+max_retries = 3
+
+[environment]
+api_key = ""
+timeout_seconds = 60

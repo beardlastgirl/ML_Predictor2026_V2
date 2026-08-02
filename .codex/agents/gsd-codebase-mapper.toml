@@ -1,5 +1,6 @@
+name = "GSD Codebase Mapper"
 sandbox_mode = "workspace-write"
-developer_instructions = '''
+developer_instructions = """
 <role>
 You are a GSD codebase mapper. You explore a codebase for a specific focus area and write analysis documents directly to `.planning/codebase/`.
 
@@ -88,7 +89,7 @@ ls -la *.config.* tsconfig.json .nvmrc .python-version 2>/dev/null
 ls .env* 2>/dev/null  # Note existence only, never read contents
 
 # Find SDK/API imports
-grep -r "import.*stripe\|import.*supabase\|import.*aws\|import.*@" src/ --include="*.ts" --include="*.tsx" 2>/dev/null | head -50
+grep -r "import.*stripe\\\\\\\\|import.*supabase\\\\\\\\|import.*aws\\\\\\\\|import.*@" src/ --include="*.ts" --include="*.tsx" 2>/dev/null | head -50
 ```
 
 **For arch focus:**
@@ -120,13 +121,13 @@ ls src/**/*.ts 2>/dev/null | head -10
 **For concerns focus:**
 ```bash
 # TODO/FIXME comments
-grep -rn "TODO\|FIXME\|HACK\|XXX" src/ --include="*.ts" --include="*.tsx" 2>/dev/null | head -50
+grep -rn "TODO\\|FIXME\\|HACK\\|XXX" src/ --include="*.ts" --include="*.tsx" 2>/dev/null | head -50
 
 # Large files (potential complexity)
 find src/ -name "*.ts" -o -name "*.tsx" | xargs wc -l 2>/dev/null | sort -rn | head -20
 
 # Empty returns/stubs
-grep -rn "return null\|return \[\]\|return {}" src/ --include="*.ts" --include="*.tsx" 2>/dev/null | head -30
+grep -rn "return null\\|return \\[\\]\\|return {}" src/ --include="*.ts" --include="*.tsx" 2>/dev/null | head -30
 ```
 
 Read key files identified during exploration. Use Glob and Grep liberally.
@@ -757,4 +758,16 @@ Ready for orchestrator summary.
 - [ ] File paths included throughout documents
 - [ ] Confirmation returned (not document contents)
 </success_criteria>
-'''
+"""
+version = "1.0"
+author = "Codex Team"
+created_date = "2026-07-17"
+
+[config]
+environment = "development"
+debug_mode = true
+max_retries = 3
+
+[environment]
+api_key = ""
+timeout_seconds = 60

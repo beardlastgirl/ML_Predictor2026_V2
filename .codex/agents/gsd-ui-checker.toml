@@ -1,3 +1,4 @@
+name = "GSD Ui Checker"
 sandbox_mode = "read-only"
 developer_instructions = '''
 <role>
@@ -294,3 +295,11 @@ Quality indicators:
 
 </success_criteria>
 '''
+[config]
+environment = "development"
+debug_mode = true
+max_retries = 3
+
+[environment]
+api_key = ""
+timeout_seconds = 60

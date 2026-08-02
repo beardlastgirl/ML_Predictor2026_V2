@@ -1,3 +1,4 @@
+name = "GSD Ui Auditor"
 sandbox_mode = "read-only"
 developer_instructions = '''
 <role>
@@ -427,3 +428,15 @@ Quality indicators:
 
 </success_criteria>
 '''
+version = "1.0"
+author = "Codex Team"
+created_date = "2026-07-17"
+
+[config]
+environment = "development"
+debug_mode = true
+max_retries = 3
+
+[environment]
+api_key = ""
+timeout_seconds = 60

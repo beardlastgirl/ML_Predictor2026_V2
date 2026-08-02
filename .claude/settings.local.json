@@ -29,7 +29,9 @@
       "Bash(git clone:*)",
       "Bash(dir /b /a-d)",
       "mcp__plugin_context-mode_context-mode__ctx_execute_file",
-      "mcp__plugin_context-mode_context-mode__ctx_execute"
+      "mcp__plugin_context-mode_context-mode__ctx_execute",
+      "mcp__plugin_context-mode_context-mode__ctx_stats",
+      "mcp__plugin_context-mode_context-mode__ctx_search"
     ]
   },
   "enabledPlugins": {

@@ -89,7 +89,7 @@ ls -la *.config.* tsconfig.json .nvmrc .python-version 2>/dev/null
 ls .env* 2>/dev/null  # Note existence only, never read contents
 
 # Find SDK/API imports
-grep -r "import.*stripe\\\\\\\\|import.*supabase\\\\\\\\|import.*aws\\\\\\\\|import.*@" src/ --include="*.ts" --include="*.tsx" 2>/dev/null | head -50
+grep -r "import.*stripe\|import.*supabase\|import.*aws\|import.*@" src/ --include="*.ts" --include="*.tsx" 2>/dev/null | head -50
 ```
 
 **For arch focus:**
@@ -121,13 +121,13 @@ ls src/**/*.ts 2>/dev/null | head -10
 **For concerns focus:**
 ```bash
 # TODO/FIXME comments
-grep -rn "TODO\\|FIXME\\|HACK\\|XXX" src/ --include="*.ts" --include="*.tsx" 2>/dev/null | head -50
+grep -rn "TODO\|FIXME\|HACK\|XXX" src/ --include="*.ts" --include="*.tsx" 2>/dev/null | head -50
 
 # Large files (potential complexity)
 find src/ -name "*.ts" -o -name "*.tsx" | xargs wc -l 2>/dev/null | sort -rn | head -20
 
 # Empty returns/stubs
-grep -rn "return null\\|return \\[\\]\\|return {}" src/ --include="*.ts" --include="*.tsx" 2>/dev/null | head -30
+grep -rn "return null\|return \[\]\|return {}" src/ --include="*.ts" --include="*.tsx" 2>/dev/null | head -30
 ```
 
 Read key files identified during exploration. Use Glob and Grep liberally.

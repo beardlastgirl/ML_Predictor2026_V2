@@ -1,19 +1,19 @@
-FECHA 9 - 2 al 4052026
-Estudiantes Rio Cuarto - Instituto:
-Union - Talleres:
-San Lorenzo - Independiente:
-Central Cordoba - Boca:
-Gimnasia Mza - Defensa y Justicia:
-Lanus - Deportivo Riestra:
-Platense - Estudiantes:
-Velez - Newells:
-Belgrano - Sarmiento:
-Racing - Huracan:
-River - Atletico Tucuman:
-Aldosivi - Independiente Rivadavia Mza:
-Barracas Central - Banfield:
-Gimnasia - Argentinos:
-Rosario Central - Tigre:
+FECHA 3 - 01 al 03082026
+Estudiantes Rio Cuarto - Banfield:
+Gimnasia Mza - Union:
+Estudiantes - Defensa y Justicia:
+Belgrano - Argentinos:
+Racing - Tigre:
+Aldosivi - Gimnasia:
+Deportivo Riestra - Barracas Central:
+Newells - Boca:
+River - Rosario Central:
+Lanus - Instituto:
+Sarmiento - Independiente Rivadavia Mza:
+Platense - Talleres:
+Velez - Independiente:
+Huracan - Atletico Tucuman:
+Central Cordoba - San Lorenzo:
 Cantidad de penales cobrados:
 Cantidad de expulsados:
 Cantidad de goles convertidos:

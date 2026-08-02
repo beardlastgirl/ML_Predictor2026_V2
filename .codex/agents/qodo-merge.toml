@@ -1,3 +1,4 @@
+name = "Qodo Merge"
 sandbox_mode = "workspace-write"
 developer_instructions = '''
 <role>
@@ -29,3 +30,15 @@ Follow guidelines in `CLAUDE.md` and `AGENTS.md`.
 - **Security First**: Always look for potential vulnerabilities.
 </philosophy>
 '''
+version = "1.0"
+author = "Codex Team"
+created_date = "2026-07-17"
+
+[config]
+environment = "development"
+debug_mode = true
+max_retries = 3
+
+[environment]
+api_key = ""
+timeout_seconds = 60

@@ -1,7 +1,7 @@
 # Football Terminology — Canonical Glossary & Mapping
 
-Version: 1.0  
-Updated: 2026-03-28  
+Version: 1.1  
+Updated: 2026-07-31  
 Purpose: canonical keys + common alternate labels from Football-Data (Argentina CSVs), FBref, Sofascore, and other common sources. Use this to normalize scraped headers into a single schema.
 
 ---
@@ -25,12 +25,23 @@ Purpose: canonical keys + common alternate labels from Football-Data (Argentina 
 - GD: Goal Difference (GF − GA)
 - Pts: Points (league points)
 - Pts/MP: Points per Match (Pts divided by MP)
+- Poss: Possession percentage (team average)
 - Last5: Recent form — last five results (chronological left→right)
 - Attendance: Average home attendance (season)
+- Date: Match date
+- Time: Match kick-off time
 - Fixture: Scheduled match (match-level)
 - Aggregate: Aggregate score (two-leg ties)
 - AwayGoals: Away goals (tiebreaker, if used)
 - H2H: Head-to-head (tiebreaker)
+- HomeTeam: Home team name
+- AwayTeam: Away team name
+- Home_GF: Full-time goals scored by home team (football-data: FTHG)
+- Away_GF: Full-time goals scored by away team (football-data: FTAG)
+- FullTimeResult: Full-time result code (H/D/A)
+- HT_Home_GF: Half-time goals scored by home team (football-data: HTHG)
+- HT_Away_GF: Half-time goals scored by away team (football-data: HTAG)
+- HalfTimeResult: Half-time result code (H/D/A)
 - #Pl: Number of players used
 - Age: Average age (weighted by minutes)
 - Starts: Games started by player
@@ -40,6 +51,7 @@ Purpose: canonical keys + common alternate labels from Football-Data (Argentina 
 - Ast: Assists
 - GplusA: Goals + Assists
 - GminusPK: Non-penalty goals (G − PK goals)
+- GplusAminusPK: Non-penalty goals + Assists (G+A−PK goals); FBref column G+A-PK
 - PK: Penalties converted
 - PKatt: Penalty attempts
 - CrdY: Yellow cards
@@ -54,9 +66,10 @@ Purpose: canonical keys + common alternate labels from Football-Data (Argentina 
 - npxG_xAG: npxG + xAG (combined non-penalty expected threat)
 - PrgP: Progressive passes
 - PrgC: Progressive carries
-- Gls_90: Goals per 90
-- Ast_90: Assists per 90
-- GplusA_90: Goals+Assists per 90
+- Gls_90: Goals per 90 (FBref column Gls_1 in some tables)
+- Ast_90: Assists per 90 (FBref column Ast_1 in some tables)
+- GplusA_90: Goals+Assists per 90 (FBref column G+A_1 in some tables)
+- GminusPK_90: Non-penalty goals per 90 (FBref column G-PK_1 in some tables)
 - Shots: Total shots attempted
 - SoT: Shots on target
 - SoTA: Shots on target against (keeper/team)
@@ -90,6 +103,8 @@ Purpose: canonical keys + common alternate labels from Football-Data (Argentina 
 - MinutesPerAssist: Minutes per assist
 - xP: Expected points (modelled)
 - RankPercentile: Percentile rank inside league
+- Rating: Player/team rating (Sofascore)
+- SubsOn: Substitutions on (Sofascore)
 
 ---
 
@@ -112,22 +127,34 @@ Normalized input form → canonical key
 - ga, a, goalsagainst, against, ga_team → GA
 - gd, goaldiff, goaldifference, gdiff, plusminus → GD
 - pts, points, p, pt → Pts
-- ptspermatch, ptsmp, pointspermatch, ppm → Pts/MP
+- ptspermatch, ptsmp, pointspermatch, ppm, pointspergame, ppg → Pts/MP
+- poss, possession, possessionpct → Poss
 - last5, last5matches, form, formlast5 → Last5
 - attendance, att, avgattendance, attendancegame → Attendance
+- date → Date
+- time → Time
 - fixture, match, game → Fixture
 - aggregate, agg, aggregatescore → Aggregate
 - awaygoals, ag, awayg → AwayGoals
 - h2h, headtohead, head-to-head → H2H
+- hometeam, home → HomeTeam
+- awayteam, away → AwayTeam
+- homegf, fthg, hg → Home_GF
+- awaygf, ftag, ag_goals → Away_GF
+- fulltimeresult, ftr, res, result → FullTimeResult
+- hthomegf, hthg → HT_Home_GF
+- htawaygf, htag → HT_Away_GF
+- halftimeresult, htr → HalfTimeResult
 - #pl, #players, playersused, usedplayers → #Pl
 - age, avgage, ageavg → Age
 - starts, gamesstarted, gs → Starts
 - min, minutes, mins, timeplayed → Min
 - 90s, 90splayed, 90_played, 90m → 90s
 - gls, goals, g, scored → Gls
-- ast, assists, a → Ast
-- g+a, gplusa, g_plus_a, g_a, goalsplusassists → GplusA
-- g-pk, gminuspk, nonpkgoals, non-penalty-goals → GminusPK
+- ast, assists → Ast
+- gplusa, gplus_a, goalsplusassists → GplusA
+- gplusaminuspk, gplusaminuspk → GplusAminusPK
+- gminuspk, nonpkgoals, non-penalty-goals → GminusPK
 - pk, pen, pens, penalties, penalties_converted → PK
 - pkatt, penatt, penaltyattempts, pkattempts → PKatt
 - crdy, yellow, yc, yellowcards → CrdY
@@ -142,9 +169,10 @@ Normalized input form → canonical key
 - npxg+xag, npxg_xag, npxg_plus_xag → npxG_xAG
 - prgp, prgpass, progressivepasses, progp → PrgP
 - prgc, prgcarry, progressivecarries, progc → PrgC
-- gls/90, gls_90, goals/90 → Gls_90
-- ast/90, ast_90, assists/90 → Ast_90
-- g+a/90, gplusa_90, gplusa/90 → GplusA_90
+- gls/90, gls_90, goals/90, gls_1 → Gls_90
+- ast/90, ast_90, assists/90, ast_1 → Ast_90
+- g+a/90, gplusa_90, gplusa/90, gplusa_1 → GplusA_90
+- g-pk/90, gminuspk_90, gminuspk_1 → GminusPK_90
 - shots, sh, totalshots, attempts → Shots
 - sot, s.o.t, shotsontarget, shotsontarget_count → SoT
 - sota, s.o.t.a, shotsontargetagainst, shots_on_target_against → SoTA
@@ -171,13 +199,15 @@ Normalized input form → canonical key
 - save%, savepct, sv%, saves% → SavePct
 - pksv, pensaves, penaltiessaved → PKsv
 - pka, penallowed, pensallowed → PKA
-- pkm, penmissed, penaltiessissed → PKm
+- pkm, penmissed, penaltiesmissed → PKm
 - distacc, distributionacc, longpassacc, gkpassacc → DistAcc
 - sweeperactions, keeperoutsideboxactions, sweeper → SweeperActions
 - minpergoal, minutespergoal, mpg → MinutesPerGoal
 - minperassist, minutesperassist → MinutesPerAssist
 - xp, xpoints, expectedpoints → xP
 - rankpercentile, rankpct, percentrank → RankPercentile
+- rating, player_rating → Rating
+- subson, subs_on, substitutions_in → SubsOn
 
 ---
 
@@ -186,10 +216,15 @@ Normalized input form → canonical key
 Football-Data CSVs often use match-level headers like FTHG, FTAG, FTR. Map them as follows:
 
 - date → Date
+- time → Time
 - hometeam → HomeTeam
 - awayteam → AwayTeam
+- home → HomeTeam
+- away → AwayTeam
 - fthg → Home_GF
+- hg → Home_GF
 - ftag → Away_GF
+- ag → Away_GF
 - ftr → FullTimeResult (values often H/D/A — map to standardized result codes)
 - hthg → HT_Home_GF
 - htag → HT_Away_GF
@@ -214,7 +249,15 @@ When parsing football-data files:
   - GCA → GCA
   - xG/90 → xG_90
   - npxG/90 → npxG_90
+  - Poss → Poss
 - FBref may use per-90 suffixes with slash or space; normalize to underscore form.
+- FBref advanced stats tables use `_1` as a per-90 suffix on some columns (e.g. `Gls_1`, `Ast_1`, `G+A_1`, `G-PK_1`). These map to the `_90` canonical keys:
+  - Gls_1 → Gls_90
+  - Ast_1 → Ast_90
+  - G+A_1 → GplusA_90
+  - G-PK_1 → GminusPK_90
+- FBref uses `G+A-PK` for combined non-penalty goals + assists (maps to GplusAminusPK).
+- FBref squad abbreviations used in CSV files (e.g. `Cen. Córdoba–SdE`, `Gimnasia–LP`, `Gimnasia–M`, `Sarmiento–J`, `Estudiantes–LP`, `Estudiantes–RC`, `Talleres–C`, `Ind. Rivadavia`, `Atlé Tucumán`, `Arg Juniors`) should be resolved via Glossary.txt before header normalization.
 
 ---
 
@@ -224,13 +267,27 @@ When parsing football-data files:
   - min, minutes → Min
   - subs_on, substitutions_in → SubsOn
   - ratings may be floats (validate numeric)
+- Sofascore standings rows use different field names from the canonical schema. The `load_sofascore_data()` function handles the translation:
+  - matches → MP
+  - wins → W
+  - draws → D
+  - losses → L
+  - scoresFor → GF (goals for)
+  - scoresAgainst → GA (goals against)
+  - scoreDiffFormatted → string representation of GD (e.g. "+10", "-3"); parse to int for calculations
+  - points → Pts
+  - pointsPerGame → Pts/MP (float)
+  - position → Rk
+- Sofascore team objects include `nameCode` (3-letter code, e.g. "ELP", "BOC") which can aid disambiguation.
+- Team names from Sofascore are full Spanish names (e.g. "Gimnasia y Esgrima Mendoza", "Estudiantes de Río Cuarto") — resolve via Glossary.txt.
 
 ---
 
 ## Ambiguities and conflict resolution
 - Single-letter headers (A, G, S) can be ambiguous:
-  - "A" can be Assists or Away depending on context. If header set contains Home/Away columns or team context, interpret "A" as Away; else prefer Assists.
+  - "A" can be Assists or Away-goals depending on context. If header set contains Home/Away columns or team context, interpret "A" as GA (goals against/away); else prefer Assists. Note: the general mapping maps `a` → GA; for player-level tables where no HomeTeam/AwayTeam context exists, apply provider-specific override to map to Ast.
   - "G" sometimes used for goals or goals conceded. Use adjacency or other headers (GF/GA, Home/Away) to disambiguate.
+- FBref per-90 suffix collision: `_1` suffix (e.g. Gls_1) means "per 90" in FBref advanced stats tables, NOT a first-instance indicator. Always check if file origin is fbref before treating `_1` as per-90.
 - When both "xG" and "npxG" present, keep both with canonical keys xG and npxG.
 - When two candidate input headers normalize to same canonical key, prefer provider-specific mapping order; if still ambiguous, keep both fields with provenance suffix (e.g., Gls_providerA vs Gls_providerB) or log a conflict.
 - Keep provenance: original header name and provider in your parsed object (e.g., meta.original_header, meta.provider).
@@ -277,7 +334,10 @@ When parsing football-data files:
 
 ## Examples / corner cases
 - Football-Data CSV: FTHG → Home_GF, FTAG → Away_GF, FTR → FullTimeResult. Bookmaker columns like B365H → Odds_b365_H.
+- FBref league table: Rk, Squad, MP, W, D, L, GF, GA, GD, Pts, Pts/MP — all map directly.
+- FBref advanced stats: `Poss` → Poss; `G+A-PK` → GplusAminusPK; `Gls_1` → Gls_90; `Ast_1` → Ast_90; `G+A_1` → GplusA_90; `G-PK_1` → GminusPK_90.
 - FBref: xA → xAG, npxG → npxG, xG/90 → xG_90.
+- Sofascore standings: `scoresFor` → GF, `scoresAgainst` → GA, `scoreDiffFormatted` → GD (parse string), `matches` → MP, `pointsPerGame` → Pts/MP.
 - If a file has both "A" and "Ast", prefer the explicit "Ast" mapping and treat "A" as ambiguous; consult provider context.
 - When encountering "G/P" or similar mixed headers, split tokens and map each piece individually where possible.
 

@@ -1,0 +1,14 @@
+Analyzing your prompt...
+
+Input: ~[16] tokens  |  Type: code-heavy  |  Complexity: Medium-High  |  Language: English
+
+Choose your depth level:
+
+[1] Essential   (25%)  ->  ~[40] tokens   Direct answer only, no preamble
+[2] Moderate    (50%)  ->  ~[67] tokens   Answer + context + 1 example
+[3] Detailed    (75%)  ->  ~[95] tokens   Full answer with alternatives
+[4] Exhaustive (100%)  ->  ~[126] tokens  Everything, no limits
+
+Which level? (1-4 or say "25% depth", "50% depth", "75% depth", "100% depth")
+
+Precision: heuristic estimate ~85-90% accuracy (±15%).

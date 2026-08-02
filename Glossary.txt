@@ -1,235 +1,463 @@
-# Team Name Glossary for Liga Profesional Argentina
-# 
-# Purpose: Map team name variations to normalized names for consistent data processing
-# Format: Source Name -> Normalized Name
-# Also supports: Source Name = Normalized Name or Source Name : Normalized Name
+# =============================================================================
+# TEAM NAME GLOSSARY — Liga Profesional Argentina
+# =============================================================================
 #
-# Rules:
-# - Lines starting with # are comments
-# - Matching is case-insensitive
-# - Normalized names should match those in ARG.csv (after normalization)
+# PURPOSE
+#   Maps every known team name variant to a single canonical/normalized name.
+#   The normalized name must match the value in ARG.csv (football-data.co.uk).
 #
-# Last updated: 2026-03-01
+# FORMAT
+#   Variant Name -> NORMALIZED NAME
+#   - Lines starting with # are comments (ignored by the parser)
+#   - Matching is case-insensitive
+#   - Separators supported: -> = :
+#
+# HOW TO ADD A NEW VARIANT
+#   When a [SEASON CHECK] warning appears, or a scraper returns an unrecognized
+#   team name, add a line here:
+#       New Variant -> NORMALIZED NAME
+#   Add a source comment if known (e.g. # futboltotal, FBref, FootyStats)
+#   so future maintainers know where the variant came from.
+#
+# KNOWN PROBLEM SOURCES
+#   - football-data.co.uk  : canonical source, drives NORMALIZED names
+#   - FBref                : uses full Spanish names, sometimes English
+#   - FootyStats           : often truncates or abbreviates inconsistently
+#   - Sofascore / Apify    : varies by season and data entry operator
+#   - TyC Sports           : short nicknames, changes by writer
+#   - futboltotal.futbol   : mix of short/long, Spanish accents sometimes dropped
+#   - Partidos.txt (manual): whatever the user types
+#
+# CHRONIC AMBIGUITY WARNINGS
+#   - "Gimnasia" alone is ambiguous: could be LP or Mendoza — always qualify
+#   - "Central" alone is ambiguous: could be Rosario Central or Central Córdoba
+#   - "Estudiantes" alone is ambiguous: LP or Río Cuarto
+#   - "Independiente" alone maps to Independiente (Avellaneda), NOT Rivadavia
+#   - Two "San Martín" clubs exist: SJ (San Juan) and T (Tucumán)
+#
+# Last updated: 2026-07-31
+# =============================================================================
 
-# ========================================
-# Common Variations - Buenos Aires Teams
-# ========================================
 
+# =============================================================================
+# BOCA JUNIORS
+# Normalized: BOCA JUNIORS
+# =============================================================================
+Boca -> BOCA JUNIORS                        # Partidos.txt shorthand
 Boca Jr -> BOCA JUNIORS
 Boca Jrs -> BOCA JUNIORS
-Boca Jrs -> BOCA JUNIORS
 Boca Juniors -> BOCA JUNIORS
-Boca -> BOCA JUNIORS
 CA Boca Juniors -> BOCA JUNIORS
 Club Atletico Boca Juniors -> BOCA JUNIORS
+Boca Juniors[Boca Juniors] -> BOCA JUNIORS  # futboltotal.futbol scrape artifact
 
-River -> RIVER PLATE
+
+# =============================================================================
+# RIVER PLATE
+# Normalized: RIVER PLATE
+# =============================================================================
+River -> RIVER PLATE                        # Partidos.txt shorthand
+River Plate -> RIVER PLATE
 CA River Plate -> RIVER PLATE
 Club Atletico River Plate -> RIVER PLATE
-River Plate -> RIVER PLATE
 
-Racing -> RACING CLUB
+
+# =============================================================================
+# RACING CLUB
+# Normalized: RACING CLUB
+# =============================================================================
+Racing -> RACING CLUB                       # Partidos.txt shorthand
 Racing Club -> RACING CLUB
 Racing Club de Avellaneda -> RACING CLUB
 Racing Avellaneda -> RACING CLUB
 
+
+# =============================================================================
+# INDEPENDIENTE (Avellaneda)
+# Normalized: INDEPENDIENTE
+# WARNING: Do NOT map "Independiente" alone to Rivadavia — this one takes priority
+# =============================================================================
 Independiente -> INDEPENDIENTE
 CA Independiente -> INDEPENDIENTE
 Club Atletico Independiente -> INDEPENDIENTE
-Ind -> INDEPENDIENTE
+Ind -> INDEPENDIENTE                        # risky shorthand — only use if unambiguous
 
+
+# =============================================================================
+# SAN LORENZO
+# Normalized: SAN LORENZO
+# =============================================================================
 San Lorenzo -> SAN LORENZO
 San Lorenzo de Almagro -> SAN LORENZO
 Club Atletico San Lorenzo de Almagro -> SAN LORENZO
 CASLA -> SAN LORENZO
 
+
+# =============================================================================
+# HURACAN
+# Normalized: HURACAN
+# =============================================================================
 Huracan -> HURACAN
 Huracán -> HURACAN
 CA Huracan -> HURACAN
 Club Atletico Huracan -> HURACAN
 
-Argentinos -> ARGENTINOS JUNIORS
-Argentinos Jrs -> ARGENTINOS JUNIORS
+
+# =============================================================================
+# ARGENTINOS JUNIORS
+# Normalized: ARGENTINOS JUNIORS
+# =============================================================================
+Argentinos -> ARGENTINOS JUNIORS            # Partidos.txt shorthand
 Argentinos Jr -> ARGENTINOS JUNIORS
+Argentinos Jrs -> ARGENTINOS JUNIORS
+Argentinos JRS -> ARGENTINOS JUNIORS        # futboltotal.futbol
+Argentinos Juniors -> ARGENTINOS JUNIORS
 AA Argentinos Juniors -> ARGENTINOS JUNIORS
 ARG JUNIORS -> ARGENTINOS JUNIORS
-Argentinos Juniors -> ARGENTINOS JUNIORS
 Club Atletico Argentinos Juniors -> ARGENTINOS JUNIORS
 
-Velez -> VELEZ SARSFIELD
+
+# =============================================================================
+# VELEZ SARSFIELD
+# Normalized: VELEZ SARSFIELD
+# =============================================================================
+Velez -> VELEZ SARSFIELD                    # Partidos.txt shorthand
 Vélez -> VELEZ SARSFIELD
 Velez Sarsfield -> VELEZ SARSFIELD
 Vélez Sarsfield -> VELEZ SARSFIELD
 CA Velez Sarsfield -> VELEZ SARSFIELD
 
-# ========================================
-# Interior Teams
-# ========================================
 
-All Boys -> ALL BOYS
-
-Atl Rafaela -> ATL RAFAELA
-Atl. Rafaela -> ATL RAFAELA
-
-Newells -> NEWELLS OLD BOYS
-Newell's -> NEWELLS OLD BOYS
-Newell's Old Boys -> NEWELLS OLD BOYS
-NEWELL'S OB -> NEWELLS OLD BOYS
-NOB -> NEWELLS OLD BOYS
-Newells Old Boys -> NEWELLS OLD BOYS
-Club Atletico Newell's Old Boys -> NEWELLS OLD BOYS
-
-Rosario Central -> ROSARIO CENTRAL
-Central -> ROSARIO CENTRAL
-RC -> ROSARIO CENTRAL
-Club Atletico Rosario Central -> ROSARIO CENTRAL
-
-Gimnasia -> GIMNASIA LP
-Gimnasia LP -> GIMNASIA LP
-Gimnasia L.P. -> GIMNASIA LP
-Gimnasia y Esgrima La Plata -> GIMNASIA LP
-Gimnasia y Esgrima -> GIMNASIA LP
-GELP -> GIMNASIA LP
-GIMNASIA–LP -> GIMNASIA LP
-Club de Gimnasia y Esgrima La Plata -> GIMNASIA LP
-
-Gimnasia Mendoza -> GIMNASIA MENDOZA
-Gimnasia y Esgrima de Mendoza -> GIMNASIA MENDOZA
-
-Estudiantes -> ESTUDIANTES LP
-Estudiantes LP -> ESTUDIANTES LP
-Estudiantes L.P. -> ESTUDIANTES LP
-Estudiantes de La Plata -> ESTUDIANTES LP
-EDLP -> ESTUDIANTES LP
-ESTUDIANTES–LP -> ESTUDIANTES LP
-Club Atletico Estudiantes de La Plata -> ESTUDIANTES LP
-
-Estudiantes Rio Cuarto -> ESTUDIANTES RIO CUARTO
-Estudiantes de Rio Cuarto -> ESTUDIANTES RIO CUARTO
-
-Talleres -> TALLERES CORDOBA
-Talleres Cordoba -> TALLERES CORDOBA
-Talleres Córdoba -> TALLERES CORDOBA
-Talleres de Cordoba -> TALLERES CORDOBA
-Club Atletico Talleres -> TALLERES CORDOBA
-
-Belgrano -> BELGRANO
-Belgrano Cordoba -> BELGRANO
-Belgrano Córdoba -> BELGRANO
-Club Belgrano -> BELGRANO
-
-Instituto -> INSTITUTO
-Instituto Cordoba -> INSTITUTO
-Instituto Córdoba -> INSTITUTO
-Instituto ACC -> INSTITUTO
-
-Colon -> COLON SANTA FE
-Colón -> COLON SANTA FE
-Colon Santa Fe -> COLON SANTA FE
-Colón de Santa Fe -> COLON SANTA FE
-Colon Santa FE -> COLON SANTA FE
-
-Union -> UNION DE SANTA FE
-Unión -> UNION DE SANTA FE
-Union Santa Fe -> UNION DE SANTA FE
-Union de Santa Fe -> UNION DE SANTA FE
-Unión de Santa Fe -> UNION DE SANTA FE
-Club Atletico Union -> UNION DE SANTA FE
-
+# =============================================================================
+# LANUS
+# Normalized: LANUS
+# =============================================================================
 Lanus -> LANUS
 Lanús -> LANUS
 CA Lanus -> LANUS
 Club Atletico Lanús -> LANUS
 
+
+# =============================================================================
+# BANFIELD
+# Normalized: BANFIELD
+# =============================================================================
 Banfield -> BANFIELD
 CA Banfield -> BANFIELD
 Club Atletico Banfield -> BANFIELD
 
-# ========================================
-# Other Teams
-# ========================================
 
-Chacarita -> CHACARITA JUNIORS
-Chacarita Juniors -> CHACARITA JUNIORS
-
-Crucero del Norte -> CRUCERO DEL NORTE
-
-Nueva Chicago -> NUEVA CHICAGO
-
-Olimpo -> OLIMPO BAHIA BLANCA
-Olimpo Bahia Blanca -> OLIMPO BAHIA BLANCA
-
-Patronato -> PATRONATO
-
-Quilmes -> QUILMES
-
-San Martin S.J. -> SAN MARTIN SJ
-San Martin de San Juan -> SAN MARTIN SJ
-San Martin SJ -> SAN MARTIN SJ
-
-San Martin T. -> SAN MARTIN T
-San Martin de Tucuman -> SAN MARTIN T
-San Martin T -> SAN MARTIN T
-
-Temperley -> TEMPERLEY
-
-Tigre -> TIGRE
-CA Tigre -> TIGRE
-Club Atletico Tigre -> TIGRE
-
-Defensa -> DEFENSA Y JUSTICIA
-Defensa y Justicia -> DEFENSA Y JUSTICIA
-DyJ -> DEFENSA Y JUSTICIA
-DEFENSA Y JUST -> DEFENSA Y JUSTICIA
-Club Social y Deportivo Defensa y Justicia -> DEFENSA Y JUSTICIA
-
+# =============================================================================
+# PLATENSE
+# Normalized: PLATENSE
+# =============================================================================
 Platense -> PLATENSE
 CA Platense -> PLATENSE
 Club Atletico Platense -> PLATENSE
 
-Arsenal -> ARSENAL SARANDI
-Arsenal Sarandi -> ARSENAL SARANDI
-Arsenal de Sarandi -> ARSENAL SARANDI
 
-Barracas -> BARRACAS CENTRAL
+# =============================================================================
+# TIGRE
+# Normalized: TIGRE
+# =============================================================================
+Tigre -> TIGRE
+CA Tigre -> TIGRE
+Club Atletico Tigre -> TIGRE
+
+
+# =============================================================================
+# DEFENSA Y JUSTICIA
+# Normalized: DEFENSA Y JUSTICIA
+# =============================================================================
+Defensa -> DEFENSA Y JUSTICIA               # Partidos.txt shorthand
+Defensa y Justicia -> DEFENSA Y JUSTICIA
+Defensa Y Justicia -> DEFENSA Y JUSTICIA    # futboltotal.futbol capitalization
+DyJ -> DEFENSA Y JUSTICIA
+DEFENSA Y JUST -> DEFENSA Y JUSTICIA        # FootyStats truncation
+Club Social y Deportivo Defensa y Justicia -> DEFENSA Y JUSTICIA
+
+
+# =============================================================================
+# BARRACAS CENTRAL
+# Normalized: BARRACAS CENTRAL
+# =============================================================================
+Barracas -> BARRACAS CENTRAL                # Partidos.txt shorthand
 Barracas Central -> BARRACAS CENTRAL
 Club Atletico Barracas Central -> BARRACAS CENTRAL
 
-Sarmiento -> SARMIENTO JUNIN
+
+# =============================================================================
+# SARMIENTO (Junín)
+# Normalized: SARMIENTO JUNIN
+# =============================================================================
+Sarmiento -> SARMIENTO JUNIN               # Partidos.txt shorthand
 Sarmiento Junin -> SARMIENTO JUNIN
 Sarmiento Junín -> SARMIENTO JUNIN
+Sarmiento Junin -> SARMIENTO JUNIN         # futboltotal.futbol
 Club Atletico Sarmiento -> SARMIENTO JUNIN
 
+
+# =============================================================================
+# DEPORTIVO RIESTRA
+# Normalized: DEP RIESTRA
+# =============================================================================
+Riestra -> DEP RIESTRA                     # Partidos.txt shorthand
+CD Riestra -> DEP RIESTRA                   # prefix variant
+Dep Riestra -> DEP RIESTRA
+Dep. Riestra -> DEP RIESTRA
+Deportivo Riestra -> DEP RIESTRA
+Club Deportivo Riestra -> DEP RIESTRA
+
+
+# =============================================================================
+# ALDOSIVI
+# Normalized: ALDOSIVI
+# =============================================================================
+Aldosivi -> ALDOSIVI
+Club Atletico Aldosivi -> ALDOSIVI
+
+
+# =============================================================================
+# NEWELLS OLD BOYS
+# Normalized: NEWELLS OLD BOYS
+# =============================================================================
+Newells -> NEWELLS OLD BOYS                 # Partidos.txt shorthand
+Newell's -> NEWELLS OLD BOYS
+Newell's Old Boys -> NEWELLS OLD BOYS
+Newells Old Boys -> NEWELLS OLD BOYS
+NEWELL'S OB -> NEWELLS OLD BOYS            # FootyStats
+NOB -> NEWELLS OLD BOYS
+Club Atletico Newell's Old Boys -> NEWELLS OLD BOYS
+
+
+# =============================================================================
+# ROSARIO CENTRAL
+# Normalized: ROSARIO CENTRAL
+# WARNING: "Central" alone could be Central Córdoba — use with caution
+# =============================================================================
+Rosario Central -> ROSARIO CENTRAL
+RC -> ROSARIO CENTRAL
+Club Atletico Rosario Central -> ROSARIO CENTRAL
+
+
+# =============================================================================
+# GIMNASIA LA PLATA (GELP)
+# Normalized: GIMNASIA LP
+# WARNING: "Gimnasia" alone is ambiguous — always add LP or La Plata qualifier
+# =============================================================================
+Gimnasia LP -> GIMNASIA LP
+Gimnasia L.P. -> GIMNASIA LP
+Gimnasia La Plata -> GIMNASIA LP
+Gimnasia y Esgrima -> GIMNASIA LP           # only safe if context is clear
+Gimnasia y Esgrima La Plata -> GIMNASIA LP
+Gimnasia (LP) -> GIMNASIA LP
+GELP -> GIMNASIA LP
+GIMNASIA–LP -> GIMNASIA LP
+Club de Gimnasia y Esgrima La Plata -> GIMNASIA LP
+Gimnasia L. P. -> GIMNASIA LP               # futboltotal.futbol (space in abbrev)
+Gimnasia L. P.  -> GIMNASIA LP              # futboltotal.futbol trailing space variant
+
+
+# =============================================================================
+# GIMNASIA MENDOZA
+# Normalized: GIMNASIA MENDOZA
+# WARNING: Multiple sources use different abbreviations for this club
+# =============================================================================
+Gimnasia Mendoza -> GIMNASIA MENDOZA
+Gimnasia y Esgrima de Mendoza -> GIMNASIA MENDOZA
+Gimnasia y Esgrima Mendoza -> GIMNASIA MENDOZA  # Claude suggestion
+Gimnasia Mza -> GIMNASIA MENDOZA            # Partidos.txt shorthand
+Gimnasia (Mza) -> GIMNASIA MENDOZA          # alternative shorthand
+Gimnasia (Mza.) -> GIMNASIA MENDOZA         # with period variant
+GYE Mendoza -> GIMNASIA MENDOZA             # initialism variant
+Gimnasia M. -> GIMNASIA MENDOZA             # futboltotal.futbol
+Gimnasia M.  -> GIMNASIA MENDOZA            # futboltotal.futbol trailing space variant
+
+
+# =============================================================================
+# ESTUDIANTES LA PLATA (EDLP)
+# Normalized: ESTUDIANTES LP
+# WARNING: "Estudiantes" alone could be LP or Río Cuarto — always qualify
+# =============================================================================
+Estudiantes LP -> ESTUDIANTES LP
+Estudiantes L.P. -> ESTUDIANTES LP
+Estudiantes La Plata -> ESTUDIANTES LP
+Estudiantes de La Plata -> ESTUDIANTES LP
+EDLP -> ESTUDIANTES LP
+ESTUDIANTES–LP -> ESTUDIANTES LP
+Club Atletico Estudiantes de La Plata -> ESTUDIANTES LP
+Estudiantes L. P. -> ESTUDIANTES LP         # futboltotal.futbol (space in abbrev)
+Estudiantes L. P.  -> ESTUDIANTES LP        # futboltotal.futbol trailing space variant
+
+
+# =============================================================================
+# ESTUDIANTES RIO CUARTO
+# Normalized: ESTUDIANTES RIO CUARTO
+# =============================================================================
+Estudiantes Rio Cuarto -> ESTUDIANTES RIO CUARTO
+Estudiantes de Rio Cuarto -> ESTUDIANTES RIO CUARTO
+Est. Rio Cuarto -> ESTUDIANTES RIO CUARTO
+Estudiantes RC -> ESTUDIANTES RIO CUARTO    # initialism variant
+Estudiantes (RC) -> ESTUDIANTES RIO CUARTO  # parenthetical variant
+Estudiantes de Rio Cuarto -> ESTUDIANTES RIO CUARTO  # futboltotal.futbol
+
+
+# =============================================================================
+# TALLERES (Córdoba)
+# Normalized: TALLERES CORDOBA
+# =============================================================================
+Talleres -> TALLERES CORDOBA                # Partidos.txt shorthand
+Talleres Cordoba -> TALLERES CORDOBA
+Talleres Córdoba -> TALLERES CORDOBA
+Talleres de Cordoba -> TALLERES CORDOBA
+Club Atletico Talleres -> TALLERES CORDOBA
+Talleres Cordoba -> TALLERES CORDOBA        # futboltotal.futbol
+
+
+# =============================================================================
+# BELGRANO (Córdoba)
+# Normalized: BELGRANO
+# =============================================================================
+Belgrano -> BELGRANO
+Belgrano Cordoba -> BELGRANO
+Belgrano Córdoba -> BELGRANO
+Belgrano Cordoba -> BELGRANO                # futboltotal.futbol
+Club Belgrano -> BELGRANO
+
+
+# =============================================================================
+# INSTITUTO (Córdoba)
+# Normalized: INSTITUTO
+# =============================================================================
+Instituto -> INSTITUTO
+Instituto Cordoba -> INSTITUTO
+Instituto Córdoba -> INSTITUTO
+Instituto Cordoba -> INSTITUTO              # futboltotal.futbol
+Instituto ACC -> INSTITUTO
+
+
+# =============================================================================
+# UNION DE SANTA FE
+# Normalized: UNION DE SANTA FE
+# =============================================================================
+Union -> UNION DE SANTA FE                  # Partidos.txt shorthand
+Unión -> UNION DE SANTA FE
+Union Santa Fe -> UNION DE SANTA FE
+Unión de Santa Fe -> UNION DE SANTA FE
+Union de Santa Fe -> UNION DE SANTA FE
+Union Santa Fe -> UNION DE SANTA FE         # futboltotal.futbol
+Club Atletico Union -> UNION DE SANTA FE
+
+
+# =============================================================================
+# COLON DE SANTA FE
+# Normalized: COLON SANTA FE
+# =============================================================================
+Colon -> COLON SANTA FE
+Colón -> COLON SANTA FE
+CA Colon -> COLON SANTA FE                  # prefix variant
+Club Atletico Colon -> COLON SANTA FE       # full name variant
+Colon Santa Fe -> COLON SANTA FE
+Colón de Santa Fe -> COLON SANTA FE
+Colon Santa FE -> COLON SANTA FE            # FootyStats capitalization quirk
+
+
+# =============================================================================
+# CENTRAL CORDOBA (Santiago del Estero)
+# Normalized: CENTRAL CORDOBA
+# WARNING: "Central" alone maps to ROSARIO CENTRAL, not this club
+# Always include "Córdoba" or "Santiago" qualifier
+# =============================================================================
 Central Cordoba -> CENTRAL CORDOBA
 Central Córdoba -> CENTRAL CORDOBA
 Central Cordoba SdE -> CENTRAL CORDOBA
 Central Córdoba Santiago -> CENTRAL CORDOBA
-CEN CÓRDOBA–SDE -> CENTRAL CORDOBA
+CEN CÓRDOBA–SDE -> CENTRAL CORDOBA          # FootyStats
 Club Atletico Central Córdoba -> CENTRAL CORDOBA
+Central Cordoba de Santiago -> CENTRAL CORDOBA   # futboltotal.futbol
 
-Godoy Cruz -> GODOY CRUZ
-Godoy Cruz Antonio Tomba -> GODOY CRUZ
 
+# =============================================================================
+# ATLETICO TUCUMAN
+# Normalized: ATL TUCUMAN
+# =============================================================================
 Atletico Tucuman -> ATL TUCUMAN
 Atlético Tucumán -> ATL TUCUMAN
-ATLÉ TUCUMÁN -> ATL TUCUMAN
 Atl Tucuman -> ATL TUCUMAN
 Atl. Tucuman -> ATL TUCUMAN
+ATLÉ TUCUMÁN -> ATL TUCUMAN                 # FootyStats
 Club Atletico Tucumán -> ATL TUCUMAN
+Atletico Tucuman -> ATL TUCUMAN             # futboltotal.futbol
 
-Independ Rivadavia -> IND RIVADAVIA
-Independiente Rivadavia -> IND RIVADAVIA
+
+# =============================================================================
+# INDEPENDIENTE RIVADAVIA (Mendoza)
+# Normalized: IND RIVADAVIA
+# WARNING: Do NOT confuse with Independiente (Avellaneda)
+# =============================================================================
 Ind Rivadavia -> IND RIVADAVIA
 Ind. Rivadavia -> IND RIVADAVIA
-Independiente Rivadavia Mza -> IND RIVADAVIA
+Ind Riv -> IND RIVADAVIA                    # short initialism
+Independ Rivadavia -> IND RIVADAVIA
+Independiente Rivadavia -> IND RIVADAVIA
+Independiente Rivadavia Mza -> IND RIVADAVIA    # Partidos.txt
 Independiente Rivadavia Mza. -> IND RIVADAVIA
 Ind Rivadavia Mza -> IND RIVADAVIA
+Independ. Rivadavia -> IND RIVADAVIA        # futboltotal.futbol
 
-Riestra -> DEP RIESTRA
-Deportivo Riestra -> DEP RIESTRA
-Dep Riestra -> DEP RIESTRA
-Dep. Riestra -> DEP RIESTRA
-Club Deportivo Riestra -> DEP RIESTRA
 
-Aldosivi -> ALDOSIVI
-Club Atletico Aldosivi -> ALDOSIVI
+# =============================================================================
+# GODOY CRUZ
+# Normalized: GODOY CRUZ
+# =============================================================================
+Godoy Cruz -> GODOY CRUZ
+Godoy Cruz Antonio Tomba -> GODOY CRUZ
+El Tomba -> GODOY CRUZ                      # media nickname
+Tomba -> GODOY CRUZ                         # media nickname short form
+
+
+# =============================================================================
+# ARSENAL (Sarandí)
+# Normalized: ARSENAL SARANDI
+# =============================================================================
+Arsenal -> ARSENAL SARANDI
+Arsenal Sarandi -> ARSENAL SARANDI
+Arsenal de Sarandi -> ARSENAL SARANDI
+
+
+# =============================================================================
+# SAN MARTIN (San Juan)
+# Normalized: SAN MARTIN SJ
+# WARNING: Two San Martín clubs — always include city qualifier
+# =============================================================================
+San Martin SJ -> SAN MARTIN SJ
+San Martin S.J. -> SAN MARTIN SJ
+San Martin de San Juan -> SAN MARTIN SJ
+
+
+# =============================================================================
+# SAN MARTIN (Tucumán)
+# Normalized: SAN MARTIN T
+# WARNING: Two San Martín clubs — always include city qualifier
+# =============================================================================
+San Martin T -> SAN MARTIN T
+San Martin T. -> SAN MARTIN T
+San Martin de Tucuman -> SAN MARTIN T
+
+
+# =============================================================================
+# OCCASIONAL / HISTORIC PARTICIPANTS
+# (Teams that appear in ARG.csv but not in current Clausura 2026)
+# =============================================================================
+All Boys -> ALL BOYS
+Atl Rafaela -> ATL RAFAELA
+Atl. Rafaela -> ATL RAFAELA
+Chacarita -> CHACARITA JUNIORS
+Chacarita Juniors -> CHACARITA JUNIORS
+Crucero del Norte -> CRUCERO DEL NORTE
+Nueva Chicago -> NUEVA CHICAGO
+Olimpo -> OLIMPO BAHIA BLANCA
+Olimpo Bahia Blanca -> OLIMPO BAHIA BLANCA
+Patronato -> PATRONATO
+Quilmes -> QUILMES
+Temperley -> TEMPERLEY

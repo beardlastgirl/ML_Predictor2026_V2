@@ -34,7 +34,8 @@
       "mcp__plugin_context-mode_context-mode__ctx_search"
     ]
   },
-  "enabledPlugins": {
-    "skill-security-auditor@claude-code-skills": true
+  "enabledPlugins": {},
+  "skillOverrides": {
+    "android-clean-architecture": "off"
   }
 }

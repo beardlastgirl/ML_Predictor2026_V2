@@ -36,6 +36,8 @@ from src.stats_engine import (
 from src.features import compute_trailing_features
 from src.model_engine import create_model, predict_gameweek
 from src.validation import validate_pipeline_inputs, validate_model_features
+from src.cold_start import build_meta_xg_features, compute_team_matchdays
+from src.cv_split import tournament_aware_cv_splits
 
 matplotlib.use("Agg")
 
@@ -48,6 +50,8 @@ FEATURE_COLUMNS = [
     "Poisson_Home_Win", "Poisson_Draw", "Poisson_Away_Win",
     "Expected_Home_Goals", "Expected_Away_Goals", "Expected_Total_Goals",
     "Shin_Prob_H", "Shin_Prob_D", "Shin_Prob_A",
+    # Bayesian-shrunk Poisson xG meta-features (cold-start calibrated)
+    "poisson_xg_home_meta", "poisson_xg_away_meta",
 ]
 
 
@@ -242,6 +246,19 @@ def build_features(matches: pd.DataFrame) -> Tuple[pd.DataFrame, Dict]:
     matches["Def_Balance"] = matches["Away_Avg_GA"] - matches["Home_Avg_GA"]
     matches["Form_Balance"] = matches["Home_Form"] - matches["Away_Form"]
 
+    # --- Bayesian-shrunk Poisson xG meta-features (cold-start calibration) ---
+    log_info("Computing Bayesian-shrunk xG meta-features...")
+    home_md, away_md = compute_team_matchdays(matches)
+    meta_home, meta_away = build_meta_xg_features(
+        matches["xG_home"].values,
+        matches["xG_away"].values,
+        home_md,
+        away_md,
+    )
+    matches["poisson_xg_home_meta"] = meta_home
+    matches["poisson_xg_away_meta"] = meta_away
+    log_ok("Bayesian xG meta-features computed")
+
     log_ok(f"Features built for {len(matches)} matches")
 
     return matches, elo_ratings
@@ -288,13 +305,27 @@ def train_validate(
     log_info(f"Using sample weights to reduce draw bias (Draw weight = 0.7)")
 
     model = create_model(model_type)
-    tscv = TimeSeriesSplit(n_splits=n_splits)
+    # Use tournament-aware CV splits that anchor fold boundaries on season transitions
+    # to prevent mixing Apertura and Clausura fixtures without decay transformations.
+    seasons = df["Season"] if "Season" in df.columns else pd.Series(
+        ["unknown"] * len(X), index=X.index
+    )
+    cv_splits = list(tournament_aware_cv_splits(len(X), seasons, n_splits=n_splits))
     cv_acc, cv_ll = [], []
     submodel_data_collection = [] # Initialize collection list
 
-    for fold, (t_idx, v_idx) in enumerate(tscv.split(X), 1):
+    for fold, (t_idx, v_idx) in enumerate(cv_splits, 1):
         f_model = create_model(model_type)
-        f_model.fit(X.iloc[t_idx], y.iloc[t_idx], sample_weight=sample_weights[t_idx])
+        # Pass eval_set so CatBoost early_stopping_rounds has validation loss to monitor.
+        # Guard with try/except so MockModels in tests aren't broken by the extra kwarg.
+        fit_kwargs: dict = {"sample_weight": sample_weights[t_idx]}
+        if model_type == "catboost":
+            fit_kwargs["eval_set"] = (X.iloc[v_idx], y.iloc[v_idx])
+        try:
+            f_model.fit(X.iloc[t_idx], y.iloc[t_idx], **fit_kwargs)
+        except TypeError:
+            # Fallback for mock models or implementations that don't accept eval_set
+            f_model.fit(X.iloc[t_idx], y.iloc[t_idx], sample_weight=sample_weights[t_idx])
         y_p = f_model.predict(X.iloc[v_idx])
         y_prob = f_model.predict_proba(X.iloc[v_idx])
         acc = accuracy_score(y.iloc[v_idx], y_p)

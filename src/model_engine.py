@@ -13,6 +13,10 @@ from src.config import (
 from src.utils import log_info
 from src.stats_engine import calculate_poisson_features
 from src.features import get_all_teams_latest_stats
+from src.cold_start import extract_shin_probabilities, calculate_bayesian_shrunk_xg
+
+# Alias for backward-compat within this module
+MAX_GOALS = MAX_PREDICTED_GOALS
 
 def create_model(model_type, class_weights=None):
     """Create a fresh model instance with configured hyperparameters.
@@ -116,26 +120,75 @@ def predict_gameweek(fixtures_df, elo_ratings, model, features, df_mean=None, hi
     fixtures_df["Attack_Balance"] = fixtures_df["Home_Avg_GF"] - fixtures_df["Away_Avg_GF"]
     fixtures_df["Def_Balance"] = fixtures_df["Away_Avg_GA"] - fixtures_df["Home_Avg_GA"]
     fixtures_df["Form_Balance"] = fixtures_df["Home_Form"] - fixtures_df["Away_Form"]
-    
+
+    # --- Shin probabilities from odds (if available) ---
+    odds_cols_map = {
+        "h": ["Odds_b365_H", "B365CH"],
+        "d": ["Odds_b365_D", "B365CD"],
+        "a": ["Odds_b365_A", "B365CA"],
+    }
+
+    def _get_odds_col(fixtures_df, candidates):
+        for c in candidates:
+            if c in fixtures_df.columns:
+                return c
+        return None
+
+    col_h = _get_odds_col(fixtures_df, odds_cols_map["h"])
+    col_d = _get_odds_col(fixtures_df, odds_cols_map["d"])
+    col_a = _get_odds_col(fixtures_df, odds_cols_map["a"])
+
+    if col_h and col_d and col_a:
+        def _shin_row(r):
+            try:
+                odds_h, odds_d, odds_a = float(r[col_h]), float(r[col_d]), float(r[col_a])
+                if any(v <= 0 or np.isnan(v) for v in [odds_h, odds_d, odds_a]):
+                    return np.nan, np.nan, np.nan
+                probs = extract_shin_probabilities(odds_h, odds_d, odds_a)
+                return probs[0], probs[1], probs[2]
+            except Exception:
+                return np.nan, np.nan, np.nan
+
+        shin_results = fixtures_df.apply(_shin_row, axis=1)
+        fixtures_df["Shin_Prob_H"] = [r[0] for r in shin_results]
+        fixtures_df["Shin_Prob_D"] = [r[1] for r in shin_results]
+        fixtures_df["Shin_Prob_A"] = [r[2] for r in shin_results]
+    else:
+        # No odds available; fill will happen in the feature-fill loop below
+        fixtures_df["Shin_Prob_H"] = np.nan
+        fixtures_df["Shin_Prob_D"] = np.nan
+        fixtures_df["Shin_Prob_A"] = np.nan
+
+    # --- Bayesian-shrunk xG meta-features ---
+    # For live fixtures we don't know the exact matchday; use 1 as conservative default
+    # (maximum shrinkage toward league mean — safe for cold-start).
+    fixtures_df["poisson_xg_home_meta"] = fixtures_df.apply(
+        lambda r: calculate_bayesian_shrunk_xg(
+            r.get("xG_home", np.nan) if not np.isnan(r.get("xG_home", np.nan)) else (df_mean.get("xG_home", 1.15) if df_mean else 1.15),
+            matchday=1,
+        ),
+        axis=1,
+    )
+    fixtures_df["poisson_xg_away_meta"] = fixtures_df.apply(
+        lambda r: calculate_bayesian_shrunk_xg(
+            r.get("xG_away", np.nan) if not np.isnan(r.get("xG_away", np.nan)) else (df_mean.get("xG_away", 1.15) if df_mean else 1.15),
+            matchday=1,
+        ),
+        axis=1,
+    )
+
     for col in features:
         if col not in fixtures_df.columns: 
             fixtures_df[col] = df_mean.get(col, 0) if df_mean else 0
         fixtures_df[col] = fixtures_df[col].fillna(df_mean.get(col, 0) if df_mean else 0)
     
-    # ML Model Prediction
+    # ML Model Prediction — pure model output (Poisson feeds GBM as features, no post-hoc blend)
     proba = model.predict_proba(fixtures_df[features])
 
-    # Ensemble blending
-    ensemble_alpha = ML_POISSON_BLEND_RATIO
-    blended_proba = np.zeros_like(proba)
-    blended_proba[:, 0] = ensemble_alpha * proba[:, 0] + (1 - ensemble_alpha) * fixtures_df["Poisson_Away_Win"].values
-    blended_proba[:, 1] = ensemble_alpha * proba[:, 1] + (1 - ensemble_alpha) * fixtures_df["Poisson_Draw"].values
-    blended_proba[:, 2] = ensemble_alpha * proba[:, 2] + (1 - ensemble_alpha) * fixtures_df["Poisson_Home_Win"].values
-
-    fixtures_df["Prediction"] = np.argmax(blended_proba, axis=1)
-    fixtures_df["Pred_Proba_Home"] = blended_proba[:, 2]
-    fixtures_df["Pred_Proba_Draw"] = blended_proba[:, 1]
-    fixtures_df["Pred_Proba_Away"] = blended_proba[:, 0]
+    fixtures_df["Prediction"] = np.argmax(proba, axis=1)
+    fixtures_df["Pred_Proba_Home"] = proba[:, 2]
+    fixtures_df["Pred_Proba_Draw"] = proba[:, 1]
+    fixtures_df["Pred_Proba_Away"] = proba[:, 0]
 
     # Apply hybrid goal prediction
     results = fixtures_df.apply(

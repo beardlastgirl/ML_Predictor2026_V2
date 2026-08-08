@@ -2,6 +2,7 @@
 
 import numpy as np
 import pandas as pd
+from src.config import TOURNAMENT_TRANSITION_DECAY
 from src.utils import log_info, log_ok
 
 def get_team_trailing_stats(history, window):

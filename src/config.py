@@ -30,32 +30,12 @@ POISSON_DRAW_ADJUSTMENT = 1.11   # Calibrated 2026-05-02 against 6171 matches
 HOME_ADVANTAGE_BOOST = 0.02  # Calibrated 2026-05-02: small residual boost after xG home advantage
 # xG already encodes home advantage via HOME_BOOST (1.15x) and Elo HOME_ADVANTAGE (+65 pts).
 # Grid search: draw_adj=1.11 + home_boost=0.02 → home=43.0%, draw=30.3%, away=26.6% (actual: 43.1/30.3/26.6)
-ML_POISSON_BLEND_RATIO = 0.6  # Ensemble: 60% ML, 40% Poisson
+ML_POISSON_BLEND_RATIO = 0.6  # DEPRECATED: ensemble removed; Poisson feeds GBM as features
 
 # Draw Calibration Strategy Documentation:
 # ============================================
-# Draw probability calibration happens in multiple stages:
-#
-# 1. POISSON STAGE (stats_engine.py:92-99)
-#    - Raw Poisson gives ~30% draws (too high for Liga Profesional)
-#    - Apply POISSON_DRAW_ADJUSTMENT (0.85x) to reduce to ~26%
-#    - Redistribute remainder proportionally to home/away
-#    - Add HOME_ADVANTAGE_BOOST (8%) to home win
-#
-# 2. ENSEMBLE STAGE (model_engine.py:115-120)
-#    - Blend ML model (60%) with Poisson (40%)
-#    - Poisson is better calibrated for draw outcomes
-#    - ML captures team-specific patterns
-#    - Final output: calibrated probabilities that sum to 1.0
-#
-# 3. PREDICTION STAGE (model_engine.py:143-165)
-#    - Use blended probabilities to choose prediction
-#    - Consider confidence thresholds
-#    - Adjust predicted goals based on outcome
-#
-# To adjust draw behavior globally:
-# - Change POISSON_DRAW_ADJUSTMENT in config.py
-# - All three stages will automatically apply it
+# Poisson draw/home calibration (stats_engine.py) feeds meta-features into GBM.
+# Final probabilities come from the ML model only (no post-hoc Poisson blend).
 
 # Result encoding
 RESULT_ENCODING = {"H": 2, "D": 1, "A": 0}  # Home Win, Draw, Away Win
@@ -67,8 +47,15 @@ DRAW_PROBABILITY_THRESHOLD = 0.38  # High confidence for draw (league avg ~33%)
 DEFAULT_EXPECTED_GOALS = 1.35  # Fallback for expected goals
 MAX_PREDICTED_GOALS = 6  # Maximum goals to predict
 
-# Trailing window for squad features
+# Trailing window for squad features (EWMA span; decay handled in features.py)
 TRAILING_WINDOW = 8
+
+# Tournament transition: compress prior-season EWMA by this factor at season change
+TOURNAMENT_TRANSITION_DECAY = 0.70
+
+# Cold-start Bayesian shrinkage for meta xG features
+BAYESIAN_SHRINKAGE_C = 5
+LEAGUE_MEAN_XG = 1.15
 
 # Model selection
 MODEL_TYPE = os.environ.get("ML_PREDICTOR_MODEL", "catboost").strip().lower()
@@ -87,13 +74,15 @@ MODEL_PARAMS = {
         "verbose": -1,
     },
     "catboost": {
-        "iterations": 500,
-        "learning_rate": 0.04,
+        "loss_function": "MultiClass",
+        "iterations": 800,       # Higher ceiling; early stopping will trim this
+        "learning_rate": 0.03,   # Slightly lower LR pairs better with early stopping
         "depth": 6,
         "l2_leaf_reg": 3,
         "bootstrap_type": "Bernoulli",
         "subsample": 0.8,
         "colsample_bylevel": 0.8,
+        "early_stopping_rounds": 50,  # Stop if val log-loss doesn't improve for 50 rounds
         "random_state": 42,
         "verbose": False,
     },

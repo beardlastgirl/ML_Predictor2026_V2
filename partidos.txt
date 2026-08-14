@@ -1,19 +1,21 @@
-FECHA 3 - 01 al 03082026
-Estudiantes Rio Cuarto - Banfield:
-Gimnasia Mza - Union:
-Estudiantes - Defensa y Justicia:
-Belgrano - Argentinos:
-Racing - Tigre:
-Aldosivi - Gimnasia:
-Deportivo Riestra - Barracas Central:
-Newells - Boca:
-River - Rosario Central:
-Lanus - Instituto:
-Sarmiento - Independiente Rivadavia Mza:
-Platense - Talleres:
-Velez - Independiente:
-Huracan - Atletico Tucuman:
-Central Cordoba - San Lorenzo:
+FECHA 5 - 12 al 16/02/2026
+
+Aldosivi - Tigre:
+River - Argentinos:
+Vélez - Defensa y Justicia:
+Lanús - Independiente:
+San Lorenzo - Unión:
+Racing - Banfield:
+Sarmiento - Huracán:
+Gimnasia (Mza.) - Talleres:
+Estudiantes (Río Cuarto) - Atlético Tucumán:
+Belgrano - Independiente Rivadavia Mza.:
+Estudiantes - Gimnasia:
+Platense - Boca:
+Barracas Central - Rosario Central:
+Central Córdoba - Instituto:
+Newell's - Deportivo Riestra:
+
 Cantidad de penales cobrados:
 Cantidad de expulsados:
 Cantidad de goles convertidos:

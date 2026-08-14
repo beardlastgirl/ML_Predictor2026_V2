@@ -1,3 +1,5 @@
+# RayHudson.py - A script for generating match previews based on football match prediction data
+
 import requests, json
 import logging
 
@@ -12,7 +14,7 @@ Data: {json.dumps(prediction)}
 def send_request(prompt: str) -> requests.Response | None:
     try:
         response = requests.post("http://localhost:11434/api/generate", json={
-            "model": "qwen2.5:7b",
+            "model": "qwen3.5:9b",
             "prompt": prompt,
             "max_tokens": 100,
             "temperature": 0.7

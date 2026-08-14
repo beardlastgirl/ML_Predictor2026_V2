@@ -8,7 +8,7 @@ from src.utils import log_info, log_ok, log_warning, log_error
 class PDFStatsExtractor:
     """Extends the pipeline with PDF report analysis for summary stats."""
     
-    def __init__(self, reporte_dir="Reporte/2026"):
+    def __init__(self, reporte_dir="Reporte/2026_2"):
         self.reporte_dir = reporte_dir
 
     def get_latest_pdf(self):

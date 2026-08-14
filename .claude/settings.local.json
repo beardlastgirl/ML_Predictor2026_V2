@@ -31,11 +31,12 @@
       "mcp__plugin_context-mode_context-mode__ctx_execute_file",
       "mcp__plugin_context-mode_context-mode__ctx_execute",
       "mcp__plugin_context-mode_context-mode__ctx_stats",
-      "mcp__plugin_context-mode_context-mode__ctx_search"
+      "mcp__plugin_context-mode_context-mode__ctx_search",
+      "Bash(dir i:\\\\Scripts\\\\ML_Predictor2026_V2\\\\Reporte\\\\2026_2 *)"
     ]
   },
-  "enabledPlugins": {},
   "skillOverrides": {
     "android-clean-architecture": "off"
-  }
+  },
+  "enabledPlugins": {}
 }

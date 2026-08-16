@@ -8,7 +8,7 @@ echo ===================================================
 echo     ML Predictor 2026 - Interactive Launcher
 echo ===================================================
 echo  CLOUD MODEL OPTION (Free):
-echo    1. Nemotron-3-super:cloud
+echo    1. glm-5.2:cloud
 echo.
 echo  LOCAL MODEL OPTIONS (NVIDIA RTX 4060):
 echo    2. Liquid AI LFM 2.5 (8B)
@@ -33,8 +33,8 @@ goto menu
 
 :launch_glm
 echo.
-echo Launching Claude Code with Nemotron-3-super:cloud...
-ollama launch claude --model nemotron-3-super:cloud
+echo Launching Claude Code with glm-5.2:cloud...
+ollama launch claude --model glm-5.2:cloud
 goto end
 
 :launch_lfm

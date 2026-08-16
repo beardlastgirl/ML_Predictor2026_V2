@@ -264,83 +264,235 @@ def build_features(matches: pd.DataFrame) -> Tuple[pd.DataFrame, Dict]:
     return matches, elo_ratings
 
 
+def _build_fold_features(
+    raw_matches: pd.DataFrame,
+    until_row: int,
+    elo_ratings: dict,
+    window: int,
+) -> pd.DataFrame:
+    """Build Elo + trailing-stats features for the first ``until_row`` rows.
+
+    Mirrors the wide-frame output of :func:`build_features` (i.e. produces
+    Home_Elo, Away_Elo, Home_Avg_GF, ..., Away_Matches, plus the downstream
+    Elo_Diff / Attack_Balance / Form_Balance / xG* / Poisson_* / Expected_*
+    columns). Uses the fold-aware variants of ``calculate_all_elo_ratings``
+    and ``compute_trailing_features`` so no outcome from beyond ``until_row``
+    influences any feature in the resulting frame.
+    """
+    # Re-derive Elo up to the cutoff. We keep the snapshot for downstream
+    # fixtures (production inference) but the row-level features only need
+    # the per-row Home_Elo / Away_Elo from the prefix.
+    _, elo_prefix_history = calculate_all_elo_ratings(
+        raw_matches, BASE_ELO, until_row=until_row
+    )
+    elo_df = pd.DataFrame(elo_prefix_history)
+
+    # Working slice: first ``until_row`` rows, defensively sorted.
+    slice_df = raw_matches.iloc[:until_row].copy().sort_values("Date").reset_index(drop=True)
+
+    # Map per-row Elo via merge so we don't lose the (Date, HomeTeam, AwayTeam)
+    # alignment that the original pipeline relies on.
+    slice_df = slice_df.merge(elo_df, on=["Date", "HomeTeam", "AwayTeam"], how="left")
+
+    # Trailing stats with fold cutoff = until_row (the function propagates the
+    # most recent per-team feature vector onto any rows beyond the cutoff, but
+    # we only consume rows within the prefix here).
+    slice_df = compute_trailing_features(slice_df, window=window)
+
+    # Vectorised Poisson features from the freshly-computed Elo and trailing
+    # stats. Mirrors the logic in ``build_features`` so CV metrics stay
+    # comparable.
+    from src.stats_engine import calculate_expected_goals, calculate_outcome_probabilities
+
+    xG_h, xG_a = calculate_expected_goals(
+        slice_df["Home_Elo"].values,
+        slice_df["Away_Elo"].values,
+        slice_df["Home_Avg_GF"].values,
+        slice_df["Away_Avg_GF"].values,
+        slice_df["Home_Avg_GA"].values,
+        slice_df["Away_Avg_GA"].values,
+    )
+    slice_df["xG_home"] = xG_h
+    slice_df["xG_away"] = xG_a
+    slice_df["xG_diff"] = xG_h - xG_a
+
+    outcomes = slice_df.apply(
+        lambda r: calculate_outcome_probabilities(r["xG_home"], r["xG_away"]),
+        axis=1,
+    )
+    slice_df["Poisson_Home_Win"] = outcomes.apply(lambda x: x["home_win"])
+    slice_df["Poisson_Draw"] = outcomes.apply(lambda x: x["draw"])
+    slice_df["Poisson_Away_Win"] = outcomes.apply(lambda x: x["away_win"])
+    slice_df["Expected_Home_Goals"] = outcomes.apply(lambda x: x["expected_home_goals"])
+    slice_df["Expected_Away_Goals"] = outcomes.apply(lambda x: x["expected_away_goals"])
+    slice_df["Expected_Total_Goals"] = (
+        slice_df["Expected_Home_Goals"] + slice_df["Expected_Away_Goals"]
+    )
+
+    slice_df["Elo_Diff"] = slice_df["Home_Elo"] - slice_df["Away_Elo"]
+    slice_df["Attack_Balance"] = slice_df["Home_Avg_GF"] - slice_df["Away_Avg_GF"]
+    slice_df["Def_Balance"] = slice_df["Away_Avg_GA"] - slice_df["Home_Avg_GA"]
+    slice_df["Form_Balance"] = slice_df["Home_Form"] - slice_df["Away_Form"]
+
+    # Bayesian-shrunk xG meta-features. ``compute_team_matchdays`` is already
+    # fold-safe because it relies on (Season, Team).cumcount().
+    home_md, away_md = compute_team_matchdays(slice_df)
+    meta_home, meta_away = build_meta_xg_features(
+        slice_df["xG_home"].values,
+        slice_df["xG_away"].values,
+        home_md,
+        away_md,
+    )
+    slice_df["poisson_xg_home_meta"] = meta_home
+    slice_df["poisson_xg_away_meta"] = meta_away
+
+    return slice_df
+
+
 def train_validate(
     df: pd.DataFrame,
     features: List[str],
     model_type: str = MODEL_TYPE,
     n_splits: int = 5,
+    raw_matches: Optional[pd.DataFrame] = None,
 ) -> Tuple[any, List[float], List[float], pd.DataFrame, Optional[float], Optional[float]]:
     """Train model with time-series cross-validation.
 
     Args:
-        df: DataFrame with all features
+        df: DataFrame with all features. If ``raw_matches`` is provided,
+            ``df`` is expected to be the post-``dropna`` projection of the
+            feature frame built by :func:`build_features` over the full
+            timeline. Fold-aware feature re-computation will be performed
+            from ``raw_matches`` to avoid leakage.
         features: List of feature column names
         model_type: Type of model ('lightgbm' or 'catboost')
         n_splits: Number of CV splits
+        raw_matches: Optional chronologically-sorted historical DataFrame
+            (columns Date, HomeTeam, AwayTeam, FullTimeResult, GF, GA, plus
+            optional Season). When provided, training and validation
+            features are rebuilt per fold using only matches that occurred
+            at or before the fold's validation start, eliminating the
+            Elo / EWMA leakage documented in the time-series CV audit.
 
     Returns:
         Tuple of (trained_model, cv_accuracies, cv_log_losses, submodel_training_data, naive_ll, bookie_ll)
     """
     log_info(f"Training {model_type} model with {n_splits}-fold CV...")
 
-    X, y = df[features].dropna(), df["FullTimeResult"].loc[df[features].dropna().index]
-    
-    # Validate features before training
-    feature_validation = validate_model_features(X, features)
-    if not feature_validation.is_valid:
-        log_error("Feature validation failed - aborting training")
-        raise ValueError(f"Invalid features: {feature_validation.errors}")
+    use_fold_aware = raw_matches is not None and not raw_matches.empty
+    if use_fold_aware:
+        # Build the *initial* dropna mask from the input ``df`` (it already
+        # carries the canonical FEATURE_COLUMNS), but defer the actual
+        # training/validation matrices to per-fold re-computation below.
+        base_index = df.index
+        seasons = raw_matches["Season"] if "Season" in raw_matches.columns else pd.Series(
+            ["unknown"] * len(raw_matches), index=raw_matches.index
+        )
+        cv_splits = list(
+            tournament_aware_cv_splits(len(raw_matches), seasons, n_splits=n_splits)
+        )
+        # We will materialise X / y inside the fold loop instead of here.
+        X_dummy = df[features]
+        y_dummy = df["FullTimeResult"]
+        sample_weights_full = np.ones(len(df))
+        for idx, label in enumerate(df["FullTimeResult"]):
+            if label == 1:  # Draw
+                sample_weights_full[idx] = 0.7
+    else:
+        X, y = df[features].dropna(), df["FullTimeResult"].loc[df[features].dropna().index]
+        base_index = X.index
 
-    # Use sample weights to give more importance to non-draw outcomes
-    # This helps the model learn to distinguish home/away wins better
-    # without distorting the overall class distribution
-    sample_weights = np.ones(len(y))
-    class_counts = y.value_counts().sort_index()
-    # Slightly downweight draws to reduce model's tendency to predict them
-    # Weight ratio approximately 1.0 : 0.7 : 1.0 for Away : Draw : Home
-    for idx, label in enumerate(y):
-        if label == 1:  # Draw
-            sample_weights[idx] = 0.7
+        # Validate features before training
+        feature_validation = validate_model_features(X, features)
+        if not feature_validation.is_valid:
+            log_error("Feature validation failed - aborting training")
+            raise ValueError(f"Invalid features: {feature_validation.errors}")
 
-    log_info(f"Using sample weights to reduce draw bias (Draw weight = 0.7)")
+        seasons = df["Season"] if "Season" in df.columns else pd.Series(
+            ["unknown"] * len(X), index=X.index
+        )
+        cv_splits = list(tournament_aware_cv_splits(len(X), seasons, n_splits=n_splits))
+        sample_weights_full = np.ones(len(X))
+        for idx, label in enumerate(y):
+            if label == 1:  # Draw
+                sample_weights_full[idx] = 0.7
+
+    log_info("Using sample weights to reduce draw bias (Draw weight = 0.7)")
 
     model = create_model(model_type)
-    # Use tournament-aware CV splits that anchor fold boundaries on season transitions
-    # to prevent mixing Apertura and Clausura fixtures without decay transformations.
-    seasons = df["Season"] if "Season" in df.columns else pd.Series(
-        ["unknown"] * len(X), index=X.index
-    )
-    cv_splits = list(tournament_aware_cv_splits(len(X), seasons, n_splits=n_splits))
     cv_acc, cv_ll = [], []
-    submodel_data_collection = [] # Initialize collection list
+    submodel_data_collection = []  # Initialize collection list
+    last_v_idx: Optional[np.ndarray] = None
 
     for fold, (t_idx, v_idx) in enumerate(cv_splits, 1):
+        if use_fold_aware:
+            # Fold boundaries live in raw_matches row-space. The training rows
+            # occupy [0, t_idx.max()+1); the validation rows occupy
+            # [t_idx.max()+1, v_idx.max()+1). Both slices are rebuilt via the
+            # fold-aware helper so that no outcome from the validation window
+            # leaks into the training features.
+            train_until = int(t_idx.max()) + 1
+            val_until = int(v_idx.max()) + 1
+
+            # _build_fold_features(until_row=val_until) returns a frame where:
+            #   * rows [0, train_until)   have fresh EWMA + Elo features
+            #   * rows [train_until, val_until) carry per-team "as-of cutoff"
+            #     trailing stats (no knowledge of their own outcomes) and a
+            #     snapshot Elo per team derived only from training-period
+            #     matches.
+            fold_features = _build_fold_features(
+                raw_matches, until_row=val_until,
+                elo_ratings={}, window=TRAILING_WINDOW,
+            )
+            train_features = fold_features.iloc[:train_until]
+            val_rows = fold_features.iloc[train_until:val_until]
+
+            X_train = train_features[features]
+            y_train = train_features["FullTimeResult"]
+            X_val = val_rows[features]
+            y_val = val_rows["FullTimeResult"]
+            sw_train = np.ones(len(y_train))
+            for idx, label in enumerate(y_train):
+                if label == 1:
+                    sw_train[idx] = 0.7
+        else:
+            X_train = X.iloc[t_idx]
+            y_train = y.iloc[t_idx]
+            X_val = X.iloc[v_idx]
+            y_val = y.iloc[v_idx]
+            sw_train = sample_weights_full[t_idx]
+
         f_model = create_model(model_type)
         # Pass eval_set so CatBoost early_stopping_rounds has validation loss to monitor.
         # Guard with try/except so MockModels in tests aren't broken by the extra kwarg.
-        fit_kwargs: dict = {"sample_weight": sample_weights[t_idx]}
+        fit_kwargs: dict = {"sample_weight": sw_train}
         if model_type == "catboost":
-            fit_kwargs["eval_set"] = (X.iloc[v_idx], y.iloc[v_idx])
+            fit_kwargs["eval_set"] = (X_val, y_val)
         try:
-            f_model.fit(X.iloc[t_idx], y.iloc[t_idx], **fit_kwargs)
+            f_model.fit(X_train, y_train, **fit_kwargs)
         except TypeError:
             # Fallback for mock models or implementations that don't accept eval_set
-            f_model.fit(X.iloc[t_idx], y.iloc[t_idx], sample_weight=sample_weights[t_idx])
-        y_p = f_model.predict(X.iloc[v_idx])
-        y_prob = f_model.predict_proba(X.iloc[v_idx])
-        acc = accuracy_score(y.iloc[v_idx], y_p)
-        ll = log_loss(y.iloc[v_idx], y_prob, labels=[0, 1, 2])
+            f_model.fit(X_train, y_train, sample_weight=sw_train)
+        y_p = f_model.predict(X_val)
+        y_prob = f_model.predict_proba(X_val)
+        acc = accuracy_score(y_val, y_p)
+        ll = log_loss(y_val, y_prob, labels=[0, 1, 2])
         cv_acc.append(acc)
         cv_ll.append(ll)
         log_info(f"Fold {fold} -> Acc: {acc:.3f}, LL: {ll:.3f}")
 
-        # Collect data for sub-model training
-        fold_data = df.loc[df.index[v_idx]].copy() # Use df.index[v_idx] to get original indices
+        # Collect data for sub-model training. We stitch the predictions onto
+        # the fold's validation rows so downstream sub-model training can use
+        # the same per-row metadata.
+        if use_fold_aware:
+            fold_data = val_features.copy()
+        else:
+            fold_data = df.loc[df.index[v_idx]].copy()
         fold_data['ml_pred'] = y_p
-        fold_data['p_h'] = y_prob[:, 2] # Home Win probability
-        fold_data['p_d'] = y_prob[:, 1] # Draw probability
-        fold_data['p_a'] = y_prob[:, 0] # Away Win probability
-        
+        fold_data['p_h'] = y_prob[:, 2]  # Home Win probability
+        fold_data['p_d'] = y_prob[:, 1]  # Draw probability
+        fold_data['p_a'] = y_prob[:, 0]  # Away Win probability
+
         # Ensure 'Expected_Home_Goals' and 'Expected_Away_Goals' are in the collected data
         # and map them to 'exp_h' and 'exp_a'
         fold_data['exp_h'] = fold_data['Expected_Home_Goals']
@@ -352,6 +504,8 @@ def train_validate(
         base_cols = ['exp_h', 'exp_a', 'ml_pred', 'p_h', 'p_d', 'p_a']
         submodel_data_collection.append(fold_data[base_cols + goal_cols])
 
+        last_v_idx = v_idx
+
     # Concatenate all collected data
     submodel_training_data_df = pd.concat(submodel_data_collection, ignore_index=True) if submodel_data_collection else pd.DataFrame()
 
@@ -361,18 +515,40 @@ def train_validate(
     bookie_ll = None
     # Bookie: naive odds-to-prob conversion (approximate for comparison)
     # Using last fold validation indices for a quick comparative snapshot
-    if len(v_idx) > 0:
-        val_data = df.iloc[v_idx]
+    if last_v_idx is not None and len(last_v_idx) > 0:
+        if use_fold_aware:
+            # Last-fold validation rows are raw_matches[last_v_idx].
+            val_data = raw_matches.iloc[last_v_idx]
+            y_last = val_data["FullTimeResult"]
+        else:
+            val_data = df.iloc[last_v_idx]
+            y_last = y.iloc[last_v_idx]
         # Check if odds exist
         odds_cols = ['Odds_b365_A', 'Odds_b365_D', 'Odds_b365_H']
-        if all(c in val_data.columns for c in odds_cols):
+        if all(c in val_data.columns for c in odds_cols) and len(y_last) > 0:
              bookie_probs = 1 / val_data[odds_cols].values
              bookie_probs /= bookie_probs.sum(axis=1, keepdims=True)
-             bookie_ll = log_loss(y.iloc[v_idx], bookie_probs, labels=[0, 1, 2])
+             bookie_ll = log_loss(y_last, bookie_probs, labels=[0, 1, 2])
              log_info(f"Bookie Baseline Log Loss: {bookie_ll:.3f}")
 
     log_info(f"Naive Baseline Log Loss: {naive_ll:.3f}")
-    model.fit(X, y, sample_weight=sample_weights)
+    # Final fit on all data: in fold-aware mode this uses the full feature
+    # frame built from raw_matches (i.e. production-style features, including
+    # all available history).
+    if use_fold_aware:
+        full_features = _build_fold_features(
+            raw_matches, until_row=len(raw_matches),
+            elo_ratings={}, window=TRAILING_WINDOW,
+        )
+        X_full = full_features[features]
+        y_full = full_features["FullTimeResult"]
+        sw_full = np.ones(len(y_full))
+        for idx, label in enumerate(y_full):
+            if label == 1:
+                sw_full[idx] = 0.7
+        model.fit(X_full, y_full, sample_weight=sw_full)
+    else:
+        model.fit(X, y, sample_weight=sample_weights_full)
     log_ok(f"Model trained. Mean Acc: {np.mean(cv_acc):.3f} (+/- {np.std(cv_acc):.3f})")
 
     return model, cv_acc, cv_ll, submodel_training_data_df, naive_ll, bookie_ll

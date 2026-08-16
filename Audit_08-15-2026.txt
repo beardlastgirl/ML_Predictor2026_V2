@@ -1,0 +1,177 @@
+---
+
+# Data Leakage Audit: Exponential Decay Windowing & Elo Across CV Folds
+
+## TL;DR
+
+**Yes — there is significant temporal leakage in both paths.** The features (Elo, EWMA trailing stats, Bayesian meta xG) are computed once on the **full** historical dataset in `build_features()` and then sliced into folds by `train_validate()`. In a true walk-forward CV you must re-compute these features from a strictly past-only slice inside each fold. The current pipeline does **not** do that, so every validation row is influenced by matches that occur after it. The `tournament_aware_cv_splits()` helper only changes **where** the cut is drawn (between seasons); it does not cure the leakage.
+
+Severity: **High** — this biases the reported CV accuracy (~35%) and log-loss (~1.20) optimistically. Production-time inference is also affected because the Elo state at kickoff already reflects matches from the entire training history (acceptable for prediction, but the validation metric cannot be trusted).
+
+---
+
+## 1. Call-site evidence (the smoking gun)
+
+In `src/pipeline.py`:
+
+- `run_pipeline()` (line 574) calls `build_features(matches)` **once** on the entire dataset.
+- The resulting `matches_with_features` is then split into folds inside `train_validate()` (line 313: `tournament_aware_cv_splits(len(X), seasons, n_splits=n_splits)`).
+- No re-computation of Elo or trailing stats happens inside the fold loop. The fold loop only re-fits the GBM (`f_model.fit(...)`) and predicts on the held-out slice.
+
+```python
+# pipeline.py:317-328
+for fold, (t_idx, v_idx) in enumerate(cv_splits, 1):
+    f_model = create_model(model_type)
+    fit_kwargs: dict = {"sample_weight": sample_weights[t_idx]}
+    if model_type == "catboost":
+        fit_kwargs["eval_set"] = (X.iloc[v_idx], y.iloc[v_idx])
+    try:
+        f_model.fit(X.iloc[t_idx], y.iloc[t_idx], **fit_kwargs)
+    ...
+```
+
+The model is the only thing that's fold-scoped. The **features themselves were frozen on the full timeline before the split**.
+
+---
+
+## 2. Elo leakage — `stats_engine.calculate_all_elo_ratings`
+
+`src/stats_engine.py:168-192` iterates the **entire** `matches_df` from oldest to newest and mutates a global `elo_ratings` dict:
+
+```python
+for row in matches_df.itertuples(index=False):
+    h, a, r = row.HomeTeam, row.AwayTeam, row.FullTimeResult
+    elo_h = elo_ratings.get(h, base_elo)
+    elo_a = elo_ratings.get(a, base_elo)
+    new_h, new_a = update_elo(elo_h, elo_a, r)   # uses r ← actual outcome
+    elo_ratings[h], elo_ratings[a] = new_h, new_a
+    ...
+```
+
+Two leakage vectors:
+
+1. **Forward leakage into features.** For any row at time `t`, the Elo assigned to the row (`Home_Elo`, `Away_Elo` written into `elo_history`) is the **pre-match** Elo — that part is fine. But subsequent rows in the same season (and across all future folds) get Elo values that reflect every match between `t` and the present. So when fold 1 is validated on matches in 2024, the `Home_Elo`/`Away_Elo` features for those matches already encode the result of, e.g., every 2025 Apertura match. That's the leak.
+2. **Reverse leakage into later folds' training set.** Because Elo is cumulative, the training set for fold 2 includes `Home_Elo` features that have absorbed outcomes from fold 2's validation window if fold 2's validation rows come earlier chronologically (they don't in walk-forward, but the **first** training window — fold 1's train slice — contains Elos that already incorporate information from fold 1's validation set: see point above).
+
+The right fix is per-fold Elo reconstruction: for fold `k`, replay matches `[0 : val_start_k]` and assign Elos using **only** those outcomes, then write `Home_Elo`/`Away_Elo` for rows in `val_idx_k` from that fresh state. That is the only way Elo can be fold-honest.
+
+---
+
+## 3. Exponential-decay windowing leakage — `features.compute_trailing_features`
+
+`src/features.py:40-95`:
+
+```python
+gb = long_df.groupby("Team")
+long_df["Avg_GF"] = gb["Goals_For"].transform(
+    lambda x: x.shift(1).pipe(lambda s: exponential_decay(s, window))
+)
+```
+
+This *does* `shift(1)` per team, so for any team the trailing window of row `t` excludes row `t`'s own goals. Good — that protects against including the current match's GF/GA in its own features.
+
+**However**, it does *not* protect against rows in the **validation fold** having features computed from matches in the **future** (the rest of the dataset that the validator shouldn't see). Concretely, for a fold-1 validation row at index `i`:
+
+- `gb["Goals_For"].shift(1).pipe(exponential_decay, 8)` evaluates over the full long-form frame including every later row of that team.
+- The `rolling(window=8).sum()` over the entire pre-`i` history is correct **in itself**, but the **state of the entire dataset** beyond row `i` was already included in the dataset that the Elo update used, and was *also* implicitly included in any leakage from the Elo path described above.
+
+There's a subtler issue with the decay itself:
+
+```python
+# features.py:70-73
+def exponential_decay(x, window):
+    weights = pd.Series(np.exp(np.linspace(-1, 0, len(x))), index=x.index)
+    return x.multiply(weights).rolling(window, min_periods=1).sum() / weights.rolling(window, min_periods=1).sum()
+```
+
+The weights vector is the **same length as the full per-team history**, not length `window`. The `rolling(window, ...)` then restricts the effective window. That's fine in isolation, but combined with the global computation it means **every** row's `Avg_GF` is a function of the entire team history (including post-validation-row matches) — the rolling window just limits how many of those matches get a non-trivial weight. Because the team history *includes* future matches, even though their weights are tiny, they still enter the weighted sum. For an 8-match rolling window over a long history, post-cutoff matches have ~e^-1 weight and so contribute non-negligibly to `Avg_GF` near the fold boundary.
+
+Worse: `Form` uses `Points.shift(1).rolling(window, min_periods=1).sum() / window` (line 80) — this is a **plain** (non-decayed) rolling sum. Any post-cutoff win/draw for that team does not affect a validation row's `Form`, *provided* the `shift(1)` is truly per-team chronological. It is. So `Form` itself is the cleanest of the three — *but only because* the long-form frame is sorted by `(Team, Date)` and `shift(1)` is applied inside each team group, not across the whole frame.
+
+Net: `Form` is fold-safe by construction; `Avg_GF`/`Avg_GA` (EWMA) leak slightly because of the way the weights are computed; and `Matches` (cumcount, capped at `window`) is fine.
+
+---
+
+## 4. Bayesian meta-xG leakage — `cold_start.build_meta_xg_features`
+
+`src/cold_start.py:18-27`:
+
+```python
+def calculate_bayesian_shrunk_xg(team_raw_xg, matchday, league_mean_xg=LEAGUE_MEAN_XG, shrinkage_c=BAYESIAN_SHRINKAGE_C):
+    if np.isnan(team_raw_xg) or matchday <= 0:
+        return league_mean_xg
+    return ((league_mean_xg * shrinkage_c) + (team_raw_xg * matchday)) / (shrinkage_c + matchday)
+```
+
+`team_raw_xg` is itself already the leaky xG from `calculate_expected_goals()` (which uses leaky Elo). And `matchday` is computed via `compute_team_matchdays` (`cold_start.py:58-68`) which uses `groupby([season, team]).cumcount()` — that part is chronological and clean.
+
+So the shrinkage meta-feature is doubly affected: it inherits leakage from xG and adds a small extra leakage from being a non-linear transform applied to the full table.
+
+---
+
+## 5. CV split leakage — `cv_split.tournament_aware_cv_splits`
+
+`src/cv_split.py:21-48`:
+
+```python
+val_segments = list(zip(segment_starts, segment_ends))[-n_splits:]
+for val_start, val_end in val_segments:
+    ...
+    train_idx = np.arange(0, val_start)
+    val_idx = np.arange(val_start, val_end)
+    yield train_idx, val_idx
+```
+
+This **does** guarantee chronological separation (train < val) **at the row-index level**, and snaps fold boundaries to season changes. That is good. But the comment in `pipeline.py:308-309` is misleading:
+
+> "Use tournament-aware CV splits that anchor fold boundaries on season transitions to prevent mixing Apertura and Clausura fixtures without decay transformations."
+
+This treats the symptom (mixing Apertura/Clausura inside one fold), not the cause (feature leakage). Tournament-awareness is **necessary** but not **sufficient**. The features in `X` were frozen before the split, so chronological separation of indices is irrelevant to the leakage question.
+
+Also: the `TOURNAMENT_TRANSITION_DECAY = 0.70` config exists (`config.py:54`) and is imported by `features.py:5`, but **it is never referenced anywhere else** in the codebase. The intended "compress prior-season EWMA by 0.7 at season change" logic was never implemented — the EWMA just rolls across the season boundary with no decay adjustment. So even within a single fold, an Apertura 2024 EWMA weight continues directly into a Clausura 2024 weight, which is a separate (smaller) leakage/regime-shift problem.
+
+---
+
+## 6. Shin method — `pipeline.build_features` (lines 170-191)
+
+```python
+shin_probs = matches.apply(calculate_shin_probs, axis=1, result_type="expand")
+```
+
+Row-wise, uses only that row's own odds. **No leakage.** The `Shin_Prob_H/D/A` features are safe.
+
+---
+
+## Summary table
+
+| Path | Leak source | Severity | Notes |
+|---|---|---|---|
+| Elo (`Home_Elo`, `Away_Elo`) | `calculate_all_elo_ratings` runs on full table; Elo state at validation row already absorbed future outcomes | **High** | Primary leakage source. Needs per-fold replay. |
+| EWMA (`Avg_GF`, `Avg_GA`, `Avg_GD`) | `exponential_decay` weighting vector spans full team history; post-cutoff matches enter the rolling sum with small weights | **Medium** | `shift(1)` prevents own-row leakage but not future-row leakage. |
+| `Form` | `Points.shift(1).rolling(8).sum()` per team | **None** | Group-wise chronological shift makes it fold-safe. |
+| `Matches` | `cumcount().clip(upper=8)` per team | **None** | Same as Form. |
+| `poisson_xg_home_meta`, `poisson_xg_away_meta` | Bayesian shrinkage of leaky `xG_home`/`xG_away` | **Medium** | Inherits Elo/EWMA leakage. |
+| `Shin_*` | Row-local odds | **None** | Clean. |
+| `Elo_Diff`, `Attack_Balance`, `Def_Balance`, `Form_Balance`, `Poisson_*`, `Expected_*` | All derived from leaky upstream | **High** | Transformed leakage. |
+| `TOURNAMENT_TRANSITION_DECAY` (config) | Imported, never used | **N/A** | Dead config — intended cross-season EWMA decay was never implemented. |
+| `tournament_aware_cv_splits` | Snaps folds to season boundaries | **Helper only** | Necessary but not sufficient; doesn't fix feature-level leakage. |
+
+---
+
+## Recommended fixes (in priority order)
+
+1. **Refactor Elo computation to be fold-aware.** Move `calculate_all_elo_ratings(matches, BASE_ELO)` *inside* the fold loop. For each fold, slice `matches.iloc[:val_start_k]`, replay Elo on that slice, attach the resulting `Home_Elo`/`Away_Elo` only to rows in `val_idx_k`. Use the final-fold Elo state for the production fit on all data.
+2. **Refactor EWMA computation to be fold-aware** (or at least: trim each team's history at the fold boundary before computing the rolling stats). Same pattern: `compute_trailing_features` should accept a `cutoff_index` parameter.
+3. **Implement the dead `TOURNAMENT_TRANSITION_DECAY` weight.** Inside `compute_trailing_features`, when the row immediately preceding a season change, multiply that season's EWMA weights by `TOURNAMENT_TRANSITION_DECAY` to soften the Apertura→Clausura carry-over.
+4. **Stop computing features in `run_pipeline` before the split.** The cleanest restructuring: have `build_features` build features for the *full* table (used for production training and inference), and have `train_validate` accept a feature-builder callable that it re-invokes per fold on `df.iloc[:val_start_k]`.
+5. **Audit the reported CV metrics after the fix.** Expect the honest CV log-loss to be **higher** than 1.20 — the gap is the optimistic bias from leakage.
+
+---
+
+## Files referenced
+- `src/pipeline.py` — orchestration and `train_validate` fold loop
+- `src/features.py` — `compute_trailing_features`, exponential decay, `shift(1)` semantics
+- `src/stats_engine.py` — `calculate_all_elo_ratings`, `update_elo`
+- `src/cv_split.py` — `tournament_aware_cv_splits`
+- `src/cold_start.py` — `calculate_bayesian_shrunk_xg`, `compute_team_matchdays`
+- `src/config.py` — `TOURNAMENT_TRANSITION_DECAY` (unused)

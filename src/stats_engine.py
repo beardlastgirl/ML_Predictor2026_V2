@@ -67,24 +67,41 @@ def poisson_probability(goals, expected):
 def calculate_outcome_probabilities(xG_home, xG_away, max_goals=MAX_GOALS):
     """Calculate match outcome probabilities from Poisson goal distributions.
 
-    Applies calibration adjustment to reduce draw bias toward league averages.
-    Liga Profesional typical: ~45% Home, ~33% Draw, ~22% Away
-    
-    DRAW CALIBRATION APPLIED HERE:
-    This is the PRIMARY stage for draw calibration. The calculation:
-    1. Generates Poisson grid of all possible scorelines
-    2. Sums probabilities for each outcome: H/D/A
-    3. Applies POISSON_DRAW_ADJUSTMENT to reduce raw Poisson draws
-    4. Applies HOME_ADVANTAGE_BOOST to increase home win probability
-    
-    NOTE: This function ONLY calibrates Poisson probabilities.
-    The model prediction also applies ML ensemble blending (60/40) in model_engine.py,
-    which further refines the probabilities using trained ML model.
-    
-    DO NOT modify this logic without updating:
-    - config.py POISSON_DRAW_ADJUSTMENT documentation
-    - model_engine.py ensemble blending (line 115)
-    - tests/test_main.py calibration tests
+    This function builds a scoreline probability grid from independent Poisson
+    goal distributions for home and away teams, then extracts the marginal
+    probabilities for Home win, Draw, and Away win. Several pragmatic
+    calibrations are applied to better match observed league-level frequencies
+    (reduce over-predicted draws, add a small home-win boost).
+
+    Steps:
+    1. Compute Poisson PMFs for home/away up to `max_goals`.
+    2. Form outer product grid P(home_goals = h, away_goals = a).
+    3. Sum grid entries where h>a, h==a, h<a to get raw H/D/A probabilities.
+    4. Apply POISSON_DRAW_ADJUSTMENT to reduce the draw mass.
+    5. Redistribute remaining probability proportionally to H/A wins.
+    6. Add a small fixed home advantage boost and renormalize.
+
+    Notes & Rationale:
+    - Pure Poisson often over-estimates draw frequency; POISSON_DRAW_ADJUSTMENT
+      reduces draw mass and redistributes it to wins according to their
+      relative probabilities.
+    - The home advantage boost is an empirical correction to reflect the
+      league's historical home-win tilt. Keep this small and documented.
+
+    Returns:
+        dict: {
+            'home_win': float,
+            'draw': float,
+            'away_win': float,
+            'expected_home_goals': float,
+            'expected_away_goals': float,
+            'xG_home': float,
+            'xG_away': float,
+        }
+
+    Safety:
+    - The function guards against numerical instability and falls back to
+      a uniform distribution if the computed grid sums are degenerate.
     """
     goals = np.arange(max_goals + 1)
     p_home = poisson.pmf(goals, xG_home)

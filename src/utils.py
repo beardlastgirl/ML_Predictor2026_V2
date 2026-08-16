@@ -4,15 +4,22 @@ import glob
 import os
 
 def log_info(message):
+    """Print an informational message to stdout.
+
+    Kept deliberately minimal so logs are portable across environments.
+    """
     print(f"[INFO] {message}")
 
 def log_ok(message):
+    """Print a success message to stdout."""
     print(f"[OK] {message}")
 
 def log_error(message):
+    """Print an error message to stdout."""
     print(f"[ERROR] {message}")
 
 def log_warning(message):
+    """Print a warning message to stdout."""
     print(f"[WARNING] {message}")
 
 def find_latest_file(pattern):

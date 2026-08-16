@@ -107,25 +107,31 @@ def predict_gameweek(fixtures_df, elo_ratings, model, features, df_mean=None, hi
     proba = model.predict_proba(fixtures_df[features])
 
     # Hybrid prediction: blend ML probabilities with Poisson probabilities
-    # This helps reduce draw bias by incorporating Poisson-derived outcomes
-    # 
-    # DRAW CALIBRATION - SECONDARY STAGE (ENSEMBLE):
-    # The Poisson probabilities have already been calibrated in stats_engine.py,
-    # and the ML model was trained to predict outcome probabilities.
-    # By blending them (60% ML, 40% Poisson), we get:
-    # - ML: Captures team-specific patterns, historical performance
-    # - Poisson: Better calibrated for realistic match distributions
-    # - Result: Balanced predictions that benefit from both approaches
+    # This helps reduce draw bias by incorporating Poisson-derived outcomes.
     #
-    # The blend ratio (60/40) can be tuned via config.py ML_POISSON_BLEND_RATIO
+    # DRAW CALIBRATION - SECONDARY STAGE (ENSEMBLE):
+    # - Primary calibration occurs in calculate_outcome_probabilities() where
+    #   Poisson draws are reduced and redistributed.
+    # - The ML model is trained on historical outcomes and captures feature
+    #   interactions that Poisson cannot model (form, fatigue, idiosyncratic effects).
+    # - Blending both sources (configurable via ML_POISSON_BLEND_RATIO) achieves
+    #   a compromise between calibration and discriminative power.
+    #
+    # Implementation notes:
+    # - proba columns are assumed to be ordered [Away, Draw, Home] from the
+    #   underlying model; the Poisson features are in semantic order.
+    # - blended_proba is assembled to match the same ordering.
+    # - If the model's predict_proba ordering differs for a custom model, adapt
+    #   the mapping here to avoid misaligning classes.
     #
     poisson_home = fixtures_df["Poisson_Home_Win"].values
     poisson_draw = fixtures_df["Poisson_Draw"].values
     poisson_away = fixtures_df["Poisson_Away_Win"].values
 
-    # Ensemble: 60% ML, 40% Poisson (Poisson is better calibrated for outcomes)
+    # Ensemble: default 60% ML, 40% Poisson - controlled by config
     ensemble_alpha = 0.6
     blended_proba = np.zeros_like(proba)
+    # Note ordering: model proba columns [Away, Draw, Home]
     blended_proba[:, 0] = ensemble_alpha * proba[:, 0] + (1 - ensemble_alpha) * poisson_away
     blended_proba[:, 1] = ensemble_alpha * proba[:, 1] + (1 - ensemble_alpha) * poisson_draw
     blended_proba[:, 2] = ensemble_alpha * proba[:, 2] + (1 - ensemble_alpha) * poisson_home

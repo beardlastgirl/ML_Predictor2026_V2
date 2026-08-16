@@ -1,3 +1,16 @@
+"""Model factory and fixture prediction helpers.
+
+Public functions:
+- create_model(model_type, class_weights=None)
+- predict_gameweek(fixtures_df, elo_ratings, model, features, df_mean=None, historical_matches=None, sofascore_data=None)
+
+Notes:
+- The module uses CatBoost or LightGBM depending on configuration.
+- predict_gameweek handles feature fallback, Poisson feature computation,
+  ML prediction, ensemble blending with Poisson, and heuristic scoreline
+  construction for human-readable predictions.
+"""
+
 # Model creation and prediction
 
 import numpy as np

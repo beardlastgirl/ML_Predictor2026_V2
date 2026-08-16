@@ -1,8 +1,9 @@
-"""
-ML_Predictor2026_V2 - Main Prediction Engine with Poisson Distribution
+"""ML_Predictor2026_V2 - Main Prediction Engine with Poisson Distribution
 
-This is the main entry point for the prediction pipeline.
-It delegates to the pipeline service for all major operations.
+Entry point for CLI execution. Keeps main() minimal: it invokes
+src.pipeline.run_pipeline() and prints a concise summary to stdout.
+
+This module is intentionally small — orchestration and logic live in src.pipeline.
 """
 
 from src.pipeline import run_pipeline

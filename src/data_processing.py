@@ -1,3 +1,12 @@
+"""Data loading, normalization, and fixtures parsing.
+
+Exports functions to load the team glossary, read/normalize Sofascore JSON,
+clean and parse the TyC 'partidos.txt' fixtures file, and normalize team names.
+These functions are deliberately defensive: missing files return empty
+structures and emit warnings rather than raising, which keeps the pipeline
+robust during partial runs.
+"""
+
 # Data loading and normalization
 
 import json

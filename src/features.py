@@ -1,3 +1,10 @@
+"""Feature engineering: trailing averages and team form helpers.
+
+This module computes rolling/per-team trailing statistics used as model inputs.
+Functions are written to operate on chronological match DataFrames to avoid
+introducing look-ahead bias.
+"""
+
 # Trailing-average feature engineering
 
 import numpy as np

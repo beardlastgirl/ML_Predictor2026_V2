@@ -91,6 +91,10 @@ def load_glossary(filepath="Glossary.txt"):
                     source_raw = parts[0].strip()
                     target_raw = parts[1].strip()
                     
+                    # Remove inline comments from target (format: value # comment)
+                    if "#" in target_raw:
+                        target_raw = target_raw.split("#", 1)[0].strip()
+                    
                     # Canonicalize both source and target for storage
                     source_canonical = _canonicalize_name(source_raw)
                     target_canonical = _canonicalize_name(target_raw)

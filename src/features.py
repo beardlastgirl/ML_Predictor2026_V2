@@ -134,7 +134,7 @@ def compute_trailing_features(matches_df, window=8, until_row=None):
     a_df["Match_ID"] = replayed.index
 
     # Combine and sort
-    long_df = pd.concat([h_df, a_df]).sort_values(["Team", "Date"])
+    long_df = pd.concat([h_df, a_df], ignore_index=True).sort_values(["Team", "Date"]).reset_index(drop=True)
 
     # Calculate points
     long_df["Points"] = 0

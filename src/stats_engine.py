@@ -165,22 +165,45 @@ def calculate_poisson_features(
         "Expected_Total_Goals": outcomes["expected_home_goals"] + outcomes["expected_away_goals"],
     }
 
-def calculate_all_elo_ratings(matches_df, base_elo=BASE_ELO):
-    """Calculate Elo ratings for all teams from match history efficiently."""
+def calculate_all_elo_ratings(matches_df, base_elo=BASE_ELO, until_row=None):
+    """Calculate Elo ratings for all teams from match history efficiently.
+
+    Args:
+        matches_df: DataFrame with columns Date, HomeTeam, AwayTeam, FullTimeResult.
+        base_elo: Starting Elo for new teams.
+        until_row: Optional int. If given, only replays the first ``until_row``
+            rows (in DataFrame order, assumed chronological) and returns the
+            resulting ``elo_ratings`` snapshot plus an ``elo_history`` entry for
+            every row in that prefix. Used by time-series CV to obtain fold-safe
+            Elo features that exclude outcomes from the validation window.
+
+    Returns:
+        (elo_ratings, elo_history) where elo_ratings is a dict of final-team
+        Elos and elo_history is a list of per-row dicts (one per match in the
+        replayed prefix).
+    """
     elo_ratings = {}
     elo_history = []
 
+    # Restrict iteration to the requested prefix. ``until_row=None`` replays the
+    # whole frame (original behaviour); an explicit integer enables fold-safe
+    # Elo reconstruction inside walk-forward cross-validation.
+    if until_row is None:
+        replayed = matches_df
+    else:
+        replayed = matches_df.iloc[:until_row]
+
     # Use itertuples for faster iteration than iterrows
-    for row in matches_df.itertuples(index=False):
+    for row in replayed.itertuples(index=False):
         # Access attributes by name. Ensure matches_df has these columns.
         # Canonical names after mapping: HomeTeam, AwayTeam, FullTimeResult
         h, a, r = row.HomeTeam, row.AwayTeam, row.FullTimeResult
         elo_h = elo_ratings.get(h, base_elo)
         elo_a = elo_ratings.get(a, base_elo)
-        
+
         new_h, new_a = update_elo(elo_h, elo_a, r)
         elo_ratings[h], elo_ratings[a] = new_h, new_a
-        
+
         elo_history.append({
             "Date": row.Date,
             "HomeTeam": h,

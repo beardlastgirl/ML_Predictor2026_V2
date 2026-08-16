@@ -1,0 +1,25 @@
+FECHA 5 - 12 al 16022026
+Aldosivi - Tigre: 1-1
+River - Argentinos: 1-0
+Velez - Defensa y Justicia: 1-0
+Lanus - Independiente: 1-2
+San Lorenzo - Union: 1-0
+Racing - Banfield: 2-0
+Sarmiento - Huracan: 1-2
+Gimnasia Mza - Talleres: 1-0
+Estudiantes Rio Cuarto - Atletico Tucuman: 2-1
+Belgrano - Independiente Rivadavia Mza: 1-0
+Estudiantes - Gimnasia: 1-0
+Platense - Boca: 1-0
+Barracas Central - Rosario Central: 1-2
+Central Cordoba - Instituto: 1-2
+Newells - Deportivo Riestra: 1-0
+
+--- METRICS COMPARISON ---
+Naive Baseline Log Loss: 1.077
+Bookie Baseline Log Loss: 1.089
+Model Log Loss: 1.062
+--------------------------
+Cantidad de penales cobrados: 4
+Cantidad de expulsados: 3
+Cantidad de goles convertidos: 27

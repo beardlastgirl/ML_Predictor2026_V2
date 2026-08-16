@@ -1,21 +1,19 @@
-FECHA 5 - 12 al 16/02/2026
-
+FECHA 5 - 12 al 16022026
 Aldosivi - Tigre:
 River - Argentinos:
-Vélez - Defensa y Justicia:
-Lanús - Independiente:
-San Lorenzo - Unión:
+Velez - Defensa y Justicia:
+Lanus - Independiente:
+San Lorenzo - Union:
 Racing - Banfield:
-Sarmiento - Huracán:
-Gimnasia (Mza.) - Talleres:
-Estudiantes (Río Cuarto) - Atlético Tucumán:
-Belgrano - Independiente Rivadavia Mza.:
+Sarmiento - Huracan:
+Gimnasia Mza - Talleres:
+Estudiantes Rio Cuarto - Atletico Tucuman:
+Belgrano - Independiente Rivadavia Mza:
 Estudiantes - Gimnasia:
 Platense - Boca:
 Barracas Central - Rosario Central:
-Central Córdoba - Instituto:
-Newell's - Deportivo Riestra:
-
+Central Cordoba - Instituto:
+Newells - Deportivo Riestra:
 Cantidad de penales cobrados:
 Cantidad de expulsados:
 Cantidad de goles convertidos:

@@ -49,6 +49,20 @@ def test_normalize_team_name_with_internal_mapping(team_glossary):
         assert actual_normalized_name == expected_normalized_name, \
             f"Failed for '{raw_name}': Expected '{expected_normalized_name}', Got '{actual_normalized_name}'"
 
+def test_glossary_and_internal_mapping_agree_on_riestra(team_glossary):
+    """Glossary.txt and the internal map must yield the same canonical name.
+
+    Regression (AUDIT_2026-09-18 P1-H): the internal map translated the
+    canonical DEP RIESTRA into DEPORTIVO RIESTRA while Glossary.txt
+    normalizes it to DEP RIESTRA -- one team, two identities depending on
+    which path ran. Both paths must agree on the glossary canonical.
+    """
+    for raw_name in ["Riestra", "Dep Riestra", "Deportivo Riestra", "DEP RIESTRA"]:
+        assert normalize_team_name(raw_name, team_glossary) == "DEP RIESTRA", \
+            f"glossary path for '{raw_name}'"
+        assert normalize_team_name(raw_name, None) == "DEP RIESTRA", \
+            f"internal-mapping path for '{raw_name}'"
+
 def test_normalize_team_name_without_mapping(team_glossary):
     """Test normalization for names not found in glossary or internal mapping."""
     test_cases = [

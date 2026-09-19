@@ -52,7 +52,7 @@ def test_load_glossary_file_not_found():
     ("DyJ", "DEFENSA Y JUSTICIA", False),
     ("Atl Tuc", "ATL TUCUMAN", False),
     ("Ind Riv", "INDEPENDIENTE RIVADAVIA", False),
-    ("Dep Riestra", "DEPORTIVO RIESTRA", False),
+    ("Dep Riestra", "DEP RIESTRA", False),
     ("Barracas", "BARRACAS CENTRAL", False),
     ("Sarmiento (J)", "SARMIENTO JUNIN", False),
 

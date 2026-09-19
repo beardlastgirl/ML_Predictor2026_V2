@@ -15,9 +15,6 @@ from src.stats_engine import calculate_poisson_features, shin_method
 from src.features import get_all_teams_latest_stats
 from src.cold_start import calculate_bayesian_shrunk_xg
 
-# Alias for backward-compat within this module
-MAX_GOALS = MAX_PREDICTED_GOALS
-
 def create_model(model_type, class_weights=None):
     """Create a fresh model instance with configured hyperparameters.
 
@@ -63,18 +60,18 @@ def _calculate_hybrid_goals(exp_h, exp_a, ml_pred, p_h, p_d, p_a):
             if m_h <= m_a:
                 m_h = m_a + 1
             elif p_h >= 0.50:  # strong home win — add a goal
-                m_h = min(MAX_GOALS, m_h + 1)
+                m_h = min(MAX_PREDICTED_GOALS, m_h + 1)
         elif ml_pred == 0 and p_a >= p_h and p_a >= p_d:  # away win predicted
             if m_a <= m_h:
                 m_a = m_h + 1
             elif p_a >= 0.50:
-                m_a = min(MAX_GOALS, m_a + 1)
+                m_a = min(MAX_PREDICTED_GOALS, m_a + 1)
         elif ml_pred == 1 and p_d >= p_h and p_d >= p_a:  # draw predicted
             # Equalise scores at the higher of the two floor values
             score = max(m_h, m_a)
             m_h = m_a = score
 
-    return max(0, min(MAX_GOALS, m_h)), max(0, min(MAX_GOALS, m_a))
+    return max(0, min(MAX_PREDICTED_GOALS, m_h)), max(0, min(MAX_PREDICTED_GOALS, m_a))
 
 def predict_gameweek(fixtures_df, elo_ratings, model, features, df_mean=None, historical_matches=None, sofascore_data=None):
     """Generate predictions with Poisson-enhanced modeling."""

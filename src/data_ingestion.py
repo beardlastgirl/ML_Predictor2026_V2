@@ -214,7 +214,14 @@ class DataIngestor:
                     timeout=30,
                 )
                 r.raise_for_status()
-                api_fixtures.extend(r.json().get("response", []))
+                payload = r.json()
+                if not isinstance(payload, dict) or payload.get("errors"):
+                    log_error(
+                        f"enrich_with_api_stats: API error envelope for season {season}: "
+                        f"{str(payload)[:200]}"
+                    )
+                    continue
+                api_fixtures.extend(payload.get("response", []))
             except Exception as e:
                 log_error(f"enrich_with_api_stats: API fetch failed for season {season}: {e}")
 
@@ -283,8 +290,15 @@ class DataIngestor:
                     timeout=30,
                 )
                 stats_r.raise_for_status()
-                stats_data = stats_r.json().get("response", [])
+                payload = stats_r.json()
                 api_requests_used += 1
+                if not isinstance(payload, dict) or payload.get("errors"):
+                    log_error(
+                        f"enrich_with_api_stats: API error envelope for fixture {fixture_id}: "
+                        f"{str(payload)[:200]}"
+                    )
+                    continue
+                stats_data = payload.get("response", [])
             except Exception as e:
                 log_error(f"enrich_with_api_stats: stats fetch failed for fixture {fixture_id}: {e}")
                 continue

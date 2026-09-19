@@ -11,9 +11,9 @@ from src.config import (
     DEFAULT_EXPECTED_GOALS, MAX_PREDICTED_GOALS, ML_POISSON_BLEND_RATIO
 )
 from src.utils import log_info
-from src.stats_engine import calculate_poisson_features
+from src.stats_engine import calculate_poisson_features, shin_method
 from src.features import get_all_teams_latest_stats
-from src.cold_start import extract_shin_probabilities, calculate_bayesian_shrunk_xg
+from src.cold_start import calculate_bayesian_shrunk_xg
 
 # Alias for backward-compat within this module
 MAX_GOALS = MAX_PREDICTED_GOALS
@@ -144,7 +144,7 @@ def predict_gameweek(fixtures_df, elo_ratings, model, features, df_mean=None, hi
                 odds_h, odds_d, odds_a = float(r[col_h]), float(r[col_d]), float(r[col_a])
                 if any(v <= 0 or np.isnan(v) for v in [odds_h, odds_d, odds_a]):
                     return np.nan, np.nan, np.nan
-                probs = extract_shin_probabilities(odds_h, odds_d, odds_a)
+                probs = shin_method([odds_h, odds_d, odds_a])[0]
                 return probs[0], probs[1], probs[2]
             except Exception:
                 return np.nan, np.nan, np.nan

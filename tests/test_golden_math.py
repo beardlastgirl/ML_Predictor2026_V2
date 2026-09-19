@@ -6,6 +6,7 @@ calibrated behavior.
 Snapshots captured 2026-09-18 from the verified current implementation.
 """
 import numpy as np
+import pandas as pd
 import pytest
 
 from src.stats_engine import (
@@ -93,6 +94,40 @@ def test_golden_shin_method_nan_fallback():
     probs, z = shin_method([np.nan, 2.0, 3.0])
     assert probs.tolist() == pytest.approx([0.333, 0.333, 0.334], abs=1e-12)
     assert z == 0.0
+
+
+def test_predict_gameweek_inference_shin_matches_train_golden():
+    """Inference must use the same Shin math as training (single implementation).
+
+    Regression: cold_start.extract_shin_probabilities (Nelder-Mead, different
+    normalization) diverged from shin_method (brentq) — e.g. for odds
+    (2.10, 3.30, 3.60) inference produced H=0.4365 vs train H=0.4588, and the
+    gap reached 6pp on heavy favorites. Both paths must now agree exactly.
+    """
+    from src.model_engine import predict_gameweek
+
+    odds = (2.10, 3.30, 3.60)
+    expected, _ = shin_method(list(odds))
+
+    fixtures = pd.DataFrame([{
+        "HomeTeam": "Equipo A", "AwayTeam": "Equipo B",
+        "Odds_b365_H": odds[0], "Odds_b365_D": odds[1], "Odds_b365_A": odds[2],
+    }])
+
+    class _StubModel:
+        def predict_proba(self, X):
+            return np.full((len(X), 3), 1 / 3)
+
+    out = predict_gameweek(
+        fixtures_df=fixtures,
+        elo_ratings={},
+        model=_StubModel(),
+        features=["Shin_Prob_H", "Shin_Prob_D", "Shin_Prob_A"],
+    )
+
+    assert out["Shin_Prob_H"].iloc[0] == pytest.approx(expected[0], rel=1e-9)
+    assert out["Shin_Prob_D"].iloc[0] == pytest.approx(expected[1], rel=1e-9)
+    assert out["Shin_Prob_A"].iloc[0] == pytest.approx(expected[2], rel=1e-9)
 
 
 @pytest.mark.parametrize(

@@ -1,24 +1,19 @@
 import os
 import re
-import glob
 import pdfplumber
 import math
+from src.pdf_reports import find_latest_report_pdf
 from src.utils import log_info, log_ok, log_warning, log_error
 
 class PDFStatsExtractor:
     """Extends the pipeline with PDF report analysis for summary stats."""
-    
+
     def __init__(self, reporte_dir="Reporte/2026_2"):
         self.reporte_dir = reporte_dir
 
     def get_latest_pdf(self):
         """Find the most recent PDF in the directory."""
-        files = glob.glob(os.path.join(self.reporte_dir, "Resumen F*.pdf"))
-        if not files:
-            return None
-        # Sort by round number (Resumen F11.pdf > Resumen F08.pdf)
-        files.sort(key=lambda x: [int(c) for c in re.findall(r'\d+', os.path.basename(x))][-1], reverse=True)
-        return files[0]
+        return find_latest_report_pdf(self.reporte_dir)
 
     def extract_averages(self):
         """

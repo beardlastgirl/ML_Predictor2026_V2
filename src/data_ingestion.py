@@ -10,6 +10,7 @@ from datetime import datetime, timedelta
 from src.api_football import APIFootballClient
 from src.utils import log_info, log_ok, log_warning, log_error
 import requests
+from bs4 import BeautifulSoup
 
 
 # ---------------------------------------------------------------------------
@@ -112,25 +113,96 @@ class DataIngestor:
         self.api_client = APIFootballClient()
 
     def update_base_data(self) -> bool:
-        """Downloads the latest ARG.csv from football-data.co.uk if newer."""
+        """Download the latest ARG.csv if the web version is newer than local.
+
+        Merged from Manual_Update_arg_csv.py: prefers the 'Last updated'
+        timestamp on football-data.co.uk's Argentina page; falls back to the
+        old size comparison when the timestamp page is unreachable.
+        """
         try:
-            log_info(f"Checking for updates at {self.CSV_URL}...")
+            local_date = self._file_mtime(self.data_path)
+            if local_date is None:
+                log_info("Local ARG.csv not found. Downloading...")
+                return self._download_arg_csv()
+
+            web_date = self.get_web_last_updated()
+            if web_date is not None and web_date.date() <= local_date.date():
+                log_info("ARG.csv is up to date (web timestamp not newer than local).")
+                return False
+            if web_date is not None:
+                log_info("Web version is newer. Downloading update...")
+                return self._download_arg_csv()
+
+            # Timestamp page unavailable: fall back to size comparison.
+            log_info(f"Checking for updates at {self.CSV_URL} (size fallback)...")
             response = requests.get(self.CSV_URL, timeout=30)
             response.raise_for_status()
-
-            if os.path.exists(self.data_path):
-                current_size = os.path.getsize(self.data_path)
-                if len(response.content) == current_size:
-                    log_info("Local ARG.csv size matches remote. Skipping download.")
-                    return False
-
-            with open(self.data_path, "wb") as f:
-                f.write(response.content)
-            log_ok(f"Updated base data: {self.data_path}")
-            return True
+            if os.path.exists(self.data_path) and len(response.content) == os.path.getsize(self.data_path):
+                log_info("Local ARG.csv size matches remote. Skipping download.")
+                return False
+            return self._download_arg_csv()
         except Exception as e:
             log_error(f"Failed to update base data: {e}")
             return False
+
+    def get_web_last_updated(self):
+        """Scrape the 'Last updated' timestamp from the Argentina.php page."""
+        url = "https://www.football-data.co.uk/argentina.php"
+        try:
+            log_info(f"Fetching last updated timestamp from {url}")
+            response = requests.get(url, timeout=30)
+            response.raise_for_status()
+            soup = BeautifulSoup(response.text, "html.parser")
+            text = soup.get_text()
+
+            patterns = [
+                r'Last updated[:\s]+(\d{1,2}[/-]\d{1,2}[/-]\d{2,4})',
+                r'updated[:\s]+(\d{1,2}[/-]\d{1,2}[/-]\d{2,4})',
+                r'(\d{1,2}[/-]\d{1,2}[/-]\d{2,4})',
+            ]
+            for pattern in patterns:
+                for match in re.findall(pattern, text, re.IGNORECASE):
+                    parsed = self._parse_web_date(match)
+                    if parsed:
+                        log_info(f"Found timestamp: {match} -> {parsed.strftime('%Y-%m-%d')}")
+                        return parsed
+            log_warning("Could not find 'Last updated' timestamp on page")
+            return None
+        except requests.RequestException as e:
+            log_error(f"Failed to fetch page: {e}")
+            return None
+        except (AttributeError, TypeError, ValueError) as e:
+            log_error(f"Error parsing page: {e}")
+            return None
+
+    def _download_arg_csv(self) -> bool:
+        response = requests.get(self.CSV_URL, timeout=60)
+        response.raise_for_status()
+        with open(self.data_path, "wb") as f:
+            f.write(response.content)
+        log_ok(f"Updated base data: {self.data_path}")
+        return True
+
+    @staticmethod
+    def _file_mtime(filepath):
+        """Last modification datetime of a file, or None."""
+        if not os.path.exists(filepath):
+            return None
+        try:
+            return datetime.fromtimestamp(os.path.getmtime(filepath))
+        except OSError as e:
+            log_error(f"Error reading file modification date: {e}")
+            return None
+
+    @staticmethod
+    def _parse_web_date(date_str):
+        """Parse '17/02/26' or '17/02/2026' style dates to datetime or None."""
+        for fmt in ["%d/%m/%y", "%d/%m/%Y", "%d-%m-%y", "%d-%m-%Y"]:
+            try:
+                return datetime.strptime(date_str.strip(), fmt)
+            except ValueError:
+                continue
+        return None
 
     def enrich_with_api_stats(self, days_back: int = 14) -> int:
         """

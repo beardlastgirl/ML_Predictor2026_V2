@@ -23,7 +23,7 @@ from sklearn.model_selection import TimeSeriesSplit
 
 from src.config import BASE_ELO, MODEL_TYPE, TRAILING_WINDOW, RESULT_ENCODING
 from src.utils import log_info, log_ok, log_error, log_warning
-from src.data_ingestion import DataIngestor
+from src.data_gateway import DataGateway
 from src.data_processing import (
     load_glossary, load_sofascore_data, normalize_team_name,
     clean_partidos_file, parse_fixtures, apply_header_mapping
@@ -725,10 +725,10 @@ def run_pipeline(
     # --- Step 0: Data Ingestion/Update ---
     if auto_update:
         try:
-            ingestor = DataIngestor(data_path=historical_path)
-            if ingestor.update_base_data():
+            gateway = DataGateway(data_path=historical_path)
+            if gateway.refresh():
                 log_ok("Base historical data updated from football-data.co.uk")
-            ingestor.enrich_with_api_stats()
+            gateway.enrich()
         except Exception as e:
             log_warning(f"Data update failed (skipping): {e}")
     # --- End Step 0 ---

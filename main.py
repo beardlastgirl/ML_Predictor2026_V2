@@ -5,8 +5,12 @@ This is the main entry point for the prediction pipeline.
 It delegates to the pipeline service for all major operations.
 """
 
+import sys
+
+import numpy as np
+
 from src.pipeline import run_pipeline
-from src.utils import log_info, log_ok
+from src.utils import log_info, log_ok, log_error
 from src.config import MODEL_TYPE
 
 
@@ -21,7 +25,11 @@ def main():
     log_info("=" * 60)
     model_name = type(result.model).__name__ if result.model else MODEL_TYPE
     log_info(f"Model: {model_name}")
-    log_info(f"CV Accuracy: {sum(result.cv_accuracies)/len(result.cv_accuracies):.3f} (+/- {__import__('numpy').std(result.cv_accuracies):.3f})")
+    cv_acc = result.cv_accuracies
+    if not cv_acc:
+        log_error("No cross-validation accuracies produced; cannot report summary.")
+        sys.exit(1)
+    log_info(f"CV Accuracy: {sum(cv_acc)/len(cv_acc):.3f} (+/- {np.std(cv_acc):.3f})")
     log_info(f"Features: {len(result.features)}")
     if result.fixtures is not None:
         log_info(f"Fixtures predicted: {len(result.fixtures)}")

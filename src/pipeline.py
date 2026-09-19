@@ -41,6 +41,9 @@ from src.cv_split import tournament_aware_cv_splits
 
 matplotlib.use("Agg")
 
+SHIN_ODDS_COLS = ["Odds_b365_H", "Odds_b365_D", "Odds_b365_A"]
+SHIN_ODDS_FALLBACK_COLS = ["B365CH", "B365CD", "B365CA"]
+
 FEATURE_COLUMNS = [
     "Home_Elo", "Away_Elo", "Elo_Diff",
     "Home_Avg_GF", "Away_Avg_GF", "Home_Avg_GA", "Away_Avg_GA",
@@ -69,6 +72,48 @@ class PipelineResult:
         self.fixtures: Optional[pd.DataFrame] = None
         self.output_file: Optional[str] = None
         self.feature_importance: Optional[pd.DataFrame] = None
+
+
+def _map_goal_columns(matches_df: pd.DataFrame) -> None:
+    """Add the GF/GA columns consumed by trailing-stat features, in place."""
+    if "Home_GF" in matches_df.columns and "Away_GF" in matches_df.columns:
+        matches_df["GF"] = matches_df["Home_GF"]
+        matches_df["GA"] = matches_df["Away_GF"]
+    elif "FTHG" in matches_df.columns and "FTAG" in matches_df.columns:
+        matches_df["GF"] = matches_df["FTHG"]
+        matches_df["GA"] = matches_df["FTAG"]
+    else:
+        log_warning("Goal columns not found; trailing stats will use zeros")
+        matches_df["GF"] = 0
+        matches_df["GA"] = 0
+
+
+def _add_shin_probabilities(matches_df: pd.DataFrame) -> None:
+    """Add Shin_Prob_H/D/A columns from bookmaker odds, in place."""
+    log_info("Calculating Shin Method probabilities from odds...")
+
+    def calculate_shin_probs(row):
+        """Helper to apply shin_method to a row."""
+        odds_cols = SHIN_ODDS_COLS
+        # Fallback if mapping missed them or they are already B365CH
+        if not all(c in row for c in odds_cols):
+            if all(c in row for c in SHIN_ODDS_FALLBACK_COLS):
+                odds_cols = SHIN_ODDS_FALLBACK_COLS
+            else:
+                return [np.nan, np.nan, np.nan]
+
+        if not all(pd.notna(row[c]) for c in odds_cols):
+            return [np.nan, np.nan, np.nan]
+
+        true_probs, _ = shin_method([row[c] for c in odds_cols])
+        return true_probs
+
+    shin_probs = matches_df.apply(calculate_shin_probs, axis=1, result_type="expand")
+    shin_probs.columns = ["Shin_Prob_H", "Shin_Prob_D", "Shin_Prob_A"]
+    matches_df[["Shin_Prob_H", "Shin_Prob_D", "Shin_Prob_A"]] = shin_probs
+    log_ok(
+        f"Shin probabilities calculated. Found odds for {matches_df['Shin_Prob_H'].notna().sum()} matches."
+    )
 
 
 def load_data(
@@ -164,35 +209,8 @@ def build_features(matches: pd.DataFrame) -> Tuple[pd.DataFrame, Dict]:
     """
     log_info("Building features...")
 
-    # --- Start: Shin Method Integration ---
-    log_info("Calculating Shin Method probabilities from odds...")
-
-    def calculate_shin_probs(row):
-        """Helper to apply shin_method to a row."""
-        # Use canonical odds headers if available, fallback to B365CH etc if they weren't mapped
-        odds_cols = ["Odds_b365_H", "Odds_b365_D", "Odds_b365_A"]
-        # Fallback if mapping missed them or they are already B365CH
-        if not all(c in row for c in odds_cols):
-            fallback_cols = ["B365CH", "B365CD", "B365CA"]
-            if all(c in row for c in fallback_cols):
-                odds_cols = fallback_cols
-            else:
-                return [np.nan, np.nan, np.nan]
-
-        if not all(pd.notna(row[c]) for c in odds_cols):
-            return [np.nan, np.nan, np.nan]
-
-        odds = [row[odds_cols[0]], row[odds_cols[1]], row[odds_cols[2]]]
-        true_probs, _ = shin_method(odds)
-        return true_probs
-
-    shin_probs = matches.apply(calculate_shin_probs, axis=1, result_type="expand")
-    shin_probs.columns = ["Shin_Prob_H", "Shin_Prob_D", "Shin_Prob_A"]
-    matches = pd.concat([matches, shin_probs], axis=1)
-
-    log_ok(
-        f"Shin probabilities calculated. Found odds for {matches['Shin_Prob_H'].notna().sum()} matches."
-    )
+    # --- Shin Method Integration ---
+    _add_shin_probabilities(matches)
     # --- End: Shin Method Integration ---
 
     elo_ratings, elo_history = calculate_all_elo_ratings(matches, BASE_ELO)
@@ -203,16 +221,7 @@ def build_features(matches: pd.DataFrame) -> Tuple[pd.DataFrame, Dict]:
     # Home_GF = goals scored by home team, Away_GF = goals scored by away team
     # GF = goals scored by home team (from home perspective)
     # GA = goals conceded by home team = goals scored by away team
-    if "Home_GF" in matches.columns and "Away_GF" in matches.columns:
-        matches["GF"] = matches["Home_GF"]
-        matches["GA"] = matches["Away_GF"]
-    elif "FTHG" in matches.columns and "FTAG" in matches.columns:
-        matches["GF"] = matches["FTHG"]
-        matches["GA"] = matches["FTAG"]
-    else:
-        log_warning("Goal columns not found; trailing stats will use zeros")
-        matches["GF"] = 0
-        matches["GA"] = 0
+    _map_goal_columns(matches)
     matches = compute_trailing_features(matches, window=TRAILING_WINDOW)
 
     log_info("Calculating Poisson features...")
@@ -294,10 +303,19 @@ def _build_fold_features(
     # alignment that the original pipeline relies on.
     slice_df = slice_df.merge(elo_df, on=["Date", "HomeTeam", "AwayTeam"], how="left")
 
+    # Goal columns drive the trailing stats; mirror build_features so the
+    # fold-aware frames carry the same derived columns.
+    _map_goal_columns(slice_df)
+
     # Trailing stats with fold cutoff = until_row (the function propagates the
     # most recent per-team feature vector onto any rows beyond the cutoff, but
     # we only consume rows within the prefix here).
     slice_df = compute_trailing_features(slice_df, window=window)
+
+    # Shin probabilities are per-match market features with no forward
+    # dependency; recompute from the same slice so FEATURE_COLUMNS are all
+    # present in fold-aware training/validation matrices.
+    _add_shin_probabilities(slice_df)
 
     # Vectorised Poisson features from the freshly-computed Elo and trailing
     # stats. Mirrors the logic in ``build_features`` so CV metrics stay
@@ -485,7 +503,7 @@ def train_validate(
         # the fold's validation rows so downstream sub-model training can use
         # the same per-row metadata.
         if use_fold_aware:
-            fold_data = val_features.copy()
+            fold_data = val_rows.copy()
         else:
             fold_data = df.loc[df.index[v_idx]].copy()
         fold_data['ml_pred'] = y_p
@@ -747,11 +765,19 @@ def run_pipeline(
             glossary_path, sofascore_path, fixtures_path, historical_path
         )
 
+        # Snapshot the normalized (pre-feature) frame: fold-aware CV must
+        # re-derive Elo/trailing features per fold from raw matches only, so
+        # the training/validation matrices cannot reuse the full-timeline
+        # feature frame built below (walk-forward leakage).
+        raw_matches = matches.copy()
+
         matches_with_features, elo_ratings = build_features(matches)
 
         df = matches_with_features.dropna(subset=FEATURE_COLUMNS).copy()
 
-        model, cv_acc, cv_ll, submodel_data, naive_ll, bookie_ll = train_validate(df, FEATURE_COLUMNS, model_type)
+        model, cv_acc, cv_ll, submodel_data, naive_ll, bookie_ll = train_validate(
+            df, FEATURE_COLUMNS, model_type, raw_matches=raw_matches
+        )
         result.model = model
         result.cv_accuracies = cv_acc
         result.cv_log_losses = cv_ll

@@ -8,6 +8,17 @@ echo ========================================
 echo   ML_Predictor2026_V2 - GIT UPDATE TOOL
 echo ========================================
 
+:: 0. Refuse to stage if any sensitive-looking file is present in the working tree
+set "SENSITIVE="
+for /f "usebackq delims=" %%L in (`git status --porcelain ^| findstr /I /C:".env" /C:".pem" /C:".key" /C:".p12" /C:".pfx" /C:"id_rsa" /C:".git-credentials" ^| findstr /V /I /C:".env.example"`) do set "SENSITIVE=%%L"
+if defined SENSITIVE (
+    echo.
+    echo [ABORT] Sensitive-looking file detected in working tree: %SENSITIVE%
+    echo         Nothing was staged. Remove it or add it to .gitignore first.
+    pause
+    exit /b 1
+)
+
 :: 1. Stage and Commit Local Changes First
 echo [1/3] Staging local changes...
 git add .

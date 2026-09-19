@@ -253,6 +253,14 @@ def _extract_sofa_stats(row, position):
 
 def clean_partidos_file(path: str, glossary: dict = None) -> None:
     """Normalize partidos.txt in place."""
+    # Refuse to mutate files outside the project directory (path traversal guard).
+    normalized = os.path.normpath(path)
+    if ".." in normalized.split(os.sep) or (
+        os.path.isabs(normalized)
+        and os.path.splitdrive(normalized)[0] != os.path.splitdrive(os.path.abspath(os.getcwd()))[0]
+    ):
+        log_error(f"Refusing to modify file outside project directory: {path}")
+        return
     try:
         with open(path, "r", encoding="utf-8") as f:
             lines = f.read().splitlines()

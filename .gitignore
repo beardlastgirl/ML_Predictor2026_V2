@@ -41,5 +41,10 @@ catboost_model/
 # Logs
 *.log
 
+# Environment / secrets (keep the template trackable)
+.env
+.env.*
+!.env.example
+
 # OS files
 Thumbs.db

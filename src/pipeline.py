@@ -393,7 +393,7 @@ def train_validate(
             Elo / EWMA leakage documented in the time-series CV audit.
 
     Returns:
-        Tuple of (trained_model, cv_accuracies, cv_log_losses, submodel_training_data, naive_ll, bookie_ll)
+        Tuple of (trained_model, cv_accuracies, cv_log_losses, naive_ll, bookie_ll)
     """
     log_info(f"Training {model_type} model with {n_splits}-fold CV...")
 
@@ -439,7 +439,6 @@ def train_validate(
 
     model = create_model(model_type)
     cv_acc, cv_ll = [], []
-    submodel_data_collection = []  # Initialize collection list
     last_v_idx: Optional[np.ndarray] = None
 
     for fold, (t_idx, v_idx) in enumerate(cv_splits, 1):
@@ -499,33 +498,9 @@ def train_validate(
         cv_ll.append(ll)
         log_info(f"Fold {fold} -> Acc: {acc:.3f}, LL: {ll:.3f}")
 
-        # Collect data for sub-model training. We stitch the predictions onto
-        # the fold's validation rows so downstream sub-model training can use
-        # the same per-row metadata.
-        if use_fold_aware:
-            fold_data = val_rows.copy()
-        else:
-            fold_data = df.loc[df.index[v_idx]].copy()
-        fold_data['ml_pred'] = y_p
-        fold_data['p_h'] = y_prob[:, 2]  # Home Win probability
-        fold_data['p_d'] = y_prob[:, 1]  # Draw probability
-        fold_data['p_a'] = y_prob[:, 0]  # Away Win probability
-
-        # Ensure 'Expected_Home_Goals' and 'Expected_Away_Goals' are in the collected data
-        # and map them to 'exp_h' and 'exp_a'
-        fold_data['exp_h'] = fold_data['Expected_Home_Goals']
-        fold_data['exp_a'] = fold_data['Expected_Away_Goals']
-
-        # Select relevant columns for the sub-model
-        # Home_GF/Away_GF may not exist in all DataFrames (e.g. test fixtures)
-        goal_cols = [c for c in ['Home_GF', 'Away_GF'] if c in fold_data.columns]
-        base_cols = ['exp_h', 'exp_a', 'ml_pred', 'p_h', 'p_d', 'p_a']
-        submodel_data_collection.append(fold_data[base_cols + goal_cols])
 
         last_v_idx = v_idx
 
-    # Concatenate all collected data
-    submodel_training_data_df = pd.concat(submodel_data_collection, ignore_index=True) if submodel_data_collection else pd.DataFrame()
 
 
     # Baseline comparison (naive & bookie)
@@ -569,7 +544,7 @@ def train_validate(
         model.fit(X, y, sample_weight=sample_weights_full)
     log_ok(f"Model trained. Mean Acc: {np.mean(cv_acc):.3f} (+/- {np.std(cv_acc):.3f})")
 
-    return model, cv_acc, cv_ll, submodel_training_data_df, naive_ll, bookie_ll
+    return model, cv_acc, cv_ll, naive_ll, bookie_ll
 
 
 def predict_fixtures(
@@ -775,7 +750,7 @@ def run_pipeline(
 
         df = matches_with_features.dropna(subset=FEATURE_COLUMNS).copy()
 
-        model, cv_acc, cv_ll, submodel_data, naive_ll, bookie_ll = train_validate(
+        model, cv_acc, cv_ll, naive_ll, bookie_ll = train_validate(
             df, FEATURE_COLUMNS, model_type, raw_matches=raw_matches
         )
         result.model = model

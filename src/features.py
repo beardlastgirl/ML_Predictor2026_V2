@@ -269,22 +269,3 @@ def get_all_teams_latest_stats(matches_df, window=8):
         latest_stats[team] = get_team_trailing_stats(history, window)
     
     return latest_stats
-
-def get_team_stats_from_history(matches_df, team_name, window=8):
-    """Get current trailing stats for a team from historical match data."""
-    if matches_df is None or matches_df.empty:
-        return {"avg_gf": np.nan, "avg_ga": np.nan, "avg_gd": np.nan, "form": np.nan, "matches": 0}
-    
-    # This is still here for backward compatibility but using get_all_teams_latest_stats is preferred
-    team_matches = matches_df[(matches_df["HomeTeam"] == team_name) | (matches_df["AwayTeam"] == team_name)].sort_values("Date")
-    if team_matches.empty:
-        return {"avg_gf": np.nan, "avg_ga": np.nan, "avg_gd": np.nan, "form": np.nan, "matches": 0}
-        
-    history = []
-    for _, row in team_matches.iterrows():
-        if row["HomeTeam"] == team_name:
-            history.append({"gf": row.get("GF", 0), "ga": row.get("GA", 0)})
-        else:
-            history.append({"gf": row.get("GA", 0), "ga": row.get("GF", 0)})
-            
-    return get_team_trailing_stats(history, window)

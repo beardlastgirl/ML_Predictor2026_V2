@@ -5,15 +5,6 @@ import numpy as np
 from src.config import BAYESIAN_SHRINKAGE_C, LEAGUE_MEAN_XG
 
 
-def get_season_start_weights(matchday: int) -> dict:
-    """Feature weights for early-season noise reduction."""
-    if matchday <= 3:
-        return {"historical_apertura": 0.50, "market_shin": 0.40, "clausura_current": 0.10}
-    if matchday <= 6:
-        return {"historical_apertura": 0.25, "market_shin": 0.25, "clausura_current": 0.50}
-    return {"historical_apertura": 0.05, "market_shin": 0.10, "clausura_current": 0.85}
-
-
 def calculate_bayesian_shrunk_xg(
     team_raw_xg: float,
     matchday: int,

@@ -1,9 +1,8 @@
 """
-Tests for train_validate submodel data collection in src/pipeline.py.
+Tests for the train_validate contract in src/pipeline.py.
 
-train_validate returns: (model, cv_acc, cv_ll, submodel_data_df, naive_ll, bookie_ll)
+train_validate returns: (model, cv_acc, cv_ll, naive_ll, bookie_ll)
 """
-import pytest
 import pandas as pd
 import numpy as np
 from unittest.mock import patch
@@ -27,10 +26,10 @@ class MockModel:
 
 
 @patch('src.pipeline.create_model', return_value=MockModel())
-def test_train_validate_collects_submodel_data(mock_create_model):
+def test_train_validate_returns_five_tuple(mock_create_model):
     """
-    train_validate collects validation fold data for sub-model training.
-    Returns 6-tuple: (model, cv_acc, cv_ll, submodel_data_df, naive_ll, bookie_ll)
+    train_validate returns the 5-tuple
+    (model, cv_acc, cv_ll, naive_ll, bookie_ll) and runs 2 CV folds.
     """
     data = {
         'Home_GF': [1, 2, 0, 3, 1, 2, 0, 1, 3, 2],
@@ -56,21 +55,7 @@ def test_train_validate_collects_submodel_data(mock_create_model):
 
     result = train_validate(df, features, model_type=MODEL_TYPE, n_splits=2)
 
-    # Current signature returns 6 values
-    assert len(result) == 6, f"Expected 6 return values, got {len(result)}"
-    model, cv_acc, cv_ll, submodel_data_df, naive_ll, bookie_ll = result
-
-    assert isinstance(submodel_data_df, pd.DataFrame)
-    # TimeSeriesSplit(2) on 10 rows produces validation sets of varying size
-    # depending on dropna() results. Just verify it's non-empty and < total rows.
-    assert len(submodel_data_df) > 0
-    assert len(submodel_data_df) < len(df)
-
-    expected_cols = ['exp_h', 'exp_a', 'ml_pred', 'p_h', 'p_d', 'p_a']
-    for col in expected_cols:
-        assert col in submodel_data_df.columns, f"Missing column: {col}"
-
-    # Mock model always predicts draw (1)
-    assert np.allclose(submodel_data_df['ml_pred'], 1)
-    assert np.allclose(submodel_data_df['p_h'], 0.2)
-    assert np.allclose(submodel_data_df['p_d'], 0.6)
+    assert len(result) == 5, f"Expected 5 return values, got {len(result)}"
+    model, cv_acc, cv_ll, naive_ll, bookie_ll = result
+    assert len(cv_acc) > 0
+    assert len(cv_ll) > 0

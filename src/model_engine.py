@@ -7,8 +7,7 @@ from catboost import CatBoostClassifier
 from lightgbm import LGBMClassifier
 from src.config import (
     MODEL_PARAMS, BASE_ELO, TRAILING_WINDOW,
-    WIN_PROBABILITY_THRESHOLD, DRAW_PROBABILITY_THRESHOLD,
-    DEFAULT_EXPECTED_GOALS, MAX_PREDICTED_GOALS, ML_POISSON_BLEND_RATIO
+    DEFAULT_EXPECTED_GOALS, MAX_PREDICTED_GOALS
 )
 from src.utils import log_info
 from src.stats_engine import calculate_poisson_features, shin_method

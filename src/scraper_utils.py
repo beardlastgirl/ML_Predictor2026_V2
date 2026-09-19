@@ -191,18 +191,6 @@ def validate_scraper_output(data: Any, expected_type: type, min_size: int = 0) -
     return True
 
 
-def log_scraper_context(scraper_name: str, context: dict) -> None:
-    """
-    Log contextual information about a scraper for debugging.
-    
-    Args:
-        scraper_name: Name of the scraper
-        context: Dictionary with context info (url, team, date, etc.)
-    """
-    context_str = ", ".join(f"{k}={v}" for k, v in context.items())
-    log_info(f"[{scraper_name}] Context: {context_str}")
-
-
 class ScraperSession:
     """Context manager for scraper resource cleanup."""
     

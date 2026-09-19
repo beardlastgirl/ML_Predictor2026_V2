@@ -121,32 +121,7 @@ def test_train_validate_fold_aware_runs(mock_create_model):
     result = train_validate(
         df, FEATURE_COLUMNS, model_type=MODEL_TYPE, n_splits=2, raw_matches=raw
     )
-    assert len(result) == 6
-    model, cv_acc, cv_ll, submodel_data_df, naive_ll, bookie_ll = result
+    assert len(result) == 5
+    model, cv_acc, cv_ll, naive_ll, bookie_ll = result
     assert len(cv_acc) == 2
     assert len(cv_ll) == 2
-    assert isinstance(submodel_data_df, pd.DataFrame)
-    expected_cols = ["exp_h", "exp_a", "ml_pred", "p_h", "p_d", "p_a"]
-    for col in expected_cols:
-        assert col in submodel_data_df.columns, f"Missing column: {col}"
-
-
-@patch("src.pipeline.create_model", return_value=MockModel())
-def test_fold_aware_collects_only_recomputed_validation_rows(mock_create_model):
-    """The fold-aware sub-model data must come from the recomputed validation
-    slice (val_rows), not the leaked full-frame features."""
-    raw = _make_raw_matches(30)
-    feats, _ = build_features(raw)
-    df = feats.dropna(subset=FEATURE_COLUMNS).copy()
-
-    result = train_validate(
-        df, FEATURE_COLUMNS, model_type=MODEL_TYPE, n_splits=2, raw_matches=raw
-    )
-    submodel_data_df = result[3]
-    # MockModel predicts draw for every row: ml_pred must be entirely 1.
-    assert (submodel_data_df["ml_pred"] == 1).all()
-    # Sanity: the collected validation rows carry the expected-goals features
-    # (renamed to exp_h/exp_a by the collection step) plus any goal columns.
-    for col in ["exp_h", "exp_a"]:
-        assert col in submodel_data_df.columns
-    assert len(submodel_data_df) > 0

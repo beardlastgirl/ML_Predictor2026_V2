@@ -79,7 +79,8 @@ def calculate_outcome_probabilities(xG_home, xG_away, max_goals=MAX_GOALS):
       POISSON_DRAW_ADJUSTMENT = 1.11   (scales raw Poisson draws up)
       HOME_ADVANTAGE_BOOST    = 0.02   (small residual after xG home encoding)
 
-    To re-calibrate: run calibrate_poisson_params() from stats_engine.py
+    To re-calibrate: adjust POISSON_DRAW_ADJUSTMENT / HOME_ADVANTAGE_BOOST
+    in src/config.py after checking predicted-vs-actual outcome frequencies.
     """
     goals = np.arange(max_goals + 1)
     p_home = poisson.pmf(goals, xG_home)
@@ -246,64 +247,3 @@ def shin_method(odds):
         true_probs = pi / pi.sum()
         return true_probs, 0.0
 
-
-def calibrate_poisson_params(matches_df):
-    """
-    Compare predicted vs actual outcome frequencies to validate calibration.
-    
-    Run this once per season against historical data to check whether
-    POISSON_DRAW_ADJUSTMENT and HOME_ADVANTAGE_BOOST are well-tuned.
-    
-    Args:
-        matches_df: DataFrame with columns Home_Elo, Away_Elo, Home_Avg_GF,
-                    Away_Avg_GF, Home_Avg_GA, Away_Avg_GA, FullTimeResult
-    
-    Returns:
-        dict with actual vs predicted frequencies and suggested adjustments
-    
-    Usage:
-        from src.stats_engine import calibrate_poisson_params
-        from src.pipeline import load_data, build_features
-        _, _, matches, _, _, _ = load_data()
-        matches_feat, _ = build_features(matches)
-        report = calibrate_poisson_params(matches_feat.dropna(subset=['Home_Elo']))
-        print(report)
-    """
-    required = ["Home_Elo", "Away_Elo", "Home_Avg_GF", "Away_Avg_GF",
-                "Home_Avg_GA", "Away_Avg_GA", "FullTimeResult"]
-    missing = [c for c in required if c not in matches_df.columns]
-    if missing:
-        return {"error": f"Missing columns: {missing}"}
-
-    df = matches_df.dropna(subset=required).copy()
-    if df.empty:
-        return {"error": "No rows after dropping NaN"}
-
-    # Actual frequencies
-    total = len(df)
-    actual_home = (df["FullTimeResult"] == 2).sum() / total
-    actual_draw = (df["FullTimeResult"] == 1).sum() / total
-    actual_away = (df["FullTimeResult"] == 0).sum() / total
-
-    # Predicted frequencies (average Poisson probabilities)
-    xG_h, xG_a = calculate_expected_goals(
-        df["Home_Elo"].values, df["Away_Elo"].values,
-        df["Home_Avg_GF"].values, df["Away_Avg_GF"].values,
-        df["Home_Avg_GA"].values, df["Away_Avg_GA"].values,
-    )
-    outcomes = [calculate_outcome_probabilities(h, a) for h, a in zip(xG_h, xG_a)]
-    pred_home = np.mean([o["home_win"] for o in outcomes])
-    pred_draw = np.mean([o["draw"] for o in outcomes])
-    pred_away = np.mean([o["away_win"] for o in outcomes])
-
-    # Suggested draw adjustment: scale so predicted draw matches actual
-    suggested_draw_adj = (actual_draw / pred_draw) * POISSON_DRAW_ADJUSTMENT if pred_draw > 0 else POISSON_DRAW_ADJUSTMENT
-
-    return {
-        "n_matches": total,
-        "actual":    {"home": round(actual_home, 3), "draw": round(actual_draw, 3), "away": round(actual_away, 3)},
-        "predicted": {"home": round(pred_home, 3),   "draw": round(pred_draw, 3),   "away": round(pred_away, 3)},
-        "current_draw_adjustment": POISSON_DRAW_ADJUSTMENT,
-        "suggested_draw_adjustment": round(suggested_draw_adj, 3),
-        "note": "Set POISSON_DRAW_ADJUSTMENT in config.py to suggested_draw_adjustment if drift > 0.02",
-    }

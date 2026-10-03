@@ -1,0 +1,41 @@
+# .gemini/config.toml
+[features]
+multi_agent = true # Enable only for the 3 core subagents
+
+[orchestrator]
+name = "gemini-cli"
+reads_on_start = ["AGENTS.md"] # Keep essential instructions concise
+max_subagents = 1 # Only one active subagent at a time for focus
+state_file = ".ai/state/current.md"
+
+[agents.planner]
+file = ".gemini/agents/planner.md"
+trigger = "ambiguous task OR task spanning 3+ files"
+
+[agents.debugger]
+file = ".gemini/agents/debugger.md"
+trigger = "reproducible test failure, crash, or scraper breakage"
+
+[agents.code-reviewer]
+# This points to the global skill, leveraging existing functionality
+file = ".agents/skills/code-reviewer/SKILL.md"
+trigger = "post-implementation review"
+
+# Project-specific skills (examples)
+[skills.prediction-pipeline]
+path = ".gemini/skills/prediction-pipeline/SKILL.md"
+trigger = "model training, evaluation, inference pipeline"
+
+[skills.scraper-maintenance]
+path = ".gemini/skills/scraper-maintenance/SKILL.md"
+trigger = "scraper failure, site structure change, parsing error"
+
+# Strictly minimal MCP servers
+[mcpServers.python]
+command = "python"
+args = ["-m", "mcp.server.python"]
+
+[mcpServers.playwright]
+command = "npx"
+args = ["@modelcontextprotocol/server-playwright@latest"]
+enabled_for = ["scraper-maintenance"] # Only activate when needed

@@ -1,0 +1,19 @@
+{
+  "mcpServers": {
+    "playwright": {
+      "command": "npx",
+      "args": [
+        "@modelcontextprotocol/server-playwright@latest"
+      ],
+      "description": "Playwright browser automation MCP server for web scraping, testing, and debugging"
+    },
+    "python": {
+      "command": "python",
+      "args": [
+        "-m",
+        "mcp.server.python"
+      ],
+      "description": "Python MCP server for code analysis, refactoring, and Python execution"
+    }
+  }
+}

@@ -1,0 +1,16 @@
+apify-client>=1.8,<2
+beautifulsoup4>=4.12,<5
+catboost>=1.2,<2
+lightgbm>=4.5,<5
+lxml>=6.0.2,<7
+matplotlib>=3.9,<4
+numpy>=2.0,<3
+pandas>=2.2,<3
+pdfplumber>=0.11,<1
+playwright>=1.58,<2
+python-dotenv>=1.0,<2
+requests>=2.32,<3
+scikit-learn>=1.5,<2
+scipy>=1.14,<2
+scrapling>=0.4,<1
+websocket-client>=1.8,<2

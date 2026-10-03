@@ -1,0 +1,6 @@
+description = "Generates comprehensive unit tests for the current file."
+prompt = """
+Read the current file and generate a corresponding test file using the project's 
+testing framework (e.g., pytest for Python). 
+Focus on edge cases, error handling, and 100% logic coverage.
+"""

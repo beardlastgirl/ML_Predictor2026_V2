@@ -1,0 +1,131 @@
+{
+  "experimental": {
+    "enableAgents": true
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node .gemini/hooks/gsd-check-update.js"
+          }
+        ]
+      },
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "context-mode hook gemini-cli sessionstart"
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node .gemini/hooks/gsd-context-monitor.js",
+            "timeout": 10
+          }
+        ],
+        "matcher": "Bash|Edit|Write|MultiEdit|Agent|Task"
+      },
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "context-mode hook gemini-cli aftertool"
+          }
+        ]
+      },
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .gemini/hooks/gsd-phase-boundary.sh",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "BeforeTool": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "context-mode hook gemini-cli beforetool"
+          }
+        ]
+      },
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node .gemini/hooks/gsd-prompt-guard.js",
+            "timeout": 5
+          }
+        ]
+      },
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node .gemini/hooks/gsd-read-guard.js",
+            "timeout": 5
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .gemini/hooks/gsd-validate-commit.sh",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "SessionEnd": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node .gemini/hooks/gsd-session-summary.js"
+          }
+        ]
+      }
+    ]
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "node .gemini/hooks/gsd-statusline.js"
+  },
+  "mcpServers": {
+    "context-mode": {
+      "command": "context-mode",
+      "description": "Context sandbox — keeps raw tool output out of the context window"
+    },
+    "playwright": {
+      "command": "npx",
+      "args": [
+        "@modelcontextprotocol/server-playwright@latest"
+      ],
+      "description": "Playwright browser automation for web scraping, testing, and debugging"
+    },
+    "python": {
+      "command": "python",
+      "args": [
+        "-m",
+        "mcp.server.python"
+      ],
+      "description": "Python MCP server for code analysis, refactoring, and execution"
+    }
+  }
+}

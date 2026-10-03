@@ -1,0 +1,363 @@
+# Data loading and normalization
+
+import json
+import os
+import re
+import shutil
+from pathlib import Path
+import pandas as pd
+from src.utils import log_info, log_ok, log_error, log_warning
+from src.map_headers import map_headers
+from src.normalization import canonicalize_name
+
+_canonicalize_name = canonicalize_name
+
+def apply_header_mapping(df, provider=None):
+    """
+    Apply canonical header mapping to a DataFrame.
+    Returns (mapped_df, mapping_log).
+    """
+    if df.empty:
+        return df, []
+        
+    original_headers = df.columns.tolist()
+    mapped_dict, log_list = map_headers(original_headers, provider=provider)
+    
+    # Create rename map: original -> canonical
+    rename_map = {}
+    unmapped = []
+    
+    for rec in log_list:
+        if rec["canonical"]:
+            rename_map[rec["original"]] = rec["canonical"]
+        else:
+            unmapped.append(rec["original"])
+            
+    if unmapped:
+        log_warning(f"Unmapped headers found: {unmapped}")
+        
+    df = df.rename(columns=rename_map)
+    log_ok(f"Applied header mapping: {len(rename_map)} columns mapped to canonical keys")
+    
+    return df, log_list
+
+def load_glossary(filepath="Glossary.txt"):
+    """Load team name mappings from Glossary.txt.
+    Keys and values in the glossary are stored in their canonical form.
+    """
+    glossary = {}
+    if not os.path.exists(filepath):
+        log_warning(f"Glossary file not found: {filepath}")
+        return glossary
+
+    try:
+        with open(filepath, "r", encoding="utf-8") as f:
+            for line in f:
+                line = line.strip()
+                if not line or line.startswith("#"):
+                    continue
+                
+                # Support multiple delimiters: ->, =, :
+                parts = None
+                for delim in ["->", "=", ":"]:
+                    if delim in line:
+                        parts = line.split(delim, 1)
+                        break
+                
+                if parts and len(parts) == 2:
+                    source_raw = parts[0].strip()
+                    target_raw = parts[1].strip()
+                    
+                    # Remove inline comments from target (format: value # comment)
+                    if "#" in target_raw:
+                        target_raw = target_raw.split("#", 1)[0].strip()
+                    
+                    # Canonicalize both source and target for storage
+                    source_canonical = _canonicalize_name(source_raw)
+                    target_canonical = _canonicalize_name(target_raw)
+
+                    if source_canonical and target_canonical:
+                        glossary[source_canonical] = target_canonical
+        log_ok(f"Loaded {len(glossary)} team name mappings from glossary")
+    except Exception as e:
+        log_error(f"Error reading glossary: {e}")
+    return glossary
+
+# Raw internal mapping for teams with common variations not necessarily in glossary
+_internal_mapping_raw = {
+    "CENTRAL CORDOBA (SGO)": "CENTRAL CORDOBA",
+    "CENTRAL CORDOBA SDE": "CENTRAL CORDOBA",
+    "CENTRAL CBA": "CENTRAL CORDOBA",
+    "ESTUDIANTES": "ESTUDIANTES LP",
+    "ESTUDIANTES DE LA PLATA": "ESTUDIANTES LP",
+    "ESTUDIANTES (LP)": "ESTUDIANTES LP",
+    "GIMNASIA": "GIMNASIA LP",
+    "GIMNASIA Y ESGRIMA": "GIMNASIA LP",
+    "GIMNASIA (LP)": "GIMNASIA LP",
+    "GIMNASIA DE LA PLATA": "GIMNASIA LP",
+    "GIMNASIA MZA": "GIMNASIA MENDOZA",
+    "GIMNASIA (M)": "GIMNASIA MENDOZA",
+    "GIMNASIA Y ESGRIMA (M)": "GIMNASIA MENDOZA",
+    "INSTITUTO ACC": "INSTITUTO",
+    "INSTITUTO (C)": "INSTITUTO",
+    "NEWELLS": "NEWELLS OLD BOYS",
+    "NEWELLS OLD BOYS (ROS)": "NEWELLS OLD BOYS",
+    "NOB": "NEWELLS OLD BOYS",
+    "ROSARIO": "ROSARIO CENTRAL",
+    "R CENTRAL": "ROSARIO CENTRAL",
+    "TALLERES": "TALLERES CORDOBA",
+    "TALLERES (C)": "TALLERES CORDOBA",
+    "TALLERES DE CORDOBA": "TALLERES CORDOBA",
+    "UNION": "UNION DE SANTA FE",
+    "UNION SF": "UNION DE SANTA FE",
+    "DEFENSA": "DEFENSA Y JUSTICIA",
+    "DYJ": "DEFENSA Y JUSTICIA",
+    "ATL": "ATL TUCUMAN",
+    "ATL TUC": "ATL TUCUMAN",
+    "TUCUMAN": "ATL TUCUMAN",
+    "IND RIVADAVIA": "INDEPENDIENTE RIVADAVIA",
+    "IND RIV": "INDEPENDIENTE RIVADAVIA",
+    "DEP RIESTRA": "DEP RIESTRA",
+    "RIESTRA": "DEP RIESTRA",
+    "DEPORTIVO RIESTRA": "DEP RIESTRA",
+    "BARRACAS": "BARRACAS CENTRAL",
+    "SARMIENTO": "SARMIENTO JUNIN",
+    "SARMIENTO (J)": "SARMIENTO JUNIN",
+}
+
+# Pre-canonicalize internal mapping keys for efficiency
+INTERNAL_MAPPING = {
+    _canonicalize_name(k): v for k, v in _internal_mapping_raw.items()
+}
+
+def normalize_team_name(name, glossary=None):
+    """Normalize team names for consistent merging."""
+    canonical_name = _canonicalize_name(name)
+
+    # Apply user glossary mapping if available (highest precedence)
+    if glossary and canonical_name in glossary:
+        return glossary[canonical_name]
+    
+    # Apply internal mapping if no user glossary match
+    if canonical_name in INTERNAL_MAPPING:
+        return INTERNAL_MAPPING[canonical_name]
+            
+    return canonical_name
+
+
+def load_sofascore_data(filepath="src/sofascore_stats.json", glossary=None):
+    """Load Sofascore standings data from JSON file."""
+    sofascore_data = {}
+    if not os.path.exists(filepath):
+        log_warning(f"Sofascore data file not found: {filepath}")
+        return sofascore_data
+
+    try:
+        with open(filepath, "r", encoding="utf-8") as f:
+            data = json.load(f)
+            
+        teams_list = data.get("teams", [])
+        if not teams_list:
+            log_warning("No teams found in Sofascore data")
+            return sofascore_data
+
+        # Process root standings
+        if "standings" in data and isinstance(data["standings"], list):
+            for standing in data["standings"]:
+                name = standing.get("normalized")
+                if name:
+                    normalized = normalize_team_name(name, glossary)
+                    sofascore_data[normalized] = {
+                        "position": standing.get("position", 0),
+                        "points": standing.get("points", 0),
+                        "played": standing.get("played", 0),
+                        "won": standing.get("won", 0),
+                        "drawn": standing.get("drawn", 0),
+                        "lost": standing.get("lost", 0),
+                        "goals_for": standing.get("goals_for", 0),
+                        "goals_against": standing.get("goals_against", 0),
+                        "goal_difference": standing.get("goal_difference", 0),
+                        "rating": None
+                    }
+
+        # Handle different possible JSON structures
+        for team in teams_list:            # Structure 1: Nested standings rows
+            if "standings" in team:
+                for standing_type in team.get("standings", []):
+                    for idx, row in enumerate(standing_type.get("rows", [])):
+                        team_info = row.get("team", {})
+                        name = team_info.get("name", "")
+                        if name:
+                            normalized = normalize_team_name(name, glossary)
+                            sofascore_data[normalized] = _extract_sofa_stats(row, idx + 1)
+                continue # Processed nested structure
+
+            # Structure 2: Flattened team objects
+            name = team.get("name") or team.get("normalized")
+            if name:
+                normalized = normalize_team_name(name, glossary)
+                sofascore_data[normalized] = {
+                    "position": team.get("position", 0),
+                    "points": team.get("points", 0),
+                    "played": team.get("played", 0),
+                    "won": team.get("won", 0),
+                    "drawn": team.get("drawn", 0),
+                    "lost": team.get("lost", 0),
+                    "goals_for": team.get("goals_for", team.get("goalsFor", 0)),
+                    "goals_against": team.get("goals_against", team.get("goalsAgainst", 0)),
+                    "goal_difference": team.get("goal_difference", team.get("goalDifference", 0)),
+                    "rating": team.get("rating"),
+                }
+                
+        log_ok(f"Loaded Sofascore data for {len(sofascore_data)} teams")
+    except Exception as e:
+        log_error(f"Error reading Sofascore data: {e}")
+    return sofascore_data
+
+def _extract_sofa_stats(row, position):
+    """Helper to extract stats from a Sofascore row object."""
+    return {
+        "position": position,
+        "points": row.get("points", 0),
+        "played": row.get("matches", row.get("played", 0)),
+        "won": row.get("wins", row.get("won", 0)),
+        "drawn": row.get("draws", row.get("drawn", 0)),
+        "lost": row.get("losses", row.get("lost", 0)),
+        "goals_for": row.get("goalsFor", 0),
+        "goals_against": row.get("goalsAgainst", 0),
+        "goal_difference": row.get("goal_difference", row.get("goalDifference", 0)),
+        "rating": None,
+    }
+
+def clean_partidos_file(path: str, glossary: dict = None) -> None:
+    """Normalize partidos.txt in place with backup protection."""
+    # Refuse to mutate files outside the project directory (path traversal guard).
+    normalized = os.path.normpath(path)
+    if ".." in normalized.split(os.sep) or (
+        os.path.isabs(normalized)
+        and os.path.splitdrive(normalized)[0] != os.path.splitdrive(os.path.abspath(os.getcwd()))[0]
+    ):
+        log_error(f"Refusing to modify file outside project directory: {path}")
+        return
+
+    file_path = Path(path)
+    if not file_path.exists():
+        log_error(f"Fixtures file not found: {path}")
+        return
+
+    backup_path = file_path.with_suffix(file_path.suffix + ".bak")
+    try:
+        shutil.copy2(file_path, backup_path)
+    except OSError as e:
+        log_warning(f"Could not create backup of {path}: {e}")
+
+    try:
+        with open(path, "r", encoding="utf-8") as f:
+            lines = f.read().splitlines()
+
+        cleaned_lines = []
+        for line in lines:
+            if not line.strip():
+                continue
+                
+            # Basic character cleanup
+            s = line.replace("\t", " ")
+            # Handle Spanish accents
+            mapping = str.maketrans({"á": "a", "Á": "A", "é": "e", "É": "E", "í": "i", "Í": "I", "ó": "o", "Ó": "O", "ú": "u", "Ú": "U", "ü": "u", "Ü": "U"})
+            s = s.translate(mapping)
+            s = s.replace("–", "-").replace("—", "-")
+            
+            # Remove special characters but keep letters, numbers, and basic punctuation
+            s = re.sub(r"[^A-Za-zÑñ:\-\d ]+", "", s)
+            s = re.sub(r"\s+", " ", s).strip()
+            
+            if s:
+                cleaned_lines.append(s)
+                
+        with open(path, "w", encoding="utf-8") as f:
+            f.write("\n".join(cleaned_lines))
+        log_ok("Fixtures file cleaned.")
+    except Exception as e:
+        if backup_path.exists():
+            shutil.copy2(backup_path, file_path)
+            log_warning(f"Restored fixtures file from backup due to error: {e}")
+        raise
+
+def parse_fixtures(filepath, glossary=None):
+    """Parse fixture lines into a DataFrame.
+
+    Returns a tuple of (fixtures_df, header_line, summary_dict).
+    """
+    fixtures_out = []
+    header_line = None
+    summary = {
+        "penales": 0,
+        "expulsados": 0,
+        "goles": 0,
+    }
+
+    if not os.path.exists(filepath):
+        log_warning(f"Fixtures file not found: {filepath}")
+        return pd.DataFrame(), None, summary
+
+    with open(filepath, "r", encoding="utf-8") as f:
+        for line in f:
+            s = line.strip()
+            if not s:
+                continue
+
+            s_upper = s.upper()
+
+            # Capture header line (FECHA XX - ...)
+            if s_upper.startswith("FECHA"):
+                header_line = s
+                continue
+
+            # Capture summary values
+            if s_upper.startswith("CANTIDAD DE PENALES"):
+                m = re.search(r"(\d+)", s)
+                if m:
+                    summary["penales"] = int(m.group(1))
+                continue
+            if s_upper.startswith("CANTIDAD DE EXPULSADOS"):
+                m = re.search(r"(\d+)", s)
+                if m:
+                    summary["expulsados"] = int(m.group(1))
+                continue
+            if s_upper.startswith("CANTIDAD DE GOLES"):
+                m = re.search(r"(\d+)", s)
+                if m:
+                    summary["goles"] = int(m.group(1))
+                continue
+
+            # Try to extract score if present
+            m = re.search(r"(\d+)\s*[-:]\s*(\d+)", s)
+            home_score, away_score = None, None
+            if m:
+                home_score, away_score = int(m.group(1)), int(m.group(2))
+                s = re.sub(r"(\d+)\s*[-:]\s*(\d+)", "", s).strip()
+
+            # Identify teams separated by hyphen
+            if "-" not in s and "–" not in s:
+                log_warning(f"Skipping unparseable fixture line (no hyphen): {s[:80]}")
+                continue
+
+            s = s.rstrip(": ").strip()
+            parts = re.split(r"[-–]", s)
+            if len(parts) == 2:
+                raw_home = parts[0].strip()
+                raw_away = parts[1].strip()
+                home = normalize_team_name(raw_home, glossary)
+                away = normalize_team_name(raw_away, glossary)
+                fixtures_out.append({
+                    "Raw_Home": raw_home,
+                    "Raw_Away": raw_away,
+                    "HomeTeam": home,
+                    "AwayTeam": away,
+                    "Home_Score": home_score,
+                    "Away_Score": away_score,
+                })
+            else:
+                log_warning(f"Skipping malformed fixture line (expected 2 parts): {s[:80]}")
+
+    return pd.DataFrame(fixtures_out), header_line, summary

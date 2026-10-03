@@ -1,0 +1,8 @@
+description = "Analyzes the code for redundancy and simplifies the implementation."
+prompt = """
+Act as a senior software architect. Review the current project context and:
+1. Identify redundant logic or boilerplate that can be removed.
+2. Refactor complex functions into cleaner, more readable versions.
+3. Suggest performance optimizations without changing the existing behavior.
+Apply these changes directly to the relevant files.
+"""

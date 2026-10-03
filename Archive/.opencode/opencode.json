@@ -1,0 +1,17 @@
+{
+  "permission": {
+    "read": {
+      "C:/Scripts/ML_Predictor2026_V2/.opencode/get-shit-done/*": "allow"
+    },
+    "external_directory": {
+      "C:/Scripts/ML_Predictor2026_V2/.opencode/get-shit-done/*": "allow"
+    }
+  },
+  "mcpServers": {
+    "colab-mcp": {
+      "command": "uvx",
+      "args": ["git+https://github.com/googlecolab/colab-mcp"],
+      "timeout": 30000
+    }
+  }
+}

@@ -1,0 +1,6 @@
+description = "Performs a rigorous code review for bugs and style violations."
+prompt = """
+Review the recent changes in this project.
+Identify potential bugs, security vulnerabilities, or violations of 
+clean code principles. Summarize your findings and suggest specific fixes.
+"""

@@ -1,7 +1,7 @@
 # Handoff Document - ML_Predictor2026_V2
 
 **Date**: 2026-10-09
-**Status**: Phase 1.0 Complete — Experiment Harness Verified ✅ | Phase 1.1 (Model D) Ready
+**Status**: Phase 1.1 Complete — Sporting Form INCONCLUSIVE, Baseline Kept ✅ | Phase 1.2 (Model E) Next
 
 ---
 
@@ -82,9 +82,16 @@ Local Project Root: `C:\Scripts\ML_Predictor2026_V2\`
 - **Verification PASSED:** 2 baseline runs identical (exact float equality, tolerance achieved = 0); independently reproduced Phase 0.2 frozen baseline: acc 0.43241 / LL 1.10278 / Brier 0.66619, OOF n=5215, train counts [1046, 2089, 3132, 4175, 5218], val 1043 x5.
 - Baseline confusion matrix (OOF, rows=true A/D/H, cols=pred A/D/H): [[334,92,981],[304,78,1177],[308,98,1843]] — model rarely predicts Draw/Away; documented as reference.
 
+### Phase 1.1 — Sporting Form COMPLETE (commit `6aa996e`) — NEGATIVE RESULT
+- D1 EWMA (hl 2/4/8) and D2 venue splits tested as separate variants via `--variant` on the harness.
+- All 4 variants: mean LL slightly below baseline (best D1 hl2: 1.0992 vs 1.1028) but paired bootstrap 95% CIs all cross 0 -> INCONCLUSIVE.
+- **Decision: baseline 24 features kept.** D3 not run (conditional rule not met). Details: `PHASE1_1_Sporting_Form_Results.md`.
+- Variant machinery remains available (`--variant ewma_hl2|ewma_hl4|ewma_hl8|venue_split`); production path unchanged.
+- Comparison tool: `python -m src.experiment_compare <baseline_name> <variant_name>` (paired match-level bootstrap CI).
+
 ### Remaining experiment order (Master Prompt §12, isolated + comparable):
-1. **1.1** Model D — Sporting Form variants (EWMA decay, home/away splits) from ARG.csv only. Test EWMA decay and home/away splits as SEPARATE variants. No new data needed.
-2. **1.2** Model E — Coaching change dates (curated CSV, verified dates; Transfermarkt/Wikipedia).
+1. ~~1.1 Model D~~ DONE — inconclusive
+2. **1.2** Model E — Coaching change dates (curated CSV, verified dates; Transfermarkt/Wikipedia). NEXT.
 3. **1.3** Model C — Squad availability: DATA AUDIT FIRST. If no free historical source with as-known-at-T timestamps exists, reject without building.
 4. **1.4** Model G — News: deferred until harness proven; no sentiment-only scoring (Master Prompt §7).
 5. **1.5** Model H — combine only components with proven OOF delta.

@@ -1,132 +1,86 @@
 # Handoff Document - ML_Predictor2026_V2
 
-**Date**: 2026-09-27
-**Status**: Roadmap Complete ✅
+**Date**: 2026-10-09
+**Status**: Phase 0.2 Complete — Temporal Integrity Verified ✅ | Phase 1 Ready
+
+---
+
+## Session Skills Mandate (applies every session)
+
+Load and apply at session start:
+- `C:\Scripts\MainSkills\model-routing\SKILL.md`
+- `C:\Scripts\MainSkills\token-optimization-context-defense\SKILL.md`
+- `C:\Scripts\MainSkills\python-code-review\python-code-review-skill.md`
 
 ---
 
 ## Project Location
-Local Project Root: `C:\Scripts\ML_Predictor2026_V2\` (documented for current machine context) / `/c/Users/argen/ML_Predictor2026_V2/` (WSL)
+Local Project Root: `C:\Scripts\ML_Predictor2026_V2\`
 
-**Note on Execution:** To avoid import errors with the canonical path module, always execute Python scripts as modules from the root:
-`python -m src.module_name` (e.g., `python -m src.main`)
-
----
-
-## Completed Work (September 2026 Roadmap)
-
-### Phase 1: High Priority - Quality Gates & Cleanliness ✅
-| Item | Status | Details |
-|------|--------|---------|
-| CI/CD Pipeline | ✅ Complete | `.github/workflows/ci.yml` - pytest, pip-audit, artifact tracking |
-| Repository Governance | ✅ Complete | Updated `.gitignore`: catboost_info/, Reporte/, Prediccion*.txt, *.pdf, Partidos.txt/partidos.txt |
-| Skill-Tree Canonicalization | ✅ Verified | `.claude/skills` and `.agents/skills` identical |
-
-### Phase 2: Medium Priority - Code Quality & Testing ✅
-| Item | Status | Details |
-|------|--------|---------|
-| Type Hints | ✅ Complete | PEP 484 on `features.py`, `stats_engine.py`, `pipeline.py` |
-| cv_split.py Fallback | ✅ Complete | `src/cv_split.py` with boundary detection, fallback warnings, n_splits clamping |
-| Golden Math Regression Suite | ✅ Complete | `tests/test_golden_math.py` - 17 tests freezing exact numerical snapshots |
-| Pipeline Integration Tests | ✅ Complete | `tests/test_pipeline_integration.py` - 19 tests covering end-to-end execution |
-| Documentation Refresh | ✅ Complete | `Readme.md`, `DEV_CONTEXT/PROJECT_STATUS.md` updated with current metrics |
-
-### Critical Bug Fixes ✅
-| Bug | Fix | Impact |
-|-----|-----|--------|
-| Shin Imputation | Missing odds → 1/3 (was NaN) | Restored 5,788 matches to training corpus |
+**Execution:** Always run Python as modules from root: `python -m src.module_name` (avoids `src.paths` import errors).
 
 ---
 
-## Test Results
-```
-Total: 80/80 PASSING ✅
-- test_golden_math.py:       17 tests
-- test_main.py:              29 tests  
-- test_pipeline_integration: 19 tests
-- test_scraper_utils.py:     15 tests
-```
+## Current State (2026-10-09)
 
----
+### Temporal Integrity — COMPLETE (commit `275d462`)
+- **Phase 0.1**: Fixed Date-only sorting → sort by `["Date", "Time"]` in `src/pipeline.py`.
+- **Phase 0.2**: Atomic timestamp batches via `src/batched_features.py` — same-timestamp matches share one pre-batch state; Elo/trailing updates apply only after the batch. Dates with missing/malformed/00:XX times (1,250 matches) become conservative day-batches (3,297 matches on 1,060 dates).
+- Public APIs (`calculate_all_elo_ratings`, `compute_trailing_features`) delegate to the batched path — single implementation.
+- Prediction path (`predict_gameweek`) verified safe; `get_all_teams_latest_stats` now uses stable sort.
+- Reports: `PHASE0_1_Temporal_Integrity_Report.md`, `PHASE0_2_Temporal_Integrity_Report.md`.
 
-## Current Baseline Metrics (2026-09-26)
+### Baseline Metrics (post-fix, measured 2026-10-09)
 | Metric | Value |
 |--------|-------|
-| Historical Matches | 6,128 |
-| Training Samples (post warm-up) | 340 |
-| Mean CV Accuracy (5-fold) | 0.343 ± 0.067 |
-| Mean CV Log Loss (5-fold) | 1.254 |
-| Naive Baseline Log Loss | ~1.08 |
-| Bookmaker Baseline Log Loss | ~1.04 |
-| Features Used | 24 |
+| Dataset | `data/ARG.csv`, 6,295 rows (2012-08-03..2026-08-12), 6,261 eligible |
+| Features | 24 (schema unchanged) |
+| Model | CatBoost, random_state=42, draw weight 0.7 |
+| CV | TimeSeriesSplit(5) |
+| Mean Accuracy | 0.4324 ± 0.0112 |
+| Mean Log Loss | 1.1028 ± 0.0053 |
+| Multiclass Brier (OOF, 3-class SSE) | 0.6662 |
 
-**Note**: Model performs at naive baseline level (per audit findings). Objective clarification needed before hyperparameter tuning.
-
----
-
-## Key Files Created/Modified (Sep 2026)
-
-### Created
-- `src/cv_split.py` - Tournament-aware cross-validation
-- `tests/test_golden_math.py` - Golden math regression suite
-- `tests/test_pipeline_integration.py` - Pipeline integration tests
-- `.github/workflows/ci.yml` - CI/CD pipeline
-
-### Modified
-- `src/features.py` - Type hints added
-- `src/stats_engine.py` - Type hints added
-- `src/pipeline.py` - Shin imputation fix, tournament-aware CV integration
-- `.gitignore` - Added ignore patterns
-- `Readme.md` - Complete rewrite with current architecture
-
----
-
-## Operational Notes
-
-### Weekly Workflow
-```powershell
-.\run_model.ps1
-# Menu options 1-8 for individual or full pipeline runs
+### Tests
+```
+94/94 PASSING (~229s)
+- tests/test_temporal_ordering.py:  8 tests (production-path; fail under old sequential semantics — sensitivity proven)
+- tests/test_golden_math.py:       17 tests
+- tests/test_main.py:              29+ tests
+- tests/test_pipeline_integration: 19 tests
+- tests/test_scraper_utils.py:     15 tests
+- tests/test_leakage.py:            1 test
 ```
 
-### Key Scripts
-- `main.py` - Orchestration entry point
-- `scrape_stats_enhanced.py` / `scrape_stats_manual.py` - FBref stats
-- `scrape_footystats.py` - FootyStats advanced metrics
-- `scrape_tyc.py` - Fixtures
-- `scrape_sofascore_apify.py` - Current standings
-
-### Model
-- Default: CatBoost
-- Switch via env: `MODEL_TYPE=lightgbm` or `MODEL_TYPE=catboost`
-
 ---
 
-## Known Issues (Per Roadmap)
-1. **Scraper Fragility** - DOM changes break scrapers; mitigated by triple-source strategy
-2. **Manual Mapping** - New teams require Glossary.txt updates
-3. **Browser Dependencies** - CDP scraper needs Chrome with DevTools
-4. **Model Performance** - At naive baseline; needs objective clarification
+## Key Architecture Facts
+- `src/batched_features.py` — canonical temporal batching (do not create parallel implementations)
+- `src/config.py` — all hyperparameters; never hardcode elsewhere
+- Elo/trailing/Poisson features derive from one canonical order: `prepare_temporal_batches`
+- Class encoding: 0=Away, 1=Draw, 2=Home
+- `src/cv_split.py` tournament-aware CV exists but is NOT wired into `train_validate` (plain TimeSeriesSplit in use)
 
----
+## Operational Notes
+- Weekly: update `Partidos.txt`, run `python main.py` (or `.\run_model.ps1`)
+- FBref/FootyStats blocked (403); use CDP method `python -m src.scrape_stats_manual` with manual CAPTCHA
+- New teams → add mappings to `Glossary.txt`
 
-## Remaining Roadmap (Phase 3 - Lower Priority)
-*Not completed - architectural evolution items*
-- Configuration migration to YAML/Pydantic Settings
-- SHAP interpretability analysis script (`scripts/`)
-- Pipeline deconstruction: `orchestration.py`, `feature_pipeline.py`, `reporting.py`
+## Known Issues
+1. 1,250 midnight (00:XX) kickoff times are data artifacts — conservatively day-batched, not trusted
+2. Scraper fragility (DOM changes); triple-source strategy mitigates
+3. Manual Glossary mapping for new teams
+4. Model at naive-baseline-ish performance; no accuracy gain expected/claimed from temporal fix
 
----
+## Next Steps (Phase 1 — authorized to proceed)
+1. Team State features and/or news features (per `ML_Predictor2026_Master_Prompt.md`)
+2. Preserve atomic batching: any new time-dependent feature must consume pre-batch state only
+3. Objective clarification still open (3-class vs goal-count regression)
 
-## Cleanup Performed
-- ❌ No `Critiques/CONSOLIDATED_CRITIQUES_AND_ROADMAP.md` existed (empty Critiques folder)
-- ❌ No `handsoff.md` existed (created this file)
-- ⚠️ `DEV_CONTEXT/` historical docs preserved (document March 2026 Tier 1 implementation)
+## Files to Read First Next Session
+1. This file
+2. `PHASE0_2_Temporal_Integrity_Report.md` (verdict: Verified)
+3. `AGENTS.md` (project conventions)
 
----
-
-## Next Steps for Continuation
-1. Clarify prediction objective (3-class vs goal-count regression)
-2. If tuning: start with CatBoost hyperparameter search
-3. Apply `@resilient_scraper` decorator to production scrapers
-4. Consider Phase 3 items if architecture needs modularization
+## Worktree Hygiene
+Many unrelated untracked files exist (scraper CSV outputs `src/fbref_*`, `src/footystats_*`, `outputs/`, `jobs/`). Do NOT stage them into feature commits. Uncommitted-but-unrelated: `Partidos.txt.bak`, `requirements.*`, `src/sofascore_stats.json`.

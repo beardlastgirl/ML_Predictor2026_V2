@@ -1,7 +1,7 @@
 # Handoff Document - ML_Predictor2026_V2
 
 **Date**: 2026-10-09
-**Status**: Phase 0.2 Complete — Temporal Integrity Verified ✅ | Phase 1 Ready
+**Status**: Phase 1.0 Complete — Experiment Harness Verified ✅ | Phase 1.1 (Model D) Ready
 
 ---
 
@@ -76,13 +76,18 @@ Local Project Root: `C:\Scripts\ML_Predictor2026_V2\`
 
 **Objective (RESOLVED):** Track both 3-class and goals metrics; a feature ships ONLY if 3-class log loss/Brier improves out-of-sample on identical folds. Goals metrics are informational.
 
-Experiment order (Master Prompt §12, isolated + comparable):
-1. **1.0** Experiment harness: one script runs a variant -> same TimeSeriesSplit(5) folds -> appends acc/LL/Brier + confusion matrix to results log. Freeze baseline: acc 0.4324 / LL 1.1028 / Brier 0.6662.
-2. **1.1** Model D — Sporting Form variants (EWMA decay, home/away splits) from ARG.csv only. No new data needed.
-3. **1.2** Model E — Coaching change dates (curated CSV, verified dates; Transfermarkt/Wikipedia).
-4. **1.3** Model C — Squad availability: DATA AUDIT FIRST. If no free historical source with as-known-at-T timestamps exists, reject without building.
-5. **1.4** Model G — News: deferred until harness proven; no sentiment-only scoring (Master Prompt §7).
-6. **1.5** Model H — combine only components with proven OOF delta.
+### Phase 1.0 — Experiment Harness COMPLETE (commit `44e1b58`)
+- `src/experiment_harness.py`: `python -m src.experiment_harness --name <exp>` -> appends full record to `experiments/results.jsonl` (id, timestamp, git commit, config, env versions, data sha256, fold boundaries/counts, per-fold + aggregate acc/LL/Brier, OOF confusion matrix, errors).
+- Fold loop mirrors `train_validate` exactly (TimeSeriesSplit(5), draw weight 0.7, CatBoost seed 42).
+- **Verification PASSED:** 2 baseline runs identical (exact float equality, tolerance achieved = 0); independently reproduced Phase 0.2 frozen baseline: acc 0.43241 / LL 1.10278 / Brier 0.66619, OOF n=5215, train counts [1046, 2089, 3132, 4175, 5218], val 1043 x5.
+- Baseline confusion matrix (OOF, rows=true A/D/H, cols=pred A/D/H): [[334,92,981],[304,78,1177],[308,98,1843]] — model rarely predicts Draw/Away; documented as reference.
+
+### Remaining experiment order (Master Prompt §12, isolated + comparable):
+1. **1.1** Model D — Sporting Form variants (EWMA decay, home/away splits) from ARG.csv only. Test EWMA decay and home/away splits as SEPARATE variants. No new data needed.
+2. **1.2** Model E — Coaching change dates (curated CSV, verified dates; Transfermarkt/Wikipedia).
+3. **1.3** Model C — Squad availability: DATA AUDIT FIRST. If no free historical source with as-known-at-T timestamps exists, reject without building.
+4. **1.4** Model G — News: deferred until harness proven; no sentiment-only scoring (Master Prompt §7).
+5. **1.5** Model H — combine only components with proven OOF delta.
 
 **Frozen architecture rule:** atomic timestamp batching is not revisited; any new time-dependent feature must consume pre-batch state only.
 

@@ -7,14 +7,51 @@ available to another match on that date.
 """
 
 from collections import defaultdict
-from typing import Dict, List, Tuple
+from typing import Dict, List, Optional, Tuple
 
 import numpy as np
 import pandas as pd
 
-from src.config import BASE_ELO
+from src.config import BASE_ELO, VENUE_SPLIT_MIN_MATCHES
 from src.features import get_team_trailing_stats
 from src.stats_engine import update_elo
+
+
+def _ewma_stats(history: List[Dict], window: int, halflife: float) -> Dict[str, float]:
+    """Exponentially weighted trailing stats; the newest match has weight 1.
+
+    Weights decay by ``0.5 ** (1/halflife)`` per match of age, so a match
+    ``halflife`` matches old carries half the weight of the latest one.
+    NaN exactly when history is empty, matching baseline trailing-stat NaNs.
+    """
+    if not history:
+        return {"form": np.nan, "gf": np.nan, "ga": np.nan}
+    recent = history[-window:]
+    decay = 0.5 ** (1.0 / halflife)
+    n = len(recent)
+    weights = np.array([decay ** (n - 1 - i) for i in range(n)], dtype=float)
+    gf = np.array([m["gf"] for m in recent], dtype=float)
+    ga = np.array([m["ga"] for m in recent], dtype=float)
+    pts = np.where(gf > ga, 3.0, np.where(gf == ga, 1.0, 0.0))
+    wsum = weights.sum()
+    return {
+        "form": float((weights * pts).sum() / wsum),
+        "gf": float((weights * gf).sum() / wsum),
+        "ga": float((weights * ga).sum() / wsum),
+    }
+
+
+def _venue_stats(history: List[Dict], window: int, is_home: bool) -> Dict[str, float]:
+    """Trailing stats from venue-matched matches only.
+
+    Falls back to the overall trailing stats when venue-specific history has
+    fewer than VENUE_SPLIT_MIN_MATCHES entries, so NaN patterns (and therefore
+    the eligible/OOF row sets) stay identical to the baseline.
+    """
+    filtered = [m for m in history if m.get("is_home") == is_home]
+    source = filtered if len(filtered) >= VENUE_SPLIT_MIN_MATCHES else history
+    stats = get_team_trailing_stats(source, window)
+    return {"form": stats["form"], "gf": stats["avg_gf"], "ga": stats["avg_ga"]}
 
 
 def prepare_temporal_batches(matches_df: pd.DataFrame) -> pd.DataFrame:
@@ -92,18 +129,23 @@ def calculate_all_elo_ratings_batched(matches_df: pd.DataFrame, base_elo: int = 
     return ratings, history
 
 
-def compute_trailing_features_batched(matches_df: pd.DataFrame, window: int = 8) -> pd.DataFrame:
+def compute_trailing_features_batched(matches_df: pd.DataFrame, window: int = 8, form_variant: Optional[Dict] = None) -> pd.DataFrame:
     """
     Compute trailing features with batch processing for same-timestamp matches.
-    
+
     Matches sharing the same DateTime are processed as a batch:
     - All matches in batch use trailing stats from BEFORE the batch
     - Trailing stats are updated AFTER all batch features are recorded
-    
+
     Args:
         matches_df: DataFrame with Date, Time, Home/HomeTeam, Away/AwayTeam, GF/GA or HG/AG columns
         window: Number of trailing matches to consider
-    
+        form_variant: None (baseline) or a variant spec:
+            {"type": "ewma", "halflife": h} -> adds Home/Away_EWMA_Form/GF/GA
+            {"type": "venue_split"}         -> adds Home/Away_Venue_Form/GF/GA
+            Variant features are computed in the same pre-batch pass, so batch
+            isolation semantics are identical to the baseline features.
+
     Returns:
         DataFrame with trailing features added
     """
@@ -115,7 +157,16 @@ def compute_trailing_features_batched(matches_df: pd.DataFrame, window: int = 8)
             home = row["Home"] if "Home" in row else row["HomeTeam"]
             away = row["Away"] if "Away" in row else row["AwayTeam"]
             home_stats, away_stats = get_team_trailing_stats(team_history[home], window), get_team_trailing_stats(team_history[away], window)
-            trailing_features.append({"_temporal_row_id": row["_temporal_row_id"], "Home_Avg_GF": home_stats["avg_gf"], "Home_Avg_GA": home_stats["avg_ga"], "Home_Avg_GD": home_stats["avg_gd"], "Home_Form": home_stats["form"], "Home_Matches": home_stats["matches"], "Away_Avg_GF": away_stats["avg_gf"], "Away_Avg_GA": away_stats["avg_ga"], "Away_Avg_GD": away_stats["avg_gd"], "Away_Form": away_stats["form"], "Away_Matches": away_stats["matches"]})
+            feats = {"_temporal_row_id": row["_temporal_row_id"], "Home_Avg_GF": home_stats["avg_gf"], "Home_Avg_GA": home_stats["avg_ga"], "Home_Avg_GD": home_stats["avg_gd"], "Home_Form": home_stats["form"], "Home_Matches": home_stats["matches"], "Away_Avg_GF": away_stats["avg_gf"], "Away_Avg_GA": away_stats["avg_ga"], "Away_Avg_GD": away_stats["avg_gd"], "Away_Form": away_stats["form"], "Away_Matches": away_stats["matches"]}
+            if form_variant and form_variant.get("type") == "ewma":
+                h_e = _ewma_stats(team_history[home], window, float(form_variant["halflife"]))
+                a_e = _ewma_stats(team_history[away], window, float(form_variant["halflife"]))
+                feats.update({"Home_EWMA_Form": h_e["form"], "Home_EWMA_GF": h_e["gf"], "Home_EWMA_GA": h_e["ga"], "Away_EWMA_Form": a_e["form"], "Away_EWMA_GF": a_e["gf"], "Away_EWMA_GA": a_e["ga"]})
+            elif form_variant and form_variant.get("type") == "venue_split":
+                h_v = _venue_stats(team_history[home], window, is_home=True)
+                a_v = _venue_stats(team_history[away], window, is_home=False)
+                feats.update({"Home_Venue_Form": h_v["form"], "Home_Venue_GF": h_v["gf"], "Home_Venue_GA": h_v["ga"], "Away_Venue_Form": a_v["form"], "Away_Venue_GF": a_v["gf"], "Away_Venue_GA": a_v["ga"]})
+            trailing_features.append(feats)
         for _, row in _stable_batch_rows(batch).iterrows():
             home = row["Home"] if "Home" in row else row["HomeTeam"]
             away = row["Away"] if "Away" in row else row["AwayTeam"]

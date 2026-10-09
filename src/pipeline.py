@@ -135,11 +135,14 @@ def load_data(
     return glossary, sofascore_data, matches, fixtures
 
 
-def build_features(matches: pd.DataFrame) -> Tuple[pd.DataFrame, Dict]:
+def build_features(matches: pd.DataFrame, form_variant: Optional[Dict] = None) -> Tuple[pd.DataFrame, Dict]:
     """Compute all features for model training.
 
     Args:
         matches: DataFrame with normalized match data
+        form_variant: None (baseline) or a sporting-form variant spec forwarded
+            to compute_trailing_features_batched (experiment harness only;
+            production callers use None). See batched_features for the spec.
 
     Returns:
         Tuple of (feature_dataframe, elo_ratings_dict)
@@ -181,7 +184,7 @@ def build_features(matches: pd.DataFrame) -> Tuple[pd.DataFrame, Dict]:
 
     matches["GF"] = matches["HG"] if "HG" in matches.columns else 0
     matches["GA"] = matches["AG"] if "AG" in matches.columns else 0
-    matches = compute_trailing_features_batched(matches, window=TRAILING_WINDOW)
+    matches = compute_trailing_features_batched(matches, window=TRAILING_WINDOW, form_variant=form_variant)
 
     log_info("Calculating Poisson features...")
     poisson_features = [

@@ -51,6 +51,10 @@ MAX_PREDICTED_GOALS = 6  # Maximum goals to predict
 # Trailing window for squad features (EWMA span; decay handled in features.py)
 TRAILING_WINDOW = 8
 
+# Phase 1.1 sporting-form variants (experiment harness only; baseline path unchanged)
+EWMA_HALFLIFE_CANDIDATES = [2, 4, 8]  # in matches; a priori set, no further tuning
+VENUE_SPLIT_MIN_MATCHES = 3  # below this, venue stats fall back to overall trailing stats
+
 # Tournament transition: compress prior-season EWMA by this factor at season change
 TOURNAMENT_TRANSITION_DECAY = 0.70
 

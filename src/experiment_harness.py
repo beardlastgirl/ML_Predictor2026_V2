@@ -39,10 +39,28 @@ from src.model_engine import create_model
 from src.pipeline import FEATURE_COLUMNS, build_features, load_data
 
 RESULTS_LOG = Path("experiments/results.jsonl")
+OOF_DIR = Path("experiments")
 N_SPLITS = 5
 DRAW_WEIGHT = 0.7
 CLASSES = [0, 1, 2]  # 0=Away, 1=Draw, 2=Home
 BRIER_CONVENTION = "multiclass_sse_mean_over_oof_rows_range_0_2"
+
+# Phase 1.1 sporting-form variants. Small a priori candidate set; no tuning
+# beyond these values (see config.EWMA_HALFLIFE_CANDIDATES).
+VARIANTS = {
+    "ewma_hl2": ({"type": "ewma", "halflife": 2},
+                 ["Home_EWMA_Form", "Home_EWMA_GF", "Home_EWMA_GA",
+                  "Away_EWMA_Form", "Away_EWMA_GF", "Away_EWMA_GA"]),
+    "ewma_hl4": ({"type": "ewma", "halflife": 4},
+                 ["Home_EWMA_Form", "Home_EWMA_GF", "Home_EWMA_GA",
+                  "Away_EWMA_Form", "Away_EWMA_GF", "Away_EWMA_GA"]),
+    "ewma_hl8": ({"type": "ewma", "halflife": 8},
+                 ["Home_EWMA_Form", "Home_EWMA_GF", "Home_EWMA_GA",
+                  "Away_EWMA_Form", "Away_EWMA_GF", "Away_EWMA_GA"]),
+    "venue_split": ({"type": "venue_split"},
+                    ["Home_Venue_Form", "Home_Venue_GF", "Home_Venue_GA",
+                     "Away_Venue_Form", "Away_Venue_GF", "Away_Venue_GA"]),
+}
 
 
 def _sha256_file(path: str) -> str:
@@ -85,9 +103,19 @@ def run_experiment(
     features: list = None,
     notes: str = "",
     historical_path: str = "data/ARG.csv",
+    variant: str = None,
 ) -> dict:
     """Run one experiment on the frozen evaluation methodology and log it."""
-    features = list(features) if features else list(FEATURE_COLUMNS)
+    form_variant = None
+    variant_features = []
+    if variant:
+        if variant not in VARIANTS:
+            raise ValueError(f"Unknown variant '{variant}'. Known: {sorted(VARIANTS)}")
+        form_variant, variant_features = VARIANTS[variant]
+        if features:
+            raise ValueError("--features and --variant are mutually exclusive")
+
+    features = list(features) if features else list(FEATURE_COLUMNS) + variant_features
     record = {
         "experiment_id": f"{name}_{datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ')}",
         "name": name,
@@ -98,6 +126,7 @@ def run_experiment(
             "model_type": model_type,
             "features": features,
             "n_features": len(features),
+            "form_variant": form_variant,
             "n_splits": N_SPLITS,
             "splitter": "TimeSeriesSplit",
             "draw_sample_weight": DRAW_WEIGHT,
@@ -116,17 +145,28 @@ def run_experiment(
             "historical_sha256": _sha256_file(historical_path),
         }
         _, _, matches, _ = load_data(historical_path=historical_path)
-        matches_feat, _ = build_features(matches)
+        matches_feat, _ = build_features(matches, form_variant=form_variant)
         df = matches_feat.dropna(subset=FEATURE_COLUMNS).copy()
-        X, y = df[features], df["Res"]
-        sample_weights = np.where(y.values == 1, DRAW_WEIGHT, 1.0)
+        # Variant features must not change the eligible/OOF row sets; they are
+        # NaN only where baseline trailing features are NaN (documented in
+        # batched_features). Fail loudly rather than silently changing folds.
+        n_variant_nan = int(df[variant_features].isna().any(axis=1).sum()) if variant_features else 0
+        if n_variant_nan:
+            raise ValueError(
+                f"Variant '{variant}' introduced NaN in {n_variant_nan} eligible rows; "
+                "OOF set would differ from baseline. Fix the variant's fallback."
+            )
         record["data"].update(
-            {"rows_raw": len(matches), "rows_eligible": len(df)}
+            {"rows_raw": len(matches), "rows_eligible": len(df),
+             "rows_with_variant_nan": n_variant_nan}
         )
 
         tscv = TimeSeriesSplit(n_splits=N_SPLITS)
-        oof_proba = np.full((len(X), len(CLASSES)), np.nan)
+        oof_proba = np.full((len(X := df[features]), len(CLASSES)), np.nan)
         oof_pred = np.full(len(X), -1)
+        oof_fold = np.full(len(X), -1)
+        y = df["Res"]
+        sample_weights = np.where(y.values == 1, DRAW_WEIGHT, 1.0)
         for fold, (t_idx, v_idx) in enumerate(tscv.split(X), 1):
             model = create_model(model_type)
             model.fit(X.iloc[t_idx], y.iloc[t_idx], sample_weight=sample_weights[t_idx])
@@ -134,6 +174,7 @@ def run_experiment(
             pred = np.asarray(model.predict(X.iloc[v_idx])).ravel()
             oof_proba[v_idx] = proba
             oof_pred[v_idx] = pred
+            oof_fold[v_idx] = fold
             d_train, d_val = df.iloc[t_idx]["Date"], df.iloc[v_idx]["Date"]
             record["folds"].append(
                 {
@@ -167,6 +208,21 @@ def run_experiment(
                 y_oof, oof_pred[mask], labels=CLASSES
             ).tolist(),
         }
+
+        # Per-match OOF probabilities for paired uncertainty analysis
+        oof_df = pd.DataFrame(
+            {
+                "pos": np.where(mask)[0],
+                "fold": oof_fold[mask].astype(int),
+                "y_true": y_oof,
+                "p_away": oof_proba[mask, 0],
+                "p_draw": oof_proba[mask, 1],
+                "p_home": oof_proba[mask, 2],
+            }
+        )
+        oof_path = OOF_DIR / f"oof_{record['experiment_id']}.csv"
+        oof_df.to_csv(oof_path, index=False)
+        record["oof_file"] = str(oof_path)
     except Exception:
         record["error"] = traceback.format_exc()
 
@@ -186,11 +242,17 @@ def main() -> int:
         default=None,
         help="Comma-separated feature subset (default: all 24 FEATURE_COLUMNS)",
     )
+    parser.add_argument(
+        "--variant",
+        default=None,
+        choices=sorted(VARIANTS),
+        help="Sporting-form variant; appends its features to the 24 base features",
+    )
     parser.add_argument("--notes", default="")
     args = parser.parse_args()
 
     features = args.features.split(",") if args.features else None
-    record = run_experiment(args.name, args.model, features, args.notes)
+    record = run_experiment(args.name, args.model, features, args.notes, variant=args.variant)
 
     if record["error"]:
         print(f"[ERROR] Experiment {record['experiment_id']} failed:")

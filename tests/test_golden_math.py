@@ -113,14 +113,13 @@ class TestGoldenExpectedGoals:
             avg_ga_home=1.0, avg_ga_away=1.0
         )
 
-        # league_avg = 1.89
-        # xG_home = (0.6 * 1.3 + 0.4 * 1.0) * 1.22 = (0.78 + 0.4) * 1.22 = 1.18 * 1.22 = 1.4396
-        # xG_away = 0.6 * 1.3 + 0.4 * 1.0 = 1.18
+        # GOAL_WEIGHT_ATTACK=0.55, GOAL_WEIGHT_DEFENSE=0.45, HOME_BOOST=1.15
+        # xG_home = (0.55 * 1.3 + 0.45 * 1.0) * 1.15 = 1.165 * 1.15 = 1.33975
+        # xG_away = 0.55 * 1.3 + 0.45 * 1.0 = 1.165
         # elo_diff = 0, elo_factor = 1 + 0/5000 = 1
-        # xG_home = 1.4396, xG_away = 1.18
 
-        expected_home = (0.6 * 1.3 + 0.4 * 1.0) * 1.22
-        expected_away = 0.6 * 1.3 + 0.4 * 1.0
+        expected_home = (0.55 * 1.3 + 0.45 * 1.0) * 1.15
+        expected_away = 0.55 * 1.3 + 0.45 * 1.0
 
         assert xG_home == pytest.approx(expected_home, abs=1e-10)
         assert xG_away == pytest.approx(expected_away, abs=1e-10)
@@ -133,8 +132,8 @@ class TestGoldenExpectedGoals:
             avg_ga_home=1.0, avg_ga_away=1.0
         )
 
-        base_home = (0.6 * 1.3 + 0.4 * 1.0) * 1.22
-        base_away = 0.6 * 1.3 + 0.4 * 1.0
+        base_home = (0.55 * 1.3 + 0.45 * 1.0) * 1.15
+        base_away = 0.55 * 1.3 + 0.45 * 1.0
         elo_diff = 200
         elo_factor = 1 + (elo_diff / 5000)  # 1 + 200/5000 = 1.04
 
@@ -152,11 +151,11 @@ class TestGoldenOutcomeProbabilities:
         """Outcome probabilities for typical match."""
         outcomes = calculate_outcome_probabilities(1.5, 1.2)
 
-        # These are the exact calculated values for xG_home=1.5, xG_away=1.2
-        # With MAX_GOALS=8, POISSON_DRAW_ADJUSTMENT=0.85
-        assert outcomes['home_win'] == pytest.approx(0.5231693334484321, abs=1e-10)
-        assert outcomes['draw'] == pytest.approx(0.20827050084179902, abs=1e-10)
-        assert outcomes['away_win'] == pytest.approx(0.2685601657097689, abs=1e-10)
+        # Exact calculated values for xG_home=1.5, xG_away=1.2
+        # With MAX_GOALS=8, POISSON_DRAW_ADJUSTMENT=1.11, HOME_ADVANTAGE_BOOST=0.02
+        assert outcomes['home_win'] == pytest.approx(0.4854288660909681, abs=1e-10)
+        assert outcomes['draw'] == pytest.approx(0.27197677168752576, abs=1e-10)
+        assert outcomes['away_win'] == pytest.approx(0.24259436222150613, abs=1e-10)
 
     def test_calculate_outcome_probabilities_sum_golden(self):
         """Probabilities sum to 1."""
@@ -176,19 +175,19 @@ class TestGoldenPoissonFeatures:
             avg_ga_home=1.0, avg_ga_away=1.0
         )
 
-        assert features['xG_home'] == pytest.approx(1.4396, abs=1e-10)
-        assert features['xG_away'] == pytest.approx(1.18, abs=1e-10)
-        assert features['xG_diff'] == pytest.approx(0.2596, abs=1e-10)
+        assert features['xG_home'] == pytest.approx(1.33975, abs=1e-10)
+        assert features['xG_away'] == pytest.approx(1.165, abs=1e-10)
+        assert features['xG_diff'] == pytest.approx(0.17475, abs=1e-10)
 
-        # These match the outcome probabilities from the golden test above
-        assert features['Poisson_Home_Win'] == pytest.approx(0.5125638132597686, abs=1e-10)
-        assert features['Poisson_Draw'] == pytest.approx(0.21262071650065084, abs=1e-10)
-        assert features['Poisson_Away_Win'] == pytest.approx(0.27481547023958056, abs=1e-10)
+        # Matches calibrated outcome probabilities
+        assert features['Poisson_Home_Win'] == pytest.approx(0.45275167663649574, abs=1e-10)
+        assert features['Poisson_Draw'] == pytest.approx(0.2865644413967096, abs=1e-10)
+        assert features['Poisson_Away_Win'] == pytest.approx(0.2606838819667947, abs=1e-10)
 
         # Expected goals match the xG values after Poisson grid computation
-        assert features['Expected_Home_Goals'] == pytest.approx(1.439443881467167, abs=1e-10)
-        assert features['Expected_Away_Goals'] == pytest.approx(1.1799661972603737, abs=1e-10)
-        assert features['Expected_Total_Goals'] == pytest.approx(2.6194100787275407, abs=1e-10)
+        assert features['Expected_Home_Goals'] == pytest.approx(1.3396596657675306, abs=1e-10)
+        assert features['Expected_Away_Goals'] == pytest.approx(1.1649694183156658, abs=1e-10)
+        assert features['Expected_Total_Goals'] == pytest.approx(2.5046290840831964, abs=1e-10)
 
 
 class TestGoldenShinMethod:
@@ -267,10 +266,10 @@ class TestGoldenConfig:
         assert BASE_ELO == 1500
         assert K_FACTOR == 30
         assert HOME_ADVANTAGE == 65
-        assert BASE_GOAL_RATE == 1.89
+        assert BASE_GOAL_RATE == 1.11
         assert MAX_GOALS == 8
-        assert POISSON_DRAW_ADJUSTMENT == 0.85
-        assert HOME_ADVANTAGE_BOOST == 0.08
+        assert POISSON_DRAW_ADJUSTMENT == 1.11
+        assert HOME_ADVANTAGE_BOOST == 0.02
         assert ML_POISSON_BLEND_RATIO == 0.6
 
 

@@ -41,41 +41,10 @@ def get_team_trailing_stats(history: List[Dict], window: int) -> Dict[str, Union
 
 def compute_trailing_features(matches_df: pd.DataFrame, window: int = 8) -> pd.DataFrame:
     """Compute trailing-average features for each team chronologically."""
-    log_info(f"Computing trailing features with window={window}...")
-    team_history: Dict[str, List[Dict]] = {}
-    trailing_features: List[Dict] = []
-    for idx, row in matches_df.iterrows():
-        home_team = row["Home"]
-        away_team = row["Away"]
-        date = row["Date"]
-        home_stats = get_team_trailing_stats(team_history.get(home_team, []), window)
-        away_stats = get_team_trailing_stats(team_history.get(away_team, []), window)
-        if home_team not in team_history:
-            team_history[home_team] = []
-        if away_team not in team_history:
-            team_history[away_team] = []
-        team_history[home_team].append({"date": date, "gf": row.get("GF", 0), "ga": row.get("GA", 0), "is_home": True})
-        team_history[away_team].append({"date": date, "gf": row.get("GA", 0), "ga": row.get("GF", 0), "is_home": False})
-        trailing_features.append({
-            "idx": idx,
-            "Home_Avg_GF": home_stats["avg_gf"],
-            "Home_Avg_GA": home_stats["avg_ga"],
-            "Home_Avg_GD": home_stats["avg_gd"],
-            "Home_Form": home_stats["form"],
-            "Home_Matches": home_stats["matches"],
-            "Away_Avg_GF": away_stats["avg_gf"],
-            "Away_Avg_GA": away_stats["avg_ga"],
-            "Away_Avg_GD": away_stats["avg_gd"],
-            "Away_Form": away_stats["form"],
-            "Away_Matches": away_stats["matches"],
-        })
-    traildf = pd.DataFrame(trailing_features)
-    traildf = traildf.set_index("idx")
-    result = matches_df.copy()
-    for col in traildf.columns:
-        result[col] = traildf[col]
-    log_ok(f"Trailing features computed for {len(result)} matches")
-    return result
+    # Public compatibility entry point.  Keep direct callers on the same
+    # atomic timestamp semantics as the production pipeline.
+    from src.batched_features import compute_trailing_features_batched
+    return compute_trailing_features_batched(matches_df, window)
 
 
 def get_all_teams_latest_stats(matches_df: pd.DataFrame, window: int = 8) -> Dict[str, Dict[str, Union[float, int]]]:
@@ -84,12 +53,14 @@ def get_all_teams_latest_stats(matches_df: pd.DataFrame, window: int = 8) -> Dic
         return {}
 
     team_history: Dict[str, List[Dict]] = {}
-    # Sort by date to ensure chronological order
-    df = matches_df.sort_values("Date")
+    # Sort by date to ensure chronological order. Stable sort preserves the
+    # canonical timestamp-batch order (prepare_temporal_batches) within a date
+    # when the caller passes pipeline-ordered data.
+    df = matches_df.sort_values("Date", kind="stable")
 
     for _, row in df.iterrows():
-        home_team = row["Home"]
-        away_team = row["Away"]
+        home_team = row["Home"] if "Home" in row else row["HomeTeam"]
+        away_team = row["Away"] if "Away" in row else row["AwayTeam"]
 
         if home_team not in team_history:
             team_history[home_team] = []
@@ -112,13 +83,16 @@ def get_team_stats_from_history(matches_df: pd.DataFrame, team_name: str, window
         return {"avg_gf": np.nan, "avg_ga": np.nan, "avg_gd": np.nan, "form": np.nan, "matches": 0}
 
     # This is still here for backward compatibility but using get_all_teams_latest_stats is preferred
-    team_matches = matches_df[(matches_df["Home"] == team_name) | (matches_df["Away"] == team_name)].sort_values("Date")
+    home_col = "Home" if "Home" in matches_df.columns else "HomeTeam"
+    away_col = "Away" if "Away" in matches_df.columns else "AwayTeam"
+    team_matches = matches_df[(matches_df[home_col] == team_name) | (matches_df[away_col] == team_name)].sort_values("Date")
     if team_matches.empty:
         return {"avg_gf": np.nan, "avg_ga": np.nan, "avg_gd": np.nan, "form": np.nan, "matches": 0}
 
     history: List[Dict] = []
     for _, row in team_matches.iterrows():
-        if row["Home"] == team_name:
+        h_team = row["Home"] if "Home" in row else row["HomeTeam"]
+        if h_team == team_name:
             history.append({"gf": row.get("GF", 0), "ga": row.get("GA", 0)})
         else:
             history.append({"gf": row.get("GA", 0), "ga": row.get("GF", 0)})

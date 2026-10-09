@@ -198,31 +198,22 @@ def calculate_poisson_features(
 def calculate_all_elo_ratings(matches_df: pd.DataFrame, base_elo: int = BASE_ELO) -> Tuple[Dict[str, float], List[Dict]]:
     """Calculate Elo ratings for all teams from match history.
 
+    Matches sharing the same DateTime are processed as a batch:
+    - All matches in a batch use Elo ratings from BEFORE the batch
+    - Elo ratings are updated AFTER all matches in the batch are processed
+    - This prevents same-timestamp temporal leakage
+
     Args:
-        matches_df: DataFrame with Home, Away, Res columns (Res = 0/1/2)
+        matches_df: DataFrame with Date, Time, Home, Away, Res columns (Res = 0/1/2)
         base_elo: Starting Elo for new teams
 
     Returns:
         tuple: (elo_ratings dict, elo_history list of dicts)
     """
-    elo_ratings: Dict[str, float] = {}
-    elo_history: List[Dict] = []
-
-    for _, row in matches_df.iterrows():
-        h, a, r = row["Home"], row["Away"], row["Res"]
-        elo_h = elo_ratings.get(h, base_elo)
-        elo_a = elo_ratings.get(a, base_elo)
-        new_h, new_a = update_elo(elo_h, elo_a, r)
-        elo_ratings[h], elo_ratings[a] = new_h, new_a
-        elo_history.append({
-            "Date": row["Date"],
-            "Home": h,
-            "Away": a,
-            "Home_Elo": elo_h,
-            "Away_Elo": elo_a
-        })
-
-    return elo_ratings, elo_history
+    # Public compatibility entry point.  The production implementation is the
+    # shared atomic batching path used by ``build_features``.
+    from src.batched_features import calculate_all_elo_ratings_batched
+    return calculate_all_elo_ratings_batched(matches_df, base_elo)
 
 
 def shin_method(odds: List[float]) -> Tuple[np.ndarray, float]:

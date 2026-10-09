@@ -28,11 +28,14 @@ from src.data_processing import (
     clean_partidos_file, parse_fixtures
 )
 from src.stats_engine import (
-    calculate_all_elo_ratings,
     calculate_poisson_features,
     shin_method,
 )
-from src.features import compute_trailing_features
+from src.batched_features import (
+    calculate_all_elo_ratings_batched,
+    compute_trailing_features_batched,
+    prepare_temporal_batches,
+)
 from src.model_engine import create_model, predict_gameweek
 from src.validation import validate_pipeline_inputs, validate_model_features
 
@@ -101,8 +104,9 @@ def load_data(
             raise ValueError(f"Missing required columns: {missing_cols}")
         
         matches = matches.dropna(subset=["Home", "Away", "Res"])
-        matches = matches.dropna(subset=["Date"])
         matches["Date"] = pd.to_datetime(matches["Date"], dayfirst=True, errors="coerce")
+        matches = matches.dropna(subset=["Date"])
+        matches["Time"] = matches["Time"].where(matches["Time"].notna(), "").astype(str).str.strip()
         matches["Home"] = matches["Home"].map(lambda x: normalize_team_name(x, glossary))
         matches["Away"] = matches["Away"].map(lambda x: normalize_team_name(x, glossary))
         matches["Res"] = matches["Res"].map(RESULT_ENCODING)
@@ -112,7 +116,10 @@ def load_data(
             unmapped_count = matches["Res"].isna().sum()
             log_warning(f"{unmapped_count} matches have invalid result codes (not H/D/A)")
         
-        matches = matches.sort_values("Date").reset_index(drop=True)
+        # Unknown and 00:xx kickoffs are conservatively batched by date.
+        matches = prepare_temporal_batches(matches).drop(
+            columns=["_temporal_batch", "_temporal_order", "_temporal_row_id"]
+        )
         log_ok(f"Historical matches loaded: {len(matches)}")
     except Exception as e:
         log_error(f"Error reading historical data: {e}")
@@ -139,6 +146,9 @@ def build_features(matches: pd.DataFrame) -> Tuple[pd.DataFrame, Dict]:
     """
     log_info("Building features...")
 
+    # A single normalized order drives Elo, trailing form, Poisson, CV, and labels.
+    matches = prepare_temporal_batches(matches)
+
     # --- Start: Shin Method Integration ---
     log_info("Calculating Shin Method probabilities from odds...")
 
@@ -163,13 +173,15 @@ def build_features(matches: pd.DataFrame) -> Tuple[pd.DataFrame, Dict]:
     )
     # --- End: Shin Method Integration ---
 
-    elo_ratings, elo_history = calculate_all_elo_ratings(matches, BASE_ELO)
-    elo_df = pd.DataFrame(elo_history)
-    matches = matches.merge(elo_df, on=["Date", "Home", "Away"], how="left")
+    elo_ratings, elo_history = calculate_all_elo_ratings_batched(matches, BASE_ELO)
+    elo_df = pd.DataFrame(elo_history).set_index("_temporal_row_id")
+    matches = matches.set_index("_temporal_row_id")
+    matches[["Home_Elo", "Away_Elo"]] = elo_df[["Home_Elo", "Away_Elo"]]
+    matches = matches.reset_index()
 
     matches["GF"] = matches["HG"] if "HG" in matches.columns else 0
     matches["GA"] = matches["AG"] if "AG" in matches.columns else 0
-    matches = compute_trailing_features(matches, window=TRAILING_WINDOW)
+    matches = compute_trailing_features_batched(matches, window=TRAILING_WINDOW)
 
     log_info("Calculating Poisson features...")
     poisson_features = [

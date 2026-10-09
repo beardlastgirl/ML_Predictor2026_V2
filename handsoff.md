@@ -72,10 +72,19 @@ Local Project Root: `C:\Scripts\ML_Predictor2026_V2\`
 3. Manual Glossary mapping for new teams
 4. Model at naive-baseline-ish performance; no accuracy gain expected/claimed from temporal fix
 
-## Next Steps (Phase 1 — authorized to proceed)
-1. Team State features and/or news features (per `ML_Predictor2026_Master_Prompt.md`)
-2. Preserve atomic batching: any new time-dependent feature must consume pre-batch state only
-3. Objective clarification still open (3-class vs goal-count regression)
+## Phase 1 Plan (agreed 2026-10-09)
+
+**Objective (RESOLVED):** Track both 3-class and goals metrics; a feature ships ONLY if 3-class log loss/Brier improves out-of-sample on identical folds. Goals metrics are informational.
+
+Experiment order (Master Prompt §12, isolated + comparable):
+1. **1.0** Experiment harness: one script runs a variant -> same TimeSeriesSplit(5) folds -> appends acc/LL/Brier + confusion matrix to results log. Freeze baseline: acc 0.4324 / LL 1.1028 / Brier 0.6662.
+2. **1.1** Model D — Sporting Form variants (EWMA decay, home/away splits) from ARG.csv only. No new data needed.
+3. **1.2** Model E — Coaching change dates (curated CSV, verified dates; Transfermarkt/Wikipedia).
+4. **1.3** Model C — Squad availability: DATA AUDIT FIRST. If no free historical source with as-known-at-T timestamps exists, reject without building.
+5. **1.4** Model G — News: deferred until harness proven; no sentiment-only scoring (Master Prompt §7).
+6. **1.5** Model H — combine only components with proven OOF delta.
+
+**Frozen architecture rule:** atomic timestamp batching is not revisited; any new time-dependent feature must consume pre-batch state only.
 
 ## Files to Read First Next Session
 1. This file

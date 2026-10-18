@@ -75,8 +75,8 @@
 
 ## Current Metrics (as of 2026-09-26)
 - **Model**: CatBoost (default)
-- **Historical Matches Processed**: 6,128
-- **Surviving Training Samples**: 340 (after 8-match trailing EWMA warm-up)
+- **Historical Matches Processed**: 6,416
+- **Surviving Training Samples**: 6,416 (cold-start imputation; was 340)
 - **5-Fold Tournament-Aware CV Accuracies**: [0.304, 0.321, 0.268, 0.464, 0.357]
 - **Mean CV Accuracy**: 0.343 (+/- 0.067)
 - **5-Fold Tournament-Aware CV Log Losses**: [1.399, 1.202, 1.368, 1.122, 1.178]

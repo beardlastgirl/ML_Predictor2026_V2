@@ -10,6 +10,7 @@ Application service that orchestrates the prediction workflow:
 """
 
 import os
+import re
 from datetime import datetime
 from typing import Dict, List, Optional, Tuple
 
@@ -21,7 +22,11 @@ from sklearn.metrics import accuracy_score, log_loss
 # from sklearn.model_selection import TimeSeriesSplit  # Replaced by tournament-aware CV
 from src.cv_split import make_tournament_aware_cv, TournamentAwareTimeSeriesSplit
 
-from src.config import BASE_ELO, MODEL_TYPE, TRAILING_WINDOW, RESULT_ENCODING
+from src.config import (
+    BASE_ELO, MODEL_TYPE, TRAILING_WINDOW, RESULT_ENCODING,
+    CONFIDENCE_STRONG_THRESHOLD, CONFIDENCE_MODERATE_THRESHOLD,
+    BASE_GOAL_RATE,
+)
 from src.utils import log_info, log_ok, log_error, log_warning
 from src.data_processing import (
     load_glossary, load_sofascore_data, normalize_team_name,
@@ -186,6 +191,23 @@ def build_features(matches: pd.DataFrame, form_variant: Optional[Dict] = None) -
     matches["GA"] = matches["AG"] if "AG" in matches.columns else 0
     matches = compute_trailing_features_batched(matches, window=TRAILING_WINDOW, form_variant=form_variant)
 
+    # Cold-start imputation: teams with fewer than window matches have NaN
+    # trailing stats. Backfill with league means so these rows stay trainable
+    # instead of being dropped by dropna(subset=FEATURE_COLUMNS).
+    trailing_defaults = {
+        "Home_Avg_GF": BASE_GOAL_RATE, "Away_Avg_GF": BASE_GOAL_RATE,
+        "Home_Avg_GA": BASE_GOAL_RATE, "Away_Avg_GA": BASE_GOAL_RATE,
+        "Home_Avg_GD": 0.0, "Away_Avg_GD": 0.0,
+        "Home_Form": 1.0, "Away_Form": 1.0,
+    }
+    for col, default in trailing_defaults.items():
+        if col in matches.columns:
+            matches[col] = matches[col].fillna(default)
+    if "Home_Matches" in matches.columns:
+        matches["Home_Matches"] = matches["Home_Matches"].fillna(0)
+    if "Away_Matches" in matches.columns:
+        matches["Away_Matches"] = matches["Away_Matches"].fillna(0)
+
     log_info("Calculating Poisson features...")
     poisson_features = [
         calculate_poisson_features(
@@ -253,12 +275,13 @@ def train_validate(
     log_info(f"Using sample weights to reduce draw bias (Draw weight = 0.7)")
 
     model = create_model(model_type)
-    # Use tournament-aware CV splits
-    # We need the original matches dataframe to get dates for boundaries
-    # Since we only have features here, use TournamentAwareTimeSeriesSplit with groups
-    # For now, fall back to TimeSeriesSplit but emit warning
-    from sklearn.model_selection import TimeSeriesSplit
-    tscv = TimeSeriesSplit(n_splits=n_splits)
+    # Tournament-aware CV using date gaps in df (which retains Date column).
+    from src.cv_split import make_tournament_aware_cv
+    try:
+        splits = make_tournament_aware_cv(df, n_splits=n_splits, date_col="Date")
+    except Exception:
+        from sklearn.model_selection import TimeSeriesSplit
+        splits = list(TimeSeriesSplit(n_splits=n_splits).split(df))
     cv_acc, cv_ll = [], []
 
     # Temporal Leakage Guard: Ensure X is sorted by time to prevent look-ahead bias in TimeSeriesSplit
@@ -270,9 +293,21 @@ def train_validate(
         log_error("Data indices are not monotonic! Potential temporal leakage detected.")
         raise ValueError("Data must be sorted by date before TimeSeriesSplit.")
 
-    for fold, (t_idx, v_idx) in enumerate(tscv.split(X), 1):
+    for fold, (t_idx, v_idx) in enumerate(splits, 1):
         f_model = create_model(model_type)
-        f_model.fit(X.iloc[t_idx], y.iloc[t_idx], sample_weight=sample_weights[t_idx])
+        # Early stopping: hold out last 10% of training fold as validation
+        n_train = len(t_idx)
+        val_size = max(1, n_train // 10)
+        tr_idx, es_idx = t_idx[:-val_size], t_idx[-val_size:]
+        try:
+            f_model.fit(
+                X.iloc[tr_idx], y.iloc[tr_idx],
+                sample_weight=sample_weights[tr_idx],
+                eval_set=[(X.iloc[es_idx], y.iloc[es_idx])],
+                verbose=False,
+            )
+        except Exception:
+            f_model.fit(X.iloc[t_idx], y.iloc[t_idx], sample_weight=sample_weights[t_idx])
         y_p = f_model.predict(X.iloc[v_idx])
         y_prob = f_model.predict_proba(X.iloc[v_idx])
         acc = accuracy_score(y.iloc[v_idx], y_p)
@@ -330,6 +365,66 @@ def predict_fixtures(
     return fixtures
 
 
+def format_match_prediction(row: pd.Series) -> str:
+    """Format single fixture prediction into probability distribution report."""
+    raw_h = row["Raw_Home"] if pd.notna(row.get("Raw_Home")) else row.get("HomeTeam", row.get("Home", "Home"))
+    raw_a = row["Raw_Away"] if pd.notna(row.get("Raw_Away")) else row.get("AwayTeam", row.get("Away", "Away"))
+    home_name = re.sub(r":.*$", "", str(raw_h)).strip()
+    away_name = re.sub(r":.*$", "", str(raw_a)).strip()
+
+    # Canonical encoding: 0=Away, 1=Draw, 2=Home
+    p_a = float(row.get("Pred_Proba_Away", 0.0))
+    p_d = float(row.get("Pred_Proba_Draw", 0.0))
+    p_h = float(row.get("Pred_Proba_Home", 0.0))
+
+    # Top pick determination
+    if p_h >= p_d and p_h >= p_a:
+        top_outcome = "Home"
+        top_prob = p_h
+    elif p_a >= p_h and p_a >= p_d:
+        top_outcome = "Away"
+        top_prob = p_a
+    else:
+        top_outcome = "Draw"
+        top_prob = p_d
+
+    if top_prob >= CONFIDENCE_STRONG_THRESHOLD:
+        confidence = "Strong"
+    elif top_prob >= CONFIDENCE_MODERATE_THRESHOLD:
+        confidence = "Moderate"
+    else:
+        confidence = "Marginal"
+
+    top_pick_str = f"{top_outcome} ({confidence})"
+
+    # Market implied probabilities if available
+    has_shin = (
+        pd.notna(row.get("Shin_Prob_Home"))
+        and pd.notna(row.get("Shin_Prob_Away"))
+        and pd.notna(row.get("Shin_Prob_Draw"))
+        and not (
+            abs(float(row.get("Shin_Prob_Home", 0.0)) - 1 / 3) < 1e-4
+            and abs(float(row.get("Shin_Prob_Away", 0.0)) - 1 / 3) < 1e-4
+        )
+    )
+    if has_shin:
+        m_a = float(row["Shin_Prob_Away"]) * 100
+        m_d = float(row["Shin_Prob_Draw"]) * 100
+        m_h = float(row["Shin_Prob_Home"]) * 100
+        market_str = f"P(Away): {m_a:.1f}% | P(Draw): {m_d:.1f}% | P(Home): {m_h:.1f}%"
+    else:
+        market_str = "[Not available]"
+
+    lines = [
+        f"Match: {home_name} vs {away_name}",
+        f"P(Away): {p_a*100:.1f}% | P(Draw): {p_d*100:.1f}% | P(Home): {p_h*100:.1f}%",
+        f"Market Implied: {market_str}",
+        f"Top Pick: {top_pick_str}",
+        "---",
+    ]
+    return "\n".join(lines)
+
+
 def write_outputs(
     fixtures: pd.DataFrame, feature_importance: pd.DataFrame, output_dir: str = "."
 ) -> str:
@@ -370,20 +465,13 @@ def write_outputs(
     output_file = os.path.join(output_dir, f"Resultados_{today}.txt")
     with open(output_file, "w", encoding="utf-8") as f:
         f.write(
-            "=" * 60 + "\n  PREDICCIONES - LIGA PROFESIONAL ARGENTINA\n" + "=" * 60 + "\n\n"
+            "=" * 60 + "\n  PREDICCIONES - LIGA PROFESIONAL ARGENTINA (PROBABILITY ENGINE)\n" + "=" * 60 + "\n\n"
         )
-        total_goals = 0
         for _, row in fixtures.iterrows():
-            hg = int(np.clip(row.get("Pred_Home_Goals", 0), 0, 6))
-            ag = int(np.clip(row.get("Pred_Away_Goals", 0), 0, 6))
-            total_goals += hg + ag
-            home_name = row['Raw_Home'] if pd.notna(row.get('Raw_Home')) else row.get('HomeTeam', row.get('Home', ''))
-            away_name = row['Raw_Away'] if pd.notna(row.get('Raw_Away')) else row.get('AwayTeam', row.get('Away', ''))
-            f.write(f"{home_name} - {away_name}\n")
-            f.write(f"Resultado: {hg}-{ag} ({row['Prediction_Label']})\n")
-            f.write(f"xG: {row.get('xG_home', 0):.2f} - {row.get('xG_away', 0):.2f}\n\n")
-        f.write(f"{'='*60}\nRESUMEN\n{'='*60}\n")
-        f.write(f"Partidos: {len(fixtures)}\nGoles: {total_goals}\n")
+            f.write(format_match_prediction(row) + "\n")
+
+        f.write(f"\n{'='*60}\nRESUMEN\n{'='*60}\n")
+        f.write(f"Partidos: {len(fixtures)}\n")
 
     log_ok(f"Results saved to {output_file}")
 

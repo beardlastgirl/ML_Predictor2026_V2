@@ -2,16 +2,22 @@
 
 A machine learning pipeline for predicting football match outcomes using Poisson distribution, historical data, squad statistics, and dynamic Elo ratings. Built specifically for Liga Profesional Argentina.
 
-## Key Innovation: Poisson Distribution Integration
+## Key Innovation: Probability Engine & Expected Value (EV) Analysis
 
-This version introduces a more sophisticated approach to goal prediction:
+As of Phase 3.0, the system operates as a **probability distribution engine** rather than a hard 1X2 classifier. Mathematical and empirical analysis demonstrated that hard argmax classification cannot reliably isolate draws in Argentine football due to structural home advantage (mean home goals ~1.3 vs away goals ~0.97) and high match variance.
 
+Instead of guessing a single forced outcome, the engine outputs full outcome probability distributions:
+- **Calibrated Probability Triple**: `P(Away)`, `P(Draw)`, `P(Home)` following canonical encoding (0=Away, 1=Draw, 2=Home).
+- **Market Implied Probabilities**: Shin-method de-vigged bookmaker probabilities (when odds are provided).
+- **Confidence Rating**: Categorizes top picks as Marginal, Moderate, or Strong.
+- **Expected Value (EV) Focus**: Designed for value detection against bookmaker markets (`EV = (P_model * Decimal_Odds) - 1.0`) rather than brittle hard classifications.
+
+### Core Mathematical Components:
 1. **Expected Goals (xG) Calculation**: Uses Elo ratings and attack/defense metrics to estimate expected goals for each team
 2. **Poisson Distribution**: Models goal scoring as a Poisson process for accurate probability calculations
-3. **Proper Outcome Calibration**: Derives match outcome probabilities from goal distributions
-4. **Enhanced ML Features**: Uses Poisson-derived probabilities as additional features for the gradient boosting model
-5. **Shin Method**: Extracts true probabilities from bookmaker odds to correct for market bias
-6. **Tournament-Aware CV**: Cross-validation that respects season/tournament boundaries to prevent lookahead leakage
+3. **Shin Method**: Extracts true probabilities from bookmaker odds to correct for market bias and calculate market-implied probabilities
+4. **Enhanced ML Features**: Uses Poisson and Shin probabilities as features for gradient boosting (CatBoost)
+5. **Tournament-Aware CV**: Cross-validation that respects season/tournament boundaries to prevent lookahead leakage
 
 ## Setup
 
@@ -114,8 +120,19 @@ This opens an interactive menu:
 
 Or run with option directly:
 ```powershell
-.
-un_model.ps1 -Option 5  # Run main prediction only
+.\run_model.ps1 -Option 5  # Run main prediction only
+```
+
+### Prediction Output Format
+
+Predictions are written to `Resultados_YYYYMMDD.txt` and output to the terminal as calibrated probability distributions:
+
+```text
+Match: Boca Juniors vs River Plate
+P(Away): 26.4% | P(Draw): 28.1% | P(Home): 45.5%
+Market Implied: [If available]
+Top Pick: Home (Marginal)
+---
 ```
 
 ## How It Works
@@ -227,8 +244,8 @@ GitHub Actions workflow (`.github/workflows/ci.yml`) runs on every PR:
 
 ## Current Baseline Metrics (2026-09-26)
 
-- **Historical Matches Processed**: 6,128
-- **Surviving Training Samples**: 340 (after 8-match trailing EWMA warm-up)
+- **Historical Matches Processed**: 6,416
+- **Surviving Training Samples**: 6,416 (cold-start imputation; was 340)
 - **5-Fold Tournament-Aware CV Accuracies**: ~0.34 mean (+/- 0.07)
 - **5-Fold Tournament-Aware CV Log Losses**: ~1.25 mean
 - **Dynamic Naive Baseline Log Loss**: ~1.08

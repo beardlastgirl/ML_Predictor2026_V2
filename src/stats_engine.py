@@ -9,7 +9,7 @@ from src.config import (
     HOME_ADVANTAGE, K_FACTOR, MAX_GOALS, BASE_GOAL_RATE,
     ELO_DIVISOR, ELO_FACTOR_DENOM, HOME_BOOST,
     GOAL_WEIGHT_ATTACK, GOAL_WEIGHT_DEFENSE, XG_MIN, XG_MAX,
-    BASE_ELO, POISSON_DRAW_ADJUSTMENT
+    BASE_ELO, POISSON_DRAW_ADJUSTMENT, HOME_ADVANTAGE_BOOST
 )
 
 
@@ -138,11 +138,10 @@ def calculate_outcome_probabilities(xG_home: float, xG_away: float, max_goals: i
         p_home_win = remainder / 2
         p_away_win = remainder / 2
 
-    # Add home advantage boost to final probability
-    # This reflects the ~45% home win rate in Liga Profesional
-    home_advantage_boost = 0.08  # ~8% boost to home win probability
-    p_home_win = min(0.95, p_home_win + home_advantage_boost)
-    p_away_win = max(0.05, p_away_win - home_advantage_boost * 0.5)
+    # Add home advantage boost to final probability (sourced from config).
+    # Applied symmetrically: boost home, reduce away by half the boost.
+    p_home_win = float(np.clip(p_home_win + HOME_ADVANTAGE_BOOST, 0.0, 1.0))
+    p_away_win = float(np.clip(p_away_win - HOME_ADVANTAGE_BOOST * 0.5, 0.0, 1.0))
 
     # Re-normalize to ensure probabilities sum to 1
     total = p_home_win + p_draw_calibrated + p_away_win

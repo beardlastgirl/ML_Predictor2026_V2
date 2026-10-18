@@ -31,10 +31,11 @@ python main.py
 ## Current Metrics (May 2026)
 
 - Model: CatBoost (default)
-- CV Accuracy: ~35% (+/- 6%) on 3-class problem
-- Log-Loss: ~1.20 (model) vs 1.077 (naive) vs ~1.005 (bookie)
+- CV Accuracy: ~44.8% (+/- 1.1%) on 3-class problem
+- Log-Loss: ~1.066 (model) vs 1.077 (naive) vs ~1.005 (bookie)
+- Training samples: ~6,416 (was ~340; cold-start imputation added)
+- CV: tournament-aware (date-gap boundaries), early stopping enabled
 - Features: 24
-- Training samples: ~6,200 matches
 
 ## Configuration (src/config.py)
 
@@ -143,3 +144,13 @@ print(calibrate_poisson_params(matches_feat.dropna(subset=['Home_Elo'])))
 - Run `python -m pytest tests/ -v` after any change (expect 131+ passing)
 - Run `pip-audit -r dev-requirements.txt` after any dependency change (dev dep)
 - Model name in summary reads from `type(result.model).__name__`
+
+<!-- GSD Configuration — managed by gsd-core installer -->
+# Instructions for GSD
+
+- Use the gsd-core skill when the user asks for GSD or uses a `gsd-*` command.
+- Treat `/gsd-...` or `gsd-...` as command invocations and load the matching file from `.github/skills/gsd-*`.
+- When a command says to spawn a subagent, prefer a matching custom agent from `.github/agents`.
+- Do not apply GSD workflows unless the user explicitly asks for them.
+- After completing any `gsd-*` command (or any deliverable it triggers: feature, bug fix, tests, docs, etc.), ALWAYS: (1) offer the user the next step by prompting via `ask_user`; repeat this feedback loop until the user explicitly indicates they are done.
+<!-- /GSD Configuration -->

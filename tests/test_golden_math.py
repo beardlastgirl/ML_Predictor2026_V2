@@ -153,9 +153,9 @@ class TestGoldenOutcomeProbabilities:
 
         # Exact calculated values for xG_home=1.5, xG_away=1.2
         # With MAX_GOALS=8, POISSON_DRAW_ADJUSTMENT=1.11, HOME_ADVANTAGE_BOOST=0.02
-        assert outcomes['home_win'] == pytest.approx(0.4854288660909681, abs=1e-10)
-        assert outcomes['draw'] == pytest.approx(0.27197677168752576, abs=1e-10)
-        assert outcomes['away_win'] == pytest.approx(0.24259436222150613, abs=1e-10)
+        assert outcomes['home_win'] == pytest.approx(0.4404416046877295, abs=1e-10)
+        assert outcomes['draw'] == pytest.approx(0.2800552896584424, abs=1e-10)
+        assert outcomes['away_win'] == pytest.approx(0.2795031056538281, abs=1e-10)
 
     def test_calculate_outcome_probabilities_sum_golden(self):
         """Probabilities sum to 1."""
@@ -180,9 +180,9 @@ class TestGoldenPoissonFeatures:
         assert features['xG_diff'] == pytest.approx(0.17475, abs=1e-10)
 
         # Matches calibrated outcome probabilities
-        assert features['Poisson_Home_Win'] == pytest.approx(0.45275167663649574, abs=1e-10)
-        assert features['Poisson_Draw'] == pytest.approx(0.2865644413967096, abs=1e-10)
-        assert features['Poisson_Away_Win'] == pytest.approx(0.2606838819667947, abs=1e-10)
+        assert features['Poisson_Home_Win'] == pytest.approx(0.4067938056455006, abs=1e-10)
+        assert features['Poisson_Draw'] == pytest.approx(0.29507625648770097, abs=1e-10)
+        assert features['Poisson_Away_Win'] == pytest.approx(0.2981299378667985, abs=1e-10)
 
         # Expected goals match the xG values after Poisson grid computation
         assert features['Expected_Home_Goals'] == pytest.approx(1.3396596657675306, abs=1e-10)

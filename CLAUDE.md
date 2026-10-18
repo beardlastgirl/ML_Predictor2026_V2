@@ -31,8 +31,10 @@ python main.py
 ## Current Metrics (May 2026)
 
 - Model: CatBoost (default)
-- CV Accuracy: ~35% (+/- 6%) on 3-class problem
-- Log-Loss: ~1.20 (model) vs 1.077 (naive) vs ~1.005 (bookie)
+- CV Accuracy: ~44.8% (+/- 1.1%) on 3-class problem
+- Log-Loss: ~1.066 (model) vs 1.077 (naive) vs ~1.005 (bookie)
+- Training samples: ~6,416 (was ~340; cold-start imputation added)
+- CV: tournament-aware (date-gap boundaries), early stopping enabled
 - Features: 24
 - Training samples: ~6,200 matches
 

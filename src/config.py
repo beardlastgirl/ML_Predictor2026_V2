@@ -47,6 +47,8 @@ WIN_PROBABILITY_THRESHOLD = 0.45  # High confidence for home/away win
 DRAW_PROBABILITY_THRESHOLD = 0.38  # High confidence for draw (league avg ~33%)
 DEFAULT_EXPECTED_GOALS = 1.35  # Fallback for expected goals
 MAX_PREDICTED_GOALS = 6  # Maximum goals to predict
+CONFIDENCE_STRONG_THRESHOLD = 0.55  # Decisive favorite
+CONFIDENCE_MODERATE_THRESHOLD = 0.48  # Solid favorite
 
 # Trailing window for squad features (EWMA span; decay handled in features.py)
 TRAILING_WINDOW = 8
@@ -54,6 +56,11 @@ TRAILING_WINDOW = 8
 # Phase 1.1 sporting-form variants (experiment harness only; baseline path unchanged)
 EWMA_HALFLIFE_CANDIDATES = [2, 4, 8]  # in matches; a priori set, no further tuning
 VENUE_SPLIT_MIN_MATCHES = 3  # below this, venue stats fall back to overall trailing stats
+
+# Phase 1.2 rolling-window candidates (experiment harness only; baseline path
+# unchanged). Hard windows for points-per-game and goal-difference-per-match
+# features; a priori set, no further tuning.
+ROLLING_WINDOW_CANDIDATES = [5, 10]
 
 # Tournament transition: compress prior-season EWMA by this factor at season change
 TOURNAMENT_TRANSITION_DECAY = 0.70

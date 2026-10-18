@@ -9,7 +9,7 @@ import sys
 
 import numpy as np
 
-from src.pipeline import run_pipeline
+from src.pipeline import run_pipeline, format_match_prediction
 from src.utils import log_info, log_ok, log_error
 from src.config import MODEL_TYPE
 
@@ -19,6 +19,13 @@ def main():
     log_info("Starting prediction pipeline...")
 
     result = run_pipeline()
+
+    if result.fixtures is not None and not result.fixtures.empty:
+        log_info("=" * 60)
+        log_info("Fixture Predictions (Probability Engine)")
+        log_info("=" * 60)
+        for _, row in result.fixtures.iterrows():
+            print(format_match_prediction(row))
 
     log_info("=" * 60)
     log_info("Pipeline Summary")

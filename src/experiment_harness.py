@@ -34,7 +34,7 @@ import pandas as pd
 from sklearn.metrics import accuracy_score, confusion_matrix, log_loss
 from sklearn.model_selection import TimeSeriesSplit
 
-from src.config import MODEL_TYPE
+from src.config import MODEL_TYPE, ROLLING_WINDOW_CANDIDATES
 from src.model_engine import create_model
 from src.pipeline import FEATURE_COLUMNS, build_features, load_data
 
@@ -47,6 +47,14 @@ BRIER_CONVENTION = "multiclass_sse_mean_over_oof_rows_range_0_2"
 
 # Phase 1.1 sporting-form variants. Small a priori candidate set; no tuning
 # beyond these values (see config.EWMA_HALFLIFE_CANDIDATES).
+# Phase 1.2 rolling-window candidate set (windows from
+# config.ROLLING_WINDOW_CANDIDATES; a priori, no further tuning).
+ROLL_FEATURES = [
+    f"{side}_Roll{w}_{stat}"
+    for w in ROLLING_WINDOW_CANDIDATES
+    for side in ("Home", "Away")
+    for stat in ("Form", "GD")
+]
 VARIANTS = {
     "ewma_hl2": ({"type": "ewma", "halflife": 2},
                  ["Home_EWMA_Form", "Home_EWMA_GF", "Home_EWMA_GA",
@@ -60,6 +68,8 @@ VARIANTS = {
     "venue_split": ({"type": "venue_split"},
                     ["Home_Venue_Form", "Home_Venue_GF", "Home_Venue_GA",
                      "Away_Venue_Form", "Away_Venue_GF", "Away_Venue_GA"]),
+    "roll_windows": ({"type": "multi_window", "windows": list(ROLLING_WINDOW_CANDIDATES)},
+                     ROLL_FEATURES),
 }
 
 

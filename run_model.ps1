@@ -12,26 +12,60 @@ $ErrorActionPreference = "Stop"
 # ============================================
 
 function Test-Prerequisites {
-    # Check if data directory exists
-    $dataPath = Join-Path $PSScriptRoot "data\ARG.csv"
+    $dataDir = Join-Path $PSScriptRoot "data"
+    $dataPath = Join-Path $dataDir "ARG.csv"
+    $url = "https://football-data.co.uk/new/ARG.csv"
+    $daysThreshold = 5
+
+    # Ensure the data directory exists
+    if (-not (Test-Path $dataDir)) {
+        New-Item -ItemType Directory -Path $dataDir -Force | Out-Null
+    }
+
+    $shouldDownload = $false
+
+    # Check if file exists and its age
     if (-not (Test-Path $dataPath)) {
-        Write-Host "[ERROR] data\ARG.csv not found. Please copy from ML_Predictor2026" -ForegroundColor Red
-        return $false
+        Write-Host "[INFO] ARG.csv not found. Preparing to download..." -ForegroundColor Yellow
+        $shouldDownload = $true
+    }
+    else {
+        $fileAge = (Get-Date) - (Get-Item $dataPath).LastWriteTime
+        if ($fileAge.Days -ge $daysThreshold) {
+            Write-Host "[INFO] ARG.csv is older than $daysThreshold days (Age: $($fileAge.Days) days). Preparing to update..." -ForegroundColor Yellow
+            $shouldDownload = $true
+        }
+        else {
+            Write-Host "[INFO] ARG.csv is up to date (Age: $($fileAge.Days) days)." -ForegroundColor Green
+        }
+    }
+
+    # Download if necessary
+    if ($shouldDownload) {
+        try {
+            Write-Host "[INFO] Downloading ARG.csv from $url..." -ForegroundColor Cyan
+            Invoke-WebRequest -Uri $url -OutFile $dataPath -UseBasicParsing
+            Write-Host "[SUCCESS] ARG.csv downloaded successfully." -ForegroundColor Green
+        }
+        catch {
+            Write-Host "[ERROR] Failed to download ARG.csv: $_" -ForegroundColor Red
+            return $false
+        }
     }
 
     # Check if Glossary.txt exists
     $glossaryPath = Join-Path $PSScriptRoot "Glossary.txt"
     if (-not (Test-Path $glossaryPath)) {
-        $sourceGlossary = Join-Path $PSScriptRoot "data\Glossary.txt"
+        $sourceGlossary = Join-Path $dataDir "Glossary.txt"
         if (Test-Path $sourceGlossary) {
             Write-Host "[INFO] Copying Glossary.txt from data folder..." -ForegroundColor Yellow
             Copy-Item $sourceGlossary $glossaryPath
         }
         else {
-            Write-Host "[WARNING] Glossary.txt not found" -ForegroundColor Yellow
+            Write-Host "[WARNING] Glossary.txt not found in data folder." -ForegroundColor Yellow
         }
     }
-
+    
     return $true
 }
 
@@ -112,6 +146,11 @@ function Show-Menu {
 # Main
 # ============================================
 
+# Check prerequisites
+if (-not (Test-Prerequisites)) {
+    exit 1
+}
+
 # Show menu if no option specified
 if ($Option -eq 0) {
     Show-Menu
@@ -137,11 +176,6 @@ $Option = [int]$Option
 
 if ($Option -lt 0 -or $Option -gt 8) {
     Write-Host "[ERROR] Invalid option: $Option" -ForegroundColor Red
-    exit 1
-}
-
-# Check prerequisites
-if (-not (Test-Prerequisites)) {
     exit 1
 }
 

@@ -41,6 +41,21 @@ def _ewma_stats(history: List[Dict], window: int, halflife: float) -> Dict[str, 
     }
 
 
+def _multi_window_stats(history: List[Dict], windows: List[int]) -> Dict[str, float]:
+    """Hard-window rolling PPG (``form``) and goal difference per match.
+
+    Reuses get_team_trailing_stats semantics so NaN appears exactly when
+    history is empty, matching baseline trailing-stat NaNs; with k < window
+    prior matches the window uses all k (same convention as the baseline).
+    """
+    stats = {}
+    for w in windows:
+        s = get_team_trailing_stats(history, w)
+        stats[f"form@{w}"] = s["form"]
+        stats[f"gd@{w}"] = s["avg_gd"]
+    return stats
+
+
 def _venue_stats(history: List[Dict], window: int, is_home: bool) -> Dict[str, float]:
     """Trailing stats from venue-matched matches only.
 
@@ -141,8 +156,9 @@ def compute_trailing_features_batched(matches_df: pd.DataFrame, window: int = 8,
         matches_df: DataFrame with Date, Time, Home/HomeTeam, Away/AwayTeam, GF/GA or HG/AG columns
         window: Number of trailing matches to consider
         form_variant: None (baseline) or a variant spec:
-            {"type": "ewma", "halflife": h} -> adds Home/Away_EWMA_Form/GF/GA
-            {"type": "venue_split"}         -> adds Home/Away_Venue_Form/GF/GA
+            {"type": "ewma", "halflife": h}    -> adds Home/Away_EWMA_Form/GF/GA
+            {"type": "venue_split"}            -> adds Home/Away_Venue_Form/GF/GA
+            {"type": "multi_window", "windows": [..]} -> adds Home/Away_Roll{w}_Form/GD
             Variant features are computed in the same pre-batch pass, so batch
             isolation semantics are identical to the baseline features.
 
@@ -166,6 +182,12 @@ def compute_trailing_features_batched(matches_df: pd.DataFrame, window: int = 8,
                 h_v = _venue_stats(team_history[home], window, is_home=True)
                 a_v = _venue_stats(team_history[away], window, is_home=False)
                 feats.update({"Home_Venue_Form": h_v["form"], "Home_Venue_GF": h_v["gf"], "Home_Venue_GA": h_v["ga"], "Away_Venue_Form": a_v["form"], "Away_Venue_GF": a_v["gf"], "Away_Venue_GA": a_v["ga"]})
+            elif form_variant and form_variant.get("type") == "multi_window":
+                for side, team in (("Home", home), ("Away", away)):
+                    for w in form_variant["windows"]:
+                        s = _multi_window_stats(team_history[team], [w])
+                        feats[f"{side}_Roll{w}_Form"] = s[f"form@{w}"]
+                        feats[f"{side}_Roll{w}_GD"] = s[f"gd@{w}"]
             trailing_features.append(feats)
         for _, row in _stable_batch_rows(batch).iterrows():
             home = row["Home"] if "Home" in row else row["HomeTeam"]

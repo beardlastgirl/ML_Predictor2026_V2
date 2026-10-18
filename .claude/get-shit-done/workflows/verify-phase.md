@@ -19,8 +19,8 @@ Then verify each level against the actual codebase.
 </core_principle>
 
 <required_reading>
-@I:/Scripts/ML_Predictor2026_V2/.claude/get-shit-done/references/verification-patterns.md
-@I:/Scripts/ML_Predictor2026_V2/.claude/get-shit-done/templates/verification-report.md
+@C:/Scripts/ML_Predictor2026_V2/.claude/get-shit-done/references/verification-patterns.md
+@C:/Scripts/ML_Predictor2026_V2/.claude/get-shit-done/templates/verification-report.md
 </required_reading>
 
 <process>
@@ -329,7 +329,8 @@ Extract files modified in this phase from SUMMARY.md, scan each:
 
 | Pattern | Search | Severity |
 |---------|--------|----------|
-| TODO/FIXME/XXX/HACK | `grep -n -E "TODO\|FIXME\|XXX\|HACK"` | ⚠️ Warning |
+| TBD/FIXME/XXX without same-line `issue #123`, `PR #123`, `#123`, or `DEF-*` reference | `grep -n -e TBD -e FIXME -e XXX` | 🛑 Blocker |
+| TODO/HACK | `grep -n -e TODO -e HACK` | ⚠️ Warning |
 | Placeholder content | `grep -n -iE "placeholder\|coming soon\|will be here"` | 🛑 Blocker |
 | Empty returns | `grep -n -E "return null\|return \{\}\|return \[\]\|=> \{\}"` | ⚠️ Warning |
 | Log-only functions | Functions containing only console.log | ⚠️ Warning |
@@ -510,7 +511,7 @@ REPORT_PATH="$PHASE_DIR/${PHASE_NUM}-VERIFICATION.md"
 
 Fill template sections: frontmatter (phase/timestamp/status/score), goal achievement, artifact table, wiring table, requirements coverage, anti-patterns, human verification, gaps summary, fix plans (if gaps_found), metadata.
 
-See I:/Scripts/ML_Predictor2026_V2/.claude/get-shit-done/templates/verification-report.md for complete template.
+See C:/Scripts/ML_Predictor2026_V2/.claude/get-shit-done/templates/verification-report.md for complete template.
 </step>
 
 <step name="return_to_orchestrator">

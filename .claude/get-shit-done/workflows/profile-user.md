@@ -8,9 +8,9 @@ This workflow wires Phase 1 (session pipeline) and Phase 2 (profiling engine) in
 Read all files referenced by the invoking prompt's execution_context before starting.
 
 Key references:
-- @I:/Scripts/ML_Predictor2026_V2/.claude/get-shit-done/references/ui-brand.md (display patterns)
-- @I:/Scripts/ML_Predictor2026_V2/.claude/agents/gsd-user-profiler.md (profiler agent definition)
-- @I:/Scripts/ML_Predictor2026_V2/.claude/get-shit-done/references/user-profiling.md (profiling reference doc)
+- @C:/Scripts/ML_Predictor2026_V2/.claude/get-shit-done/references/ui-brand.md (display patterns)
+- @C:/Scripts/ML_Predictor2026_V2/.claude/agents/gsd-user-profiler.md (profiler agent definition)
+- @C:/Scripts/ML_Predictor2026_V2/.claude/get-shit-done/references/user-profiling.md (profiling reference doc)
 </required_reading>
 
 <process>
@@ -24,7 +24,7 @@ Parse flags from $ARGUMENTS:
 Check for existing profile:
 
 ```bash
-PROFILE_PATH="I:/Scripts/ML_Predictor2026_V2/.claude/get-shit-done/USER-PROFILE.md"
+PROFILE_PATH="C:/Scripts/ML_Predictor2026_V2/.claude/get-shit-done/USER-PROFILE.md"
 [ -f "$PROFILE_PATH" ] && echo "EXISTS" || echo "NOT_FOUND"
 ```
 
@@ -48,7 +48,7 @@ If "Cancel": Display "No changes made." and exit.
 
 Backup existing profile:
 ```bash
-cp "I:/Scripts/ML_Predictor2026_V2/.claude/get-shit-done/USER-PROFILE.md" "I:/Scripts/ML_Predictor2026_V2/.claude/USER-PROFILE.backup.md"
+cp "C:/Scripts/ML_Predictor2026_V2/.claude/get-shit-done/USER-PROFILE.md" "C:/Scripts/ML_Predictor2026_V2/.claude/USER-PROFILE.backup.md"
 ```
 
 Display: "Re-analyzing your sessions to update your profile."
@@ -92,7 +92,7 @@ Your recent Claude Code sessions, looking for patterns in these
 
 ✓ Reads session files locally (read-only, nothing modified)
 ✓ Analyzes message patterns (not content meaning)
-✓ Stores profile at I:/Scripts/ML_Predictor2026_V2/.claude/get-shit-done/USER-PROFILE.md
+✓ Stores profile at C:/Scripts/ML_Predictor2026_V2/.claude/get-shit-done/USER-PROFILE.md
 ✗ Nothing is sent to external services
 ✗ Sensitive content (API keys, passwords) is automatically excluded
 ```
@@ -120,7 +120,7 @@ Use AskUserQuestion:
 - options:
   - "Let's go" -- Proceed to step 3 (session analysis)
   - "Use questionnaire instead" -- Jump to step 4b (questionnaire path)
-  - "Not now" -- Display "No worries. Run /gsd-profile-user when ready." and exit
+  - "Not now" -- Display "No worries. Run /gsd:profile-user when ready." and exit
 
 ---
 
@@ -163,13 +163,13 @@ Display: "◆ Analyzing patterns..."
 
 Use the Task tool to spawn the `gsd-user-profiler` agent. Provide it with:
 - The sampled JSONL file path from profile-sample output
-- The user-profiling reference doc at `I:/Scripts/ML_Predictor2026_V2/.claude/get-shit-done/references/user-profiling.md`
+- The user-profiling reference doc at `C:/Scripts/ML_Predictor2026_V2/.claude/get-shit-done/references/user-profiling.md`
 
 The agent prompt should follow this structure:
 ```
 Read the profiling reference document and the sampled session messages, then analyze the developer's behavioral patterns across all 8 dimensions.
 
-Reference: @I:/Scripts/ML_Predictor2026_V2/.claude/get-shit-done/references/user-profiling.md
+Reference: @C:/Scripts/ML_Predictor2026_V2/.claude/get-shit-done/references/user-profiling.md
 Session data: @{temp_dir}/profile-sample.jsonl
 
 Analyze these messages and return your analysis in the <analysis> JSON format specified in the reference document.
@@ -274,7 +274,7 @@ Display: "◆ Writing profile..."
 gsd-sdk query write-profile --input "$ANALYSIS_PATH" --json
 ```
 
-Display: "✓ Profile written to I:/Scripts/ML_Predictor2026_V2/.claude/get-shit-done/USER-PROFILE.md"
+Display: "✓ Profile written to C:/Scripts/ML_Predictor2026_V2/.claude/get-shit-done/USER-PROFILE.md"
 
 ---
 
@@ -337,9 +337,9 @@ Use AskUserQuestion with multiSelect:
 - options (ALL pre-selected by default):
   - "/gsd-dev-preferences command file" -- "Load your preferences in any session"
   - "CLAUDE.md profile section" -- "Add profile to this project's CLAUDE.md"
-  - "Global CLAUDE.md" -- "Add profile to I:/Scripts/ML_Predictor2026_V2/.claude/CLAUDE.md for all projects"
+  - "Global CLAUDE.md" -- "Add profile to C:/Scripts/ML_Predictor2026_V2/.claude/CLAUDE.md for all projects"
 
-**If no artifacts selected:** Display "No artifacts generated. Your profile is saved at I:/Scripts/ML_Predictor2026_V2/.claude/get-shit-done/USER-PROFILE.md" and jump to step 10.
+**If no artifacts selected:** Display "No artifacts generated. Your profile is saved at C:/Scripts/ML_Predictor2026_V2/.claude/get-shit-done/USER-PROFILE.md" and jump to step 10.
 
 ---
 
@@ -353,7 +353,7 @@ Generate selected artifacts sequentially (file I/O is fast, no benefit from para
 gsd-sdk query generate-dev-preferences --analysis "$ANALYSIS_PATH" --json
 ```
 
-Display: "✓ Generated /gsd-dev-preferences at I:/Scripts/ML_Predictor2026_V2/.claude/skills/gsd-dev-preferences/SKILL.md"
+Display: "✓ Generated /gsd-dev-preferences at C:/Scripts/ML_Predictor2026_V2/.claude/skills/gsd-dev-preferences/SKILL.md"
 
 **For CLAUDE.md profile section (if selected):**
 
@@ -369,7 +369,7 @@ Display: "✓ Added profile section to CLAUDE.md"
 gsd-sdk query generate-claude-profile --analysis "$ANALYSIS_PATH" --global --json
 ```
 
-Display: "✓ Added profile section to I:/Scripts/ML_Predictor2026_V2/.claude/CLAUDE.md"
+Display: "✓ Added profile section to C:/Scripts/ML_Predictor2026_V2/.claude/CLAUDE.md"
 
 **Error handling:** If any `gsd-sdk query` or gsd-tools.cjs call fails, display the error message and use AskUserQuestion to offer "Retry" or "Skip this artifact". On retry, re-run the command. On skip, continue to next artifact.
 
@@ -383,7 +383,7 @@ Read both old backup and new analysis to compare dimension ratings/confidence.
 
 Read the backed-up profile:
 ```bash
-BACKUP_PATH="I:/Scripts/ML_Predictor2026_V2/.claude/USER-PROFILE.backup.md"
+BACKUP_PATH="C:/Scripts/ML_Predictor2026_V2/.claude/USER-PROFILE.backup.md"
 ```
 
 Compare each dimension's rating and confidence between old and new. Display diff table showing only changed dimensions:
@@ -406,15 +406,15 @@ If nothing changed: Display "No changes detected -- your profile is already up t
  GSD > PROFILE COMPLETE ✓
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-Your profile:    I:/Scripts/ML_Predictor2026_V2/.claude/get-shit-done/USER-PROFILE.md
+Your profile:    C:/Scripts/ML_Predictor2026_V2/.claude/get-shit-done/USER-PROFILE.md
 ```
 
 Then list paths for each generated artifact:
 ```
 Artifacts:
-  ✓ /gsd-dev-preferences   I:/Scripts/ML_Predictor2026_V2/.claude/skills/gsd-dev-preferences/SKILL.md
+  ✓ /gsd-dev-preferences   C:/Scripts/ML_Predictor2026_V2/.claude/skills/gsd-dev-preferences/SKILL.md
   ✓ CLAUDE.md section       ./CLAUDE.md
-  ✓ Global CLAUDE.md        I:/Scripts/ML_Predictor2026_V2/.claude/CLAUDE.md
+  ✓ Global CLAUDE.md        C:/Scripts/ML_Predictor2026_V2/.claude/CLAUDE.md
 ```
 
 (Only show artifacts that were actually generated.)

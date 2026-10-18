@@ -58,7 +58,7 @@ Tool schemas count against the same context budget as model context, prompts, an
 
 ### Pre-Phase MCP Audit
 
-Before starting a long phase (especially `/gsd-execute-phase`, `/gsd-plan-phase`, or anything that fans out across many subagents), run this audit:
+Before starting a long phase (especially `/gsd:execute-phase`, `/gsd:plan-phase`, or anything that fans out across many subagents), run this audit:
 
 - [ ] **Browser / playwright tools enabled?** If this phase has no UI work, disable them. They're among the heaviest per-turn schemas.
 - [ ] **Platform-specific tools enabled?** Mac-tools / Windows-tools / OS-specific helpers should be disabled when not actively needed for the phase at hand.
@@ -69,7 +69,7 @@ Each item disabled removes its schema from every subsequent turn for the rest of
 
 ### How to toggle
 
-The keys live in `.claude/settings.json` (project) or `I:/Scripts/ML_Predictor2026_V2/.claude/settings.json` (global) — **not** in `.planning/config.json`:
+The keys live in `.claude/settings.json` (project) or `C:/Scripts/ML_Predictor2026_V2/.claude/settings.json` (global) — **not** in `.planning/config.json`:
 
 ```json
 {

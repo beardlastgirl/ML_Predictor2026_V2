@@ -1,7 +1,7 @@
 ---
 name: gsd-settings
-description: Configure GSD workflow toggles and model profile
-allowed-tools: Read, Write, Bash, AskUserQuestion
+description: "Configure GSD workflow toggles and model profile"
+allowed-tools: Read, Write, Bash, Grep, AskUserQuestion
 ---
 
 
@@ -11,23 +11,15 @@ Interactive configuration of GSD workflow agents and model profile via multi-que
 Routes to the settings workflow which handles:
 - Config existence ensuring
 - Current settings reading and parsing
-- Interactive 5-question prompt (model, research, plan_check, verifier, branching)
+- Interactive multi-question prompt covering model profile and workflow toggles (research, plan_check, verifier, drift guard, TDD, code review, worktrees, compact content, and more — see `gsd-core/workflows/settings.md` for the current set)
 - Config merging and writing
 - Confirmation display with quick command references
 </objective>
 
 <execution_context>
-@.github/get-shit-done/workflows/settings.md
+@.github/gsd-core/workflows/settings.md
 </execution_context>
 
 <process>
-**Follow the settings workflow** from `@.github/get-shit-done/workflows/settings.md`.
-
-The workflow handles all logic including:
-1. Config file creation with defaults if missing
-2. Current config reading
-3. Interactive settings presentation with pre-selection
-4. Answer parsing and config merging
-5. File writing
-6. Confirmation display
+Execute end-to-end.
 </process>

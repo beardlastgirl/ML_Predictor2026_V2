@@ -8,7 +8,7 @@
 ## Dispatch
 
 ```
-Read @I:/Scripts/ML_Predictor2026_V2/.claude/get-shit-done/workflows/discuss-phase-power.md
+Read @C:/Scripts/ML_Predictor2026_V2/.claude/get-shit-done/workflows/discuss-phase-power.md
 ```
 
 Execute it end-to-end. Do not continue with the standard interactive steps.

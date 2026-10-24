@@ -1,0 +1,5 @@
+2026/10/04-20:45:42.566 1180 Creating DB C:\Scripts\ML_Predictor2026_V2\outputs\chrome_debug\Default\Local Storage\leveldb since it was missing.
+2026/10/04-20:45:42.580 1180 Reusing MANIFEST C:\Scripts\ML_Predictor2026_V2\outputs\chrome_debug\Default\Local Storage\leveldb/MANIFEST-000001
+2026/10/04-20:46:18.566 a4e0 Level-0 table #5: started
+2026/10/04-20:46:18.574 a4e0 Level-0 table #5: 69185 bytes OK
+2026/10/04-20:46:18.576 a4e0 Delete type=0 #3

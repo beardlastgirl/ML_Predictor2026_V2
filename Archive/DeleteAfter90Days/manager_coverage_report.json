@@ -1,0 +1,123 @@
+{
+  "total_matches": 6295,
+  "modern_matches_2012_2026": 6295,
+  "verified_manager_entries": 25,
+  "verified_keys_count": 46,
+  "covered_matches": 19,
+  "not_covered_matches": 6276,
+  "overall_coverage_pct": 0.3,
+  "club_breakdown": {
+    "Boca Juniors": {
+      "matches": 485,
+      "covered": 10,
+      "pct": 2.1
+    },
+    "Racing Club": {
+      "matches": 486,
+      "covered": 16,
+      "pct": 3.3
+    },
+    "River Plate": {
+      "matches": 483,
+      "covered": 6,
+      "pct": 1.2
+    },
+    "San Lorenzo": {
+      "matches": 477,
+      "covered": 3,
+      "pct": 0.6
+    },
+    "Independiente": {
+      "matches": 441,
+      "covered": 3,
+      "pct": 0.7
+    },
+    "Estudiantes LP": {
+      "matches": 484,
+      "covered": 0,
+      "pct": 0.0
+    }
+  },
+  "season_breakdown": {
+    "2012/2013": {
+      "matches": 381,
+      "covered": 4,
+      "pct": 1.0
+    },
+    "2013/2014": {
+      "matches": 383,
+      "covered": 0,
+      "pct": 0.0
+    },
+    "2014": {
+      "matches": 190,
+      "covered": 2,
+      "pct": 1.1
+    },
+    "2015": {
+      "matches": 468,
+      "covered": 1,
+      "pct": 0.2
+    },
+    "2016": {
+      "matches": 242,
+      "covered": 0,
+      "pct": 0.0
+    },
+    "2016/2017": {
+      "matches": 450,
+      "covered": 0,
+      "pct": 0.0
+    },
+    "2017/2018": {
+      "matches": 378,
+      "covered": 0,
+      "pct": 0.0
+    },
+    "2018/2019": {
+      "matches": 324,
+      "covered": 0,
+      "pct": 0.0
+    },
+    "2019/2020": {
+      "matches": 276,
+      "covered": 0,
+      "pct": 0.0
+    },
+    "2020": {
+      "matches": 134,
+      "covered": 0,
+      "pct": 0.0
+    },
+    "2021": {
+      "matches": 501,
+      "covered": 2,
+      "pct": 0.4
+    },
+    "2022": {
+      "matches": 581,
+      "covered": 4,
+      "pct": 0.7
+    },
+    "2023": {
+      "matches": 582,
+      "covered": 3,
+      "pct": 0.5
+    },
+    "2024": {
+      "matches": 581,
+      "covered": 0,
+      "pct": 0.0
+    },
+    "2025": {
+      "matches": 510,
+      "covered": 3,
+      "pct": 0.6
+    },
+    "2026": {
+      "matches": 314,
+      "covered": 0,
+      "pct": 0.0
+    }
+  }
+}

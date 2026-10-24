@@ -1,0 +1,96 @@
+# Transfermarkt Club Profile URLs - Liga Profesional Argentina
+# ============================================================================
+# Safest URLs for squad, market value, transfers, stats, fixtures, etc.
+# Club IDs extracted from competition page.
+# Format: Club Name -> URL (Club ID)
+# ============================================================================
+
+# River Plate
+River Plate -> https://www.transfermarkt.com/club-atletico-river-plate/startseite/verein/209 (209)
+
+# Boca Juniors
+Boca Juniors -> https://www.transfermarkt.com/club-atletico-boca-juniors/startseite/verein/189 (189)
+
+# Rosario Central
+Rosario Central -> https://www.transfermarkt.com/club-atletico-rosario-central/startseite/verein/1418 (1418)
+
+# Racing Club
+Racing Club -> https://www.transfermarkt.com/racing-club/startseite/verein/1444 (1444)
+
+# Estudiantes LP
+Estudiantes LP -> https://www.transfermarkt.com/club-estudiantes-de-la-plata/startseite/verein/288 (288)
+
+# Independiente Rivadavia
+Independiente Rivadavia -> https://www.transfermarkt.com/independiente-rivadavia/startseite/verein/12179 (12179)
+
+# San Lorenzo
+San Lorenzo -> https://www.transfermarkt.com/club-atletico-san-lorenzo-de-almagro/startseite/verein/1775 (1775)
+
+# Velez Sarsfield
+Velez Sarsfield -> https://www.transfermarkt.com/club-atletico-velez-sarsfield/startseite/verein/1029 (1029)
+
+# Tigre
+Tigre -> https://www.transfermarkt.com/club-atletico-tigre/startseite/verein/11831 (11831)
+
+# Talleres
+Talleres -> https://www.transfermarkt.com/club-atletico-talleres/startseite/verein/3938 (3938)
+
+# Lanus
+Lanus -> https://www.transfermarkt.com/club-atletico-lanus/startseite/verein/333 (333)
+
+# Argentinos Juniors
+Argentinos Juniors -> https://www.transfermarkt.com/argentinos-juniors/startseite/verein/1030 (1030)
+
+# Newell's Old Boys
+Newell's Old Boys -> https://www.transfermarkt.com/club-atletico-newells-old-boys/startseite/verein/1286 (1286)
+
+# Platense
+Platense -> https://www.transfermarkt.com/club-atletico-platense/startseite/verein/928 (928)
+
+# Independiente
+Independiente -> https://www.transfermarkt.com/club-atletico-independiente/startseite/verein/1234 (1234)
+
+# Defensa y Justicia
+Defensa y Justicia -> https://www.transfermarkt.com/defensa-y-justicia/startseite/verein/2402 (2402)
+
+# Gimnasia LP
+Gimnasia LP -> https://www.transfermarkt.com/club-de-gimnasia-y-esgrima-la-plata/startseite/verein/1106 (1106)
+
+# Belgrano
+Belgrano -> https://www.transfermarkt.com/ca-belgrano/startseite/verein/2417 (2417)
+
+# Huracan
+Huracan -> https://www.transfermarkt.com/club-atletico-huracan/startseite/verein/2063 (2063)
+
+# Gimnasia Mendoza
+Gimnasia Mendoza -> https://www.transfermarkt.com/gimnasia-y-esgrima-de-mendoza/startseite/verein/14687 (14687)
+
+# Barracas Central
+Barracas Central -> https://www.transfermarkt.com/club-atletico-barracas-central/startseite/verein/25184 (25184)
+
+# Instituto
+Instituto -> https://www.transfermarkt.com/instituto-ac-cordoba/startseite/verein/1829 (1829)
+
+# Union
+Union -> https://www.transfermarkt.com/club-atletico-union/startseite/verein/7097 (7097)
+
+# Atletico Tucuman
+Atletico Tucuman -> https://www.transfermarkt.com/club-atletico-tucuman/startseite/verein/14554 (14554)
+
+# Sarmiento
+Sarmiento -> https://www.transfermarkt.com/club-atletico-sarmiento-junin-/startseite/verein/12454 (12454)
+
+# Banfield
+Banfield -> https://www.transfermarkt.com/club-atletico-banfield/startseite/verein/830 (830)
+
+# Deportivo Riestra
+Deportivo Riestra -> https://www.transfermarkt.com/cd-riestra/startseite/verein/19775 (19775)
+
+# Central Cordoba SdE
+Central Cordoba SdE -> https://www.transfermarkt.com/club-atletico-central-cordoba-sde-/startseite/verein/31284 (31284)
+
+# Aldosivi
+Aldosivi -> https://www.transfermarkt.com/club-atletico-aldosivi/startseite/verein/12301 (12301)
+
+# Estudiantes Rio Cuarto
+Estudiantes Rio Cuarto -> https://www.transfermarkt.com/aa-estudiantes-de-rio-cuarto/startseite/verein/14602 (14602)

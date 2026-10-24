@@ -1,0 +1,45 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "model": "nvidia/qwen/qwen3-coder",
+  "small_model": "nvidia/meta/llama-3.1-8b-instruct",
+  "permission": {
+    "read": {
+      "C:/Scripts/ML_Predictor2026_V2/.opencode/get-shit-done/*": "allow"
+    },
+    "external_directory": {
+      "C:/Scripts/ML_Predictor2026_V2/.opencode/get-shit-done/*": "allow"
+    }
+  },
+  "mcpServers": {
+    "colab-mcp": {
+      "command": "uvx",
+      "args": [
+        "git+https://github.com/googlecolab/colab-mcp"
+      ],
+      "timeout": 30000
+    }
+  },
+  "provider": {
+    "nvidia": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "NVIDIA NIM",
+      "options": {
+        "baseURL": "https://integrate.api.nvidia.com/v1",
+        "apiKey": "{env:NVIDIA_API_KEY}",
+        "timeout": 60000,
+        "chunkTimeout": 30000
+      },
+      "models": {
+        "qwen/qwen3-coder": {
+          "name": "Qwen3 Coder"
+        },
+        "moonshotai/kimi-k2.6": {
+          "name": "Kimi K2.6"
+        },
+        "meta/llama-3.1-8b-instruct": {
+          "name": "Llama 3.1 8B Instruct (Fast Fallback)"
+        }
+      }
+    }
+  }
+}

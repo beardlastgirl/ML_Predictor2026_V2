@@ -73,7 +73,7 @@ python main.py
 
 ```powershell
 .
-un_model.ps1
+run_model.ps1
 ```
 
 This opens an interactive menu:
@@ -90,10 +90,8 @@ This opens an interactive menu:
 
 Or run with option directly:
 ```powershell
-.
-un_model.ps1 -Option 5  # Run main prediction
-.
-un_model.ps1 -Option 6  # Run everything
+.\run_model.ps1 -Option 5  # Run main prediction
+.\run_model.ps1 -Option 6  # Run everything
 ```
 
 ### Apify Scraper (Sofascore)
@@ -206,7 +204,7 @@ ML_Predictor2026_V2\
 │   ├── utils.py                # Logging and helpers
 │   ├── validation.py           # Data validation layer
 │   └── sofascore_stats.json    # Scraped statistics
-├── tests\                      # Test suite (80 tests)
+├── tests\                      # Test suite (131+ passing expected)
 │   ├── test_golden_math.py     # Golden math regression tests
 │   ├── test_main.py            # Unit tests for core functions
 │   ├── test_pipeline_integration.py  # End-to-end integration tests
@@ -222,23 +220,36 @@ ML_Predictor2026_V2\
 └── requirements.txt            # Dependencies
 ```
 
+## Documentation
+
+Canonical docs generated via `/gsd-docs-update` (v1.42.3):
+- `README.md` (this file — updated)
+- `docs/ARCHITECTURE.md`
+- `docs/GETTING-STARTED.md`
+- `docs/DEVELOPMENT.md`
+- `docs/TESTING.md`
+- `docs/CONFIGURATION.md`
+
+To verify: `/gsd-docs-update --verify-only`
+To regenerate from scratch: `/gsd-docs-update --force`
+
 ## Testing
 
 ```powershell
-# Run all tests (80 tests)
+# Run all tests (131+ expected)
 python -m pytest tests/ -v
 
 # Run specific test suites
-python -m pytest tests/test_golden_math.py -v       # 17 golden math tests
-python -m pytest tests/test_main.py -v              # 29 unit tests
-python -m pytest tests/test_pipeline_integration.py -v  # 19 integration tests
-python -m pytest tests/test_scraper_utils.py -v     # 15 scraper tests
+python -m pytest tests/test_golden_math.py -v       # Golden math regression
+python -m pytest tests/test_main.py -v              # Unit tests
+python -m pytest tests/test_pipeline_integration.py -v  # Integration
+python -m pytest tests/test_scraper_utils.py -v     # Scraper tests
 ```
 
 ## CI/CD Pipeline
 
 GitHub Actions workflow (`.github/workflows/ci.yml`) runs on every PR:
-- pytest test suite (80 tests)
+- pytest test suite (131+ passing expected)
 - pip-audit for dependency vulnerabilities
 - Artifact tracking check (prevents committing generated files)
 
@@ -268,3 +279,6 @@ Predictions are for entertainment purposes only. Do not use for gambling.
 ## License
 
 Personal project for friends' entertainment. No commercial use intended.
+
+<!-- GSD Configuration -- managed by gsd-core installer -->
+<!-- /GSD Configuration -->

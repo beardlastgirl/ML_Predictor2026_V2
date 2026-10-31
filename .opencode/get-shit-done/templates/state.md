@@ -66,6 +66,14 @@ None yet.
 
 None yet.
 
+## Deferred Items
+
+Items acknowledged and carried forward from previous milestone close:
+
+| Category | Item | Status | Deferred At |
+|----------|------|--------|-------------|
+| *(none)* | | | |
+
 ## Session Continuity
 
 Last session: [YYYY-MM-DD HH:MM]
@@ -120,7 +128,7 @@ Points to PROJECT.md for full context. Includes:
 - Current focus (which phase)
 - Last update date (triggers re-read if stale)
 
-Claude reads PROJECT.md directly for requirements, constraints, and decisions.
+the agent reads PROJECT.md directly for requirements, constraints, and decisions.
 
 ### Current Position
 Where we are right now:
@@ -148,7 +156,7 @@ Updated after each plan completion.
 **Pending Todos:** Ideas captured via /gsd-add-todo
 - Count of pending todos
 - Reference to .planning/todos/pending/
-- Brief list if few, count if many (e.g., "5 pending todos — see /gsd-check-todos")
+- Brief list if few, count if many (e.g., "5 pending todos — see /gsd-capture --list")
 
 **Blockers/Concerns:** From "Next Phase Readiness" sections
 - Issues that affect future work

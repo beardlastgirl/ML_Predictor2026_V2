@@ -1,5 +1,7 @@
 ---
 description: Show available GSD commands and usage guide
+tools:
+  read: true
 ---
 <objective>
 Display the complete GSD command reference.
@@ -16,6 +18,6 @@ Output ONLY the reference content below. Do NOT add:
 </execution_context>
 
 <process>
-Output the complete GSD command reference from @C:/Scripts/ML_Predictor2026_V2/.opencode/get-shit-done/workflows/help.md.
+Execute end-to-end.
 Display the reference content directly — no additions or modifications.
 </process>

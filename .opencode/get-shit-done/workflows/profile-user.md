@@ -1,7 +1,7 @@
 <purpose>
 Orchestrate the full developer profiling flow: consent, session analysis (or questionnaire fallback), profile generation, result display, and artifact creation.
 
-This workflow wires Phase 1 (session pipeline) and Phase 2 (profiling engine) into a cohesive user-facing experience. All heavy lifting is done by existing gsd-tools.cjs subcommands and the gsd-user-profiler agent -- this workflow orchestrates the sequence, handles branching, and provides the UX.
+This workflow wires Phase 1 (session pipeline) and Phase 2 (profiling engine) into a cohesive user-facing experience. All heavy lifting is done by existing `gsd-sdk query` handlers (with legacy `gsd-tools.cjs` parity where needed) and the gsd-user-profiler agent -- this workflow orchestrates the sequence, handles branching, and provides the UX.
 </purpose>
 
 <required_reading>
@@ -9,7 +9,7 @@ Read all files referenced by the invoking prompt's execution_context before star
 
 Key references:
 - @C:/Scripts/ML_Predictor2026_V2/.opencode/get-shit-done/references/ui-brand.md (display patterns)
-- @C:/Scripts/ML_Predictor2026_V2/.opencode/get-shit-done/agents/gsd-user-profiler.md (profiler agent definition)
+- @C:/Scripts/ML_Predictor2026_V2/.opencode/agents/gsd-user-profiler.md (profiler agent definition)
 - @C:/Scripts/ML_Predictor2026_V2/.opencode/get-shit-done/references/user-profiling.md (profiling reference doc)
 </required_reading>
 
@@ -30,6 +30,8 @@ PROFILE_PATH="C:/Scripts/ML_Predictor2026_V2/.opencode/get-shit-done/USER-PROFIL
 
 **If profile exists AND --refresh NOT set AND --questionnaire NOT set:**
 
+
+**Text mode (`workflow.text_mode: true` in config or `--text` flag):** Set `TEXT_MODE=true` if `--text` is present in `$ARGUMENTS` OR `text_mode` from init JSON is `true`. When TEXT_MODE is active, replace every `question` call with a plain-text numbered list and ask the user to type their choice number. This is required for non-the agent runtimes (OpenAI Codex, Gemini CLI, etc.) where `question` is not available.
 Use question:
 - header: "Existing Profile"
 - question: "You already have a profile. What would you like to do?"
@@ -46,7 +48,7 @@ If "Cancel": Display "No changes made." and exit.
 
 Backup existing profile:
 ```bash
-cp "C:/Scripts/ML_Predictor2026_V2/.opencode/get-shit-done/USER-PROFILE.md" "C:/Scripts/ML_Predictor2026_V2/.opencode/get-shit-done/USER-PROFILE.backup.md"
+cp "C:/Scripts/ML_Predictor2026_V2/.opencode/get-shit-done/USER-PROFILE.md" "C:/Scripts/ML_Predictor2026_V2/.opencode/USER-PROFILE.backup.md"
 ```
 
 Display: "Re-analyzing your sessions to update your profile."
@@ -67,7 +69,7 @@ Display consent screen:
  GSD > PROFILE YOUR CODING STYLE
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-Claude starts every conversation generic. A profile teaches Claude
+the agent starts every conversation generic. A profile teaches the agent
 how YOU actually work -- not how you think you work.
 
 ## What We'll Analyze
@@ -83,7 +85,7 @@ Your recent Claude Code sessions, looking for patterns in these
 | Debugging Approach   | How you tackle errors and bugs               |
 | UX Philosophy        | How much you care about design vs. function  |
 | Vendor Philosophy    | How you evaluate libraries and tools         |
-| Frustration Triggers | What makes you correct Claude                |
+| Frustration Triggers | What makes you correct the agent                |
 | Learning Style       | How you prefer to learn new things           |
 
 ## Data Handling
@@ -128,7 +130,7 @@ Display: "◆ Scanning sessions..."
 
 Run session scan:
 ```bash
-SCAN_RESULT=$(node C:/Scripts/ML_Predictor2026_V2/.opencode/get-shit-done/bin/gsd-tools.cjs scan-sessions --json 2>/dev/null)
+SCAN_RESULT=$(gsd-sdk query scan-sessions --json 2>/dev/null)
 ```
 
 Parse the JSON output to get session count and project count.
@@ -148,7 +150,7 @@ Display: "◆ Sampling messages..."
 
 Run profile sampling:
 ```bash
-SAMPLE_RESULT=$(node C:/Scripts/ML_Predictor2026_V2/.opencode/get-shit-done/bin/gsd-tools.cjs profile-sample --json 2>/dev/null)
+SAMPLE_RESULT=$(gsd-sdk query profile-sample --json 2>/dev/null)
 ```
 
 Parse the JSON output to get the temp directory path and message count.
@@ -199,7 +201,7 @@ Display: "Using questionnaire to build your profile."
 
 **Get questions:**
 ```bash
-QUESTIONS=$(node C:/Scripts/ML_Predictor2026_V2/.opencode/get-shit-done/bin/gsd-tools.cjs profile-questionnaire --json 2>/dev/null)
+QUESTIONS=$(gsd-sdk query profile-questionnaire --json 2>/dev/null)
 ```
 
 Parse the questions JSON. It contains 8 questions, one per dimension.
@@ -222,7 +224,7 @@ Write the answers JSON to `$ANSWERS_PATH`.
 
 **Convert answers to analysis:**
 ```bash
-ANALYSIS_RESULT=$(node C:/Scripts/ML_Predictor2026_V2/.opencode/get-shit-done/bin/gsd-tools.cjs profile-questionnaire --answers "$ANSWERS_PATH" --json 2>/dev/null)
+ANALYSIS_RESULT=$(gsd-sdk query profile-questionnaire --answers "$ANSWERS_PATH" --json 2>/dev/null)
 ```
 
 Parse the analysis JSON from the result.
@@ -269,7 +271,7 @@ Write updated analysis JSON back to `$ANALYSIS_PATH`.
 Display: "◆ Writing profile..."
 
 ```bash
-node C:/Scripts/ML_Predictor2026_V2/.opencode/get-shit-done/bin/gsd-tools.cjs write-profile --input "$ANALYSIS_PATH" --json 2>/dev/null
+gsd-sdk query write-profile --input "$ANALYSIS_PATH" --json
 ```
 
 Display: "✓ Profile written to C:/Scripts/ML_Predictor2026_V2/.opencode/get-shit-done/USER-PROFILE.md"
@@ -310,7 +312,7 @@ Pick 3-4 dimensions with the highest confidence and most evidence signals. Forma
   headers and problem statements before making requests
 - **Vendor Choices (HIGH):** You research alternatives thoroughly -- comparing
   docs, GitHub activity, and bundle sizes before committing
-- **Frustrations (MEDIUM):** You correct Claude most often for doing things
+- **Frustrations (MEDIUM):** You correct the agent most often for doing things
   you didn't ask for -- scope creep is your primary trigger
 ```
 
@@ -334,8 +336,8 @@ Use question with multiSelect:
 - question: "Which artifacts should I generate?"
 - options (ALL pre-selected by default):
   - "/gsd-dev-preferences command file" -- "Load your preferences in any session"
-  - "CLAUDE.md profile section" -- "Add profile to this project's CLAUDE.md"
-  - "Global CLAUDE.md" -- "Add profile to C:/Scripts/ML_Predictor2026_V2/.opencode/CLAUDE.md for all projects"
+  - "AGENTS.md profile section" -- "Add profile to this project's AGENTS.md"
+  - "Global AGENTS.md" -- "Add profile to C:/Scripts/ML_Predictor2026_V2/.opencode/AGENTS.md for all projects"
 
 **If no artifacts selected:** Display "No artifacts generated. Your profile is saved at C:/Scripts/ML_Predictor2026_V2/.opencode/get-shit-done/USER-PROFILE.md" and jump to step 10.
 
@@ -348,28 +350,28 @@ Generate selected artifacts sequentially (file I/O is fast, no benefit from para
 **For /gsd-dev-preferences (if selected):**
 
 ```bash
-node C:/Scripts/ML_Predictor2026_V2/.opencode/get-shit-done/bin/gsd-tools.cjs generate-dev-preferences --analysis "$ANALYSIS_PATH" --json 2>/dev/null
+gsd-sdk query generate-dev-preferences --analysis "$ANALYSIS_PATH" --json
 ```
 
-Display: "✓ Generated /gsd-dev-preferences at C:/Scripts/ML_Predictor2026_V2/.opencode/commands/gsd/dev-preferences.md"
+Display: "✓ Generated /gsd-dev-preferences at C:/Scripts/ML_Predictor2026_V2/.opencode/skills/gsd-dev-preferences/SKILL.md"
 
-**For CLAUDE.md profile section (if selected):**
+**For AGENTS.md profile section (if selected):**
 
 ```bash
-node C:/Scripts/ML_Predictor2026_V2/.opencode/get-shit-done/bin/gsd-tools.cjs generate-claude-profile --analysis "$ANALYSIS_PATH" --json 2>/dev/null
+gsd-sdk query generate-claude-profile --analysis "$ANALYSIS_PATH" --json
 ```
 
-Display: "✓ Added profile section to CLAUDE.md"
+Display: "✓ Added profile section to AGENTS.md"
 
-**For Global CLAUDE.md (if selected):**
+**For Global AGENTS.md (if selected):**
 
 ```bash
-node C:/Scripts/ML_Predictor2026_V2/.opencode/get-shit-done/bin/gsd-tools.cjs generate-claude-profile --analysis "$ANALYSIS_PATH" --global --json 2>/dev/null
+gsd-sdk query generate-claude-profile --analysis "$ANALYSIS_PATH" --global --json
 ```
 
-Display: "✓ Added profile section to C:/Scripts/ML_Predictor2026_V2/.opencode/CLAUDE.md"
+Display: "✓ Added profile section to C:/Scripts/ML_Predictor2026_V2/.opencode/AGENTS.md"
 
-**Error handling:** If any gsd-tools.cjs call fails, display the error message and use question to offer "Retry" or "Skip this artifact". On retry, re-run the command. On skip, continue to next artifact.
+**Error handling:** If any `gsd-sdk query` or gsd-tools.cjs call fails, display the error message and use question to offer "Retry" or "Skip this artifact". On retry, re-run the command. On skip, continue to next artifact.
 
 ---
 
@@ -381,7 +383,7 @@ Read both old backup and new analysis to compare dimension ratings/confidence.
 
 Read the backed-up profile:
 ```bash
-BACKUP_PATH="C:/Scripts/ML_Predictor2026_V2/.opencode/get-shit-done/USER-PROFILE.backup.md"
+BACKUP_PATH="C:/Scripts/ML_Predictor2026_V2/.opencode/USER-PROFILE.backup.md"
 ```
 
 Compare each dimension's rating and confidence between old and new. Display diff table showing only changed dimensions:
@@ -410,9 +412,9 @@ Your profile:    C:/Scripts/ML_Predictor2026_V2/.opencode/get-shit-done/USER-PRO
 Then list paths for each generated artifact:
 ```
 Artifacts:
-  ✓ /gsd-dev-preferences   C:/Scripts/ML_Predictor2026_V2/.opencode/commands/gsd/dev-preferences.md
-  ✓ CLAUDE.md section       ./CLAUDE.md
-  ✓ Global CLAUDE.md        C:/Scripts/ML_Predictor2026_V2/.opencode/CLAUDE.md
+  ✓ /gsd-dev-preferences   C:/Scripts/ML_Predictor2026_V2/.opencode/skills/gsd-dev-preferences/SKILL.md
+  ✓ AGENTS.md section       ./AGENTS.md
+  ✓ Global AGENTS.md        C:/Scripts/ML_Predictor2026_V2/.opencode/AGENTS.md
 ```
 
 (Only show artifacts that were actually generated.)
@@ -444,7 +446,7 @@ rm -f "$ANALYSIS_PATH" 2>/dev/null
 - [ ] Profile written to USER-PROFILE.md via write-profile subcommand
 - [ ] Result display shows report card table and highlight reel with evidence
 - [ ] Artifact selection uses multiSelect with all options pre-selected
-- [ ] Artifacts generated sequentially via gsd-tools.cjs subcommands
+- [ ] Artifacts generated sequentially via gsd-sdk query (or gsd-tools.cjs) subcommands
 - [ ] Refresh diff shows changed dimensions when --refresh was used
 - [ ] Temp files cleaned up on completion
 </success_criteria>

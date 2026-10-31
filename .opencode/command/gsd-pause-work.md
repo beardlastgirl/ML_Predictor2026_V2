@@ -1,5 +1,7 @@
 ---
 description: Create context handoff when pausing work mid-phase
+argument-hint: "[--report]"
+requires: [phase, progress]
 tools:
   read: true
   write: true
@@ -26,7 +28,10 @@ State and phase progress are gathered in-workflow with targeted reads.
 </context>
 
 <process>
-**Follow the pause-work workflow** from `@C:/Scripts/ML_Predictor2026_V2/.opencode/get-shit-done/workflows/pause-work.md`.
+If `--report` is in $ARGUMENTS:
+Read and execute `C:/Scripts/ML_Predictor2026_V2/.opencode/get-shit-done/workflows/session-report.md` end-to-end.
+
+**Follow the pause-work workflow**.
 
 The workflow handles all logic including:
 1. Phase directory detection

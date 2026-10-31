@@ -1,0 +1,23 @@
+{
+  "project_type": {"primary_type":"generic","is_monorepo":false,"has_cli_bin":false,"has_api_routes":false,"is_open_source":false,"has_deploy_config":false,"has_tests":true},
+  "canonical_queue": [
+    {"type":"readme","resolved_path":"README.md","mode":"update","preservation_mode":null,"wave":1,"status":"completed","existing_path":"Readme.md","has_gsd_marker":true},
+    {"type":"architecture","resolved_path":"docs/ARCHITECTURE.md","mode":"create","preservation_mode":null,"wave":1,"status":"completed"},
+    {"type":"getting_started","resolved_path":"docs/GETTING-STARTED.md","mode":"create","preservation_mode":null,"wave":2,"status":"completed"},
+    {"type":"development","resolved_path":"docs/DEVELOPMENT.md","mode":"create","preservation_mode":null,"wave":2,"status":"completed"},
+    {"type":"testing","resolved_path":"docs/TESTING.md","mode":"create","preservation_mode":null,"wave":2,"status":"completed"},
+    {"type":"configuration","resolved_path":"docs/CONFIGURATION.md","mode":"create","preservation_mode":null,"wave":1,"status":"completed"}
+  ],
+  "review_queue": [
+    {"path":"AGENTS.md","type":"hand-written","status":"pending_review"},
+    {"path":"CLAUDE.md","type":"hand-written","status":"pending_review"},
+    {"path":"NewPredictionModel.md","type":"hand-written","status":"pending_review"},
+    {"path":"ML_Predictor2026_Master_Prompt.md","type":"hand-written","status":"pending_review"},
+    {"path":"ML_Predictor2026_V2_Full_Handoff.md","type":"hand-written","status":"pending_review"},
+    {"path":"handsoff.md","type":"hand-written","status":"pending_review"}
+  ],
+  "gap_queue": [],
+  "flags_active":{"force":false,"verify_only":false},
+  "created_at":"2026-10-24T13:15:00Z",
+  "updated_at":"2026-10-24T13:17:00Z"
+}

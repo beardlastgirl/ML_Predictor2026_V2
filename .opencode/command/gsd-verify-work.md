@@ -1,6 +1,7 @@
 ---
 description: Validate built features through conversational UAT
-argument-hint: "[phase number, e.g., '4']"
+argument-hint: "[phase number, e.g., '4'] [--ws <name>]"
+requires: [execute-phase, phase]
 tools:
   read: true
   bash: true
@@ -8,12 +9,12 @@ tools:
   grep: true
   edit: true
   write: true
-  task: true
+  agent: true
 ---
 <objective>
 Validate built features through conversational testing with persistent state.
 
-Purpose: Confirm what Claude built actually works from user's perspective. One test at a time, plain text responses, no interrogation. When issues are found, automatically diagnose, plan fixes, and prepare for execution.
+Purpose: Confirm what the agent built actually works from user's perspective. One test at a time, plain text responses, no interrogation. When issues are found, automatically diagnose, plan fixes, and prepare for execution.
 
 Output: {phase_num}-UAT.md tracking all test results. If issues found: diagnosed gaps, verified fix plans ready for /gsd-execute-phase
 </objective>
@@ -32,6 +33,6 @@ Context files are resolved inside the workflow (`init verify-work`) and delegate
 </context>
 
 <process>
-Execute the verify-work workflow from @C:/Scripts/ML_Predictor2026_V2/.opencode/get-shit-done/workflows/verify-work.md end-to-end.
+Execute end-to-end.
 Preserve all workflow gates (session management, test presentation, diagnosis, fix planning, routing).
 </process>

@@ -30,9 +30,12 @@ def get_tournament_boundaries(matches_df: pd.DataFrame, date_col: str = "Date") 
     dates = pd.to_datetime(matches_df[date_col])
     boundaries = [0]  # First match is always a boundary
     
-    # Detect season boundaries by large gaps in dates (>60 days)
+    # Detect season/tournament boundaries by gaps in dates.
+    # Argentine Liga Profesional transitions (Apertura->Clausura, Copa de la Liga
+    # -> Liga Profesional) can be as short as 14-28 days, so threshold below
+    # that range would miss mid-year breaks; use 21 days.
     date_diffs = dates.diff().dt.days
-    season_starts = date_diffs[date_diffs > 60].index.tolist()
+    season_starts = date_diffs[date_diffs > 21].index.tolist()
     
     # Also detect explicit season column if present
     if "Season" in matches_df.columns:

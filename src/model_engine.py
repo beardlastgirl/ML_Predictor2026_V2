@@ -90,7 +90,7 @@ def predict_gameweek(fixtures_df, elo_ratings, model, features, df_mean=None, hi
 
     if sofascore_data:
         for side in ["Home", "Away"]:
-            fixtures_df[f"{side}_Sofa_Position"] = fixtures_df[f"{side}Team"].apply(lambda x: sofascore_data.get(str(x).upper(), {}).get("position", 28))
+            fixtures_df[f"{side}_Sofa_Position"] = fixtures_df[f"{side}Team"].apply(lambda x: sofascore_data.get(str(x).upper(), {}).get("position", 30))
             fixtures_df[f"{side}_Sofa_Points"] = fixtures_df[f"{side}Team"].apply(lambda x: sofascore_data.get(str(x).upper(), {}).get("points", 0))
             fixtures_df[f"{side}_Sofa_GF"] = fixtures_df[f"{side}Team"].apply(lambda x: sofascore_data.get(str(x).upper(), {}).get("goals_for", 0))
             fixtures_df[f"{side}_Sofa_GA"] = fixtures_df[f"{side}Team"].apply(lambda x: sofascore_data.get(str(x).upper(), {}).get("goals_against", 0))

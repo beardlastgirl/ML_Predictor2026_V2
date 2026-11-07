@@ -261,18 +261,10 @@ def train_validate(
         log_error("Feature validation failed - aborting training")
         raise ValueError(f"Invalid features: {feature_validation.errors}")
 
-    # Use sample weights to give more importance to non-draw outcomes
-    # This helps the model learn to distinguish home/away wins better
-    # without distorting the overall class distribution
+    # Uniform sample weights: do NOT suppress draws; multiclass cross-entropy
+    # is only proper under the true empirical data distribution.
     sample_weights = np.ones(len(y))
-    class_counts = y.value_counts().sort_index()
-    # Slightly downweight draws to reduce model's tendency to predict them
-    # Weight ratio approximately 1.0 : 0.7 : 1.0 for Away : Draw : Home
-    for idx, label in enumerate(y):
-        if label == 1:  # Draw
-            sample_weights[idx] = 0.7
-
-    log_info(f"Using sample weights to reduce draw bias (Draw weight = 0.7)")
+    log_info("Using uniform sample weights (draw downweighting removed)")
 
     model = create_model(model_type)
     # Tournament-aware CV using date gaps in df (which retains Date column).
